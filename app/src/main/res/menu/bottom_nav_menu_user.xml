@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_profile_user"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/navigation_cars_user"
+        android:icon="@drawable/ic_directions_car_black_24dp"
+        android:title="Cars" />
+
+    <item
+        android:id="@+id/navigation_recommended_user"
+        android:icon="@drawable/ic_trending_up_black_24dp"
+        android:title="Recommended" />
+
+</menu>

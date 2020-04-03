@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Project App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="title_activity_admin_details">AdminDetailsActivity</string>
+    <string name="title_activity_drawer">Drawer</string>
+    <string name="title_activity_user_detail">UserDetailActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="search_cars">Search Cars</string>
+    <string name="admin_account">Admin account</string>
+    <string name="employee_account">Employee account</string>
+    <string name="user_account">User account</string>
+</resources>
