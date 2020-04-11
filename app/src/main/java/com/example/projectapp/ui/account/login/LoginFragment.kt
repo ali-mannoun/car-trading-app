@@ -1,6 +1,7 @@
 package com.example.projectapp.ui.account.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateViewModelFactory
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.example.projectapp.R
 import com.example.projectapp.databinding.FragmentLoginBinding
-import com.example.projectapp.network.AccountApi
-import com.example.projectapp.network.IApiService
+import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.ui.LoadingBottomSheetDialog
-import com.example.projectapp.utils.SharedViewModel
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -28,7 +23,7 @@ class LoginFragment : Fragment() {
 
     private val viewModel: LoginViewModel by viewModels(
             factoryProducer = {
-                LoginViewModel.FACTORY(UserRepository(AccountApi.retrofitWebService))
+                LoginViewModel.FACTORY(UserRepository(getNetworkService()))
             }
     )
 
@@ -71,17 +66,22 @@ class LoginFragment : Fragment() {
 
         viewModel.spinner.observe(viewLifecycleOwner, Observer {
             if (it) {
-                bottomSheet.show(parentFragmentManager, "LoginFragment...")
+                Log.i("Login : ","loading btn shown")
+                //bottomSheet.show(parentFragmentManager, "LoginFragment...")
             } else {
-                bottomSheet.dismiss()
+                Log.i("Login : ","loading btn dismiss")
+                //bottomSheet.dismiss()
             }
         })
 
         viewModel.userProperty.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                Toast.makeText(context, it.id.toString(), Toast.LENGTH_LONG).show()
+                Log.i("Login : ","userProperty != null")
+                //Toast.makeText(context, it.id.toString(), Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context, "falsefalse", Toast.LENGTH_LONG).show()
+                Log.i("Login : ","userProperty ==null")
+
+                //Toast.makeText(context, "falsefalse", Toast.LENGTH_LONG).show()
             }
         })
         return binding.root

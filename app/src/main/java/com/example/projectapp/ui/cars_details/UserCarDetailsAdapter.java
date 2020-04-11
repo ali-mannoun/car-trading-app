@@ -14,13 +14,13 @@ import com.example.projectapp.R;
 import java.util.List;
 
 public class UserCarDetailsAdapter extends RecyclerView.Adapter<UserCarDetailsAdapter.DetailsViewHolder> {
-    private List<CarImage> images;
+   // private List<CarImage> images;
     private CarDetailsListener listener;
 
-    public UserCarDetailsAdapter(List<CarImage> images, CarDetailsListener listener) {
-        this.images = images;
-        this.listener = listener;
-    }
+  //  public UserCarDetailsAdapter(List<CarImage> images, CarDetailsListener listener) {
+   //     this.images = images;
+   //     this.listener = listener;
+   // }
 
     @NonNull
     @Override
@@ -37,7 +37,7 @@ public class UserCarDetailsAdapter extends RecyclerView.Adapter<UserCarDetailsAd
 
     @Override
     public int getItemCount() {
-        return images.size();
+        return 0;
     }
 
     class DetailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -50,7 +50,6 @@ public class UserCarDetailsAdapter extends RecyclerView.Adapter<UserCarDetailsAd
         }
 
         private void bind(int position) {
-            imageView.setImageDrawable(images.get(position).getImage());
         }
 
         @Override

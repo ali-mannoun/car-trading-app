@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.projectapp.network.UserProperty
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch

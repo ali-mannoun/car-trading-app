@@ -11,15 +11,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.projectapp.R
-import com.example.projectapp.databinding.FragmentUserCarsBinding
-import com.example.projectapp.network.AccountApi
+import com.example.projectapp.databinding.FragmentCarsBinding
+import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
 
 class CarsFragment : Fragment() {
-    private lateinit var binding: FragmentUserCarsBinding
+    private lateinit var binding: FragmentCarsBinding
     private val viewModel: CarsViewModel by viewModels(
             factoryProducer = {
-                CarsViewModel.FACTORY(CarRepository(AccountApi.retrofitWebService))
+                CarsViewModel.FACTORY(CarRepository(getNetworkService(),null))
             }
     )
 
@@ -63,15 +63,15 @@ class CarsFragment : Fragment() {
          */
         viewModel.cars.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it)
+                //adapter.submitList(it)
             }
         })
-        viewModel.navigateToCarDetails.observe(viewLifecycleOwner, Observer { carId ->
+       /*viewModel.navigateToCarDetails.observe(viewLifecycleOwner, Observer { carId ->
             carId.let {
                 //TODO this.findNavController().navigate()...and pass carId as parameter
                 viewModel.onCarDetailsNavigated()
             }
-        })
+        })*/
         /*viewModel.data.observe(this, Observer {
             cars: List<Car?> -> adapter.submitList(cars)
         })*/

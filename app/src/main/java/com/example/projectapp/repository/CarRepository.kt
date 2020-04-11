@@ -22,7 +22,7 @@ import kotlinx.coroutines.withTimeout
  * when data is updated. You can consider repositories to be mediators between different data
  * sources, in our case it mediates between a network API and an offline database cache.
  */
-class CarRepository(private val webService: IApiService, private val dataSource: CarsDatabaseDao) {
+class CarRepository(private val webService: IApiService, private val dataSource: CarsDatabaseDao?) {
 
     /**
      * [LiveData] to load data.
@@ -33,7 +33,7 @@ class CarRepository(private val webService: IApiService, private val dataSource:
      * Observing this will not cause the title to be refreshed, use [TitleRepository.refreshTitle]
      * to refresh the title.
      */
-    val title: LiveData<String?> = titleDao.titleLiveData.map { it?.title }
+   // val title: LiveData<String?> = titleDao.titleLiveData.map { it?.title }
 
     /**
      * Refresh the current title and save the results to the offline cache.
@@ -53,21 +53,21 @@ class CarRepository(private val webService: IApiService, private val dataSource:
     }
 
 
-    suspend fun getCars(): List<CarProperty> {
-
+    suspend fun getCars(): List<CarProperty>? {
+        return null
     }
 
-    suspend fun getCarById(id: Int): CarProperty {
-
+    suspend fun getCarById(id: Int): CarProperty? {
+        return null
     }
 
-    suspend fun getCarSpecifications(carId: Int): CarSpecificationsProperty {
-
+    suspend fun getCarSpecifications(carId: Int): CarSpecificationsProperty? {
+return null
     }
-
+/*
     suspend fun getCarImages(carId: Int): CarImageProperty {
 
-    }
+    }*/
 
     /**
      * Thrown when there was a error fetching a car

@@ -1,6 +1,7 @@
 package com.example.projectapp.ui.account.login
 
 import androidx.lifecycle.*
+import com.example.projectapp.network.UserProperty
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch

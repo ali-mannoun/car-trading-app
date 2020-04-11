@@ -1,6 +1,9 @@
 package com.example.projectapp.repository
 
 import com.example.projectapp.network.IApiService
+import com.example.projectapp.network.LoginProperty
+import com.example.projectapp.network.RegisterProperty
+import com.example.projectapp.network.UserProperty
 
 /**
  * Repository provides an interface to fetch a title or request a new one be generated.

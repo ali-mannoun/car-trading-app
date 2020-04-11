@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class CarDetailsAdapter extends RecyclerView.Adapter<CarDetailsAdapter.ViewHolder> {
-    private List<CarImage> data;
-    private CarDetailsListener listener;
+//    private List<CarImage> data;
+    //private CarDetailsListener listener;
 
-    public CarDetailsAdapter(List<CarImage> data, CarDetailsListener listener) {
-        this.data = data;
-        this.listener = listener;
-    }
+  //  public CarDetailsAdapter(List<CarImage> data, CarDetailsListener listener) {
+    //    this.data = data;
+    //    this.listener = listener;
+    //}
 
     @NonNull
     @Override
@@ -34,25 +34,21 @@ public class CarDetailsAdapter extends RecyclerView.Adapter<CarDetailsAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView carImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             carImage = itemView.findViewById(R.id.car_image_iv);
-            itemView.setOnClickListener(this);
+
         }
 
         public void bind(int position) {
 
         }
 
-        @Override
-        public void onClick(View view) {
-            listener.onListItemClick(getAdapterPosition());
-        }
     }
 }
