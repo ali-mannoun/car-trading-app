@@ -34,7 +34,6 @@ class LoginFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
-
         //  allDone = TestLoginFragmentFields.testPasswordField(binding);
 //  allDone = TestLoginFragmentFields.testEmailField(binding);
 
@@ -48,6 +47,7 @@ class LoginFragment : Fragment() {
             //bottomSheet.dismiss()
 
             if (email.isEmpty() || password.isEmpty()) {
+                //TODO add pattern to check the email regex
                 Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.onLoginBtnClicked(email, password)
@@ -66,22 +66,17 @@ class LoginFragment : Fragment() {
 
         viewModel.spinner.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Log.i("Login : ","loading btn shown")
-                //bottomSheet.show(parentFragmentManager, "LoginFragment...")
+                bottomSheet.show(parentFragmentManager, "LoginFragment...")
             } else {
-                Log.i("Login : ","loading btn dismiss")
-                //bottomSheet.dismiss()
+                bottomSheet.dismiss()
             }
         })
 
-        viewModel.userProperty.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                Log.i("Login : ","userProperty != null")
-                //Toast.makeText(context, it.id.toString(), Toast.LENGTH_LONG).show()
+        viewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            if (user != null) {
+                Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
             } else {
-                Log.i("Login : ","userProperty ==null")
-
-                //Toast.makeText(context, "falsefalse", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "No user found", Toast.LENGTH_SHORT).show()
             }
         })
         return binding.root

@@ -1,9 +1,8 @@
 package com.example.projectapp.repository
 
-import com.example.projectapp.network.IApiService
-import com.example.projectapp.network.LoginProperty
-import com.example.projectapp.network.RegisterProperty
-import com.example.projectapp.network.UserProperty
+import android.util.Log
+import com.example.projectapp.domain.User
+import com.example.projectapp.network.*
 
 /**
  * Repository provides an interface to fetch a title or request a new one be generated.
@@ -15,14 +14,16 @@ import com.example.projectapp.network.UserProperty
  */
 class UserRepository(private val webService: IApiService) {
 
-    suspend fun login(email: String, password: String): UserProperty? {
+    suspend fun login(email: String, password: String): User? {
         val loginInfo = LoginProperty(email = email, password = password)
-
+        //Check if the user exists in the database. if the user exists, then we login the user to the system.
+        // else we return null
         val checkResponse = webService.checkUserCredentials(user = loginInfo)
         if (checkResponse.isSuccessful) {
+            //The user exists in the DB, then we login the user and return the user info.
             val response = webService.login(user = loginInfo)
             if (response.isSuccessful) {
-                return response.body()
+                return response.body()?.asUserDomainModel()
             }
         }
         return null

@@ -1,6 +1,8 @@
 package com.example.projectapp.ui.account.login
 
+import android.util.Log
 import androidx.lifecycle.*
+import com.example.projectapp.domain.User
 import com.example.projectapp.network.UserProperty
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
@@ -18,22 +20,15 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
         val FACTORY = singleArgViewModelFactory(::LoginViewModel)
     }
 
-    // val userId: String = savedStateHandle["uid"]
-    //        ?: throw java.lang.IllegalArgumentException("missing user id")
-    // val user: LiveData<User> = userRepository.getUser()
+    private val _user = MutableLiveData<User>()
+    val user: LiveData<User>
+        get() = _user
 
-    private val _userProperty = MutableLiveData<UserProperty?>()
-
-    val userProperty: LiveData<UserProperty?>
-        get() = _userProperty
-
-    private val _toast = MutableLiveData<String?>()
-
-    val toast: LiveData<String?>
+    private val _toast = MutableLiveData<String>()
+    val toast: LiveData<String>
         get() = _toast
 
     private val _spinner = MutableLiveData<Boolean>()
-
     val spinner: LiveData<Boolean>
         get() = _spinner
 
@@ -44,6 +39,7 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
      * a toast.
      */
     fun onLoginBtnClicked(email: String, password: String) = launchDataLoad {
+        Log.i("LoginViewModel","before login")
         userRepository.login(email, password)
     }
 
@@ -70,7 +66,7 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
      *              lambda the loading spinner will display, after completion or error the loading
      *              spinner will stop
      */
-    private fun launchDataLoad(block: suspend () -> UserProperty?): Unit {
+    private fun launchDataLoad(block: suspend () -> User?) {
         /*
         The library adds a viewModelScope as an extension function of the ViewModel class.
         This scope is bound to Dispatchers.Main and will automatically be cancelled when the ViewModel is cleared.
@@ -78,10 +74,10 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
         viewModelScope.launch {
             try {
                 _spinner.value = true //progressBar
-                _userProperty.value = block()
+                _user.value = block()
             } catch (error: UserRepository.UserFetchingError) {
                 _toast.value = error.message
-                _userProperty.value = null
+                _user.value = null
             } finally {
                 _spinner.value = false
             }

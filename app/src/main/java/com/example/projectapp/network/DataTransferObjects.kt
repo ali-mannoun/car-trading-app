@@ -1,6 +1,6 @@
 package com.example.projectapp.network
 
-import com.example.projectapp.domain.CarSpecifications
+import com.example.projectapp.domain.*
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -84,7 +84,7 @@ data class UserProperty(
         @field:Json(name = "id") val id: Int,
         @field:Json(name = "email") val email: String,
         @field:Json(name = "name") val name: String,
-        @field:Json(name = "verification_token") val verification_token: String,
+        @field:Json(name = "verification_token") val verification_token: String?,
         @field:Json(name = "user_verification") val user_verification: String,
         @field:Json(name = "account_type") val account_type: String,
         @field:Json(name = "user_type") val user_type: String
@@ -97,6 +97,26 @@ data class ResponseProperty(
 )
 
 /**
+ * Convert Network results to User domain objects
+ */
+fun UserProperty.asUserDomainModel(): User {
+
+
+    //val accountType = this.account_type
+    //val userVerification = this.user_verification
+    //val userType = this.user_type
+
+    return User(this.id.toString(),
+            this.name,
+            this.email,
+            this.verification_token,
+            this.user_verification,
+            this.account_type,
+            this.user_type)
+}
+
+
+/**
  * Convert Network results to CarImage domain objects
  */
 fun List<CarImageProperty>.asCarImageDomainModel(): List<CarSpecifications.CarImage> {
@@ -107,6 +127,7 @@ fun List<CarImageProperty>.asCarImageDomainModel(): List<CarSpecifications.CarIm
         )
     }
 }
+
 /**
  * Convert Network results to CarSpecifications domain objects
  */
