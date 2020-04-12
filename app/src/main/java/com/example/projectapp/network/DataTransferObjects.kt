@@ -1,6 +1,7 @@
 package com.example.projectapp.network
 
-import com.example.projectapp.domain.*
+import com.example.projectapp.domain.CarSpecifications
+import com.example.projectapp.domain.User
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

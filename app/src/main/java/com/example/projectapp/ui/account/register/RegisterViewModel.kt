@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.projectapp.network.UserProperty
+import com.example.projectapp.domain.User
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
@@ -20,18 +20,15 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         val FACTORY = singleArgViewModelFactory(::RegisterViewModel)
     }
 
-    private val _userProperty = MutableLiveData<UserProperty?>()
-
-    val userProperty: LiveData<UserProperty?>
-        get() = _userProperty
+    private val _user = MutableLiveData<User>()
+    val user: LiveData<User>
+        get() = _user
 
     private val _toast = MutableLiveData<String?>()
-
     val toast: LiveData<String?>
         get() = _toast
 
     private val _spinner = MutableLiveData<Boolean>()
-
     val spinner: LiveData<Boolean>
         get() = _spinner
 
@@ -68,7 +65,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
      *              lambda the loading spinner will display, after completion or error the loading
      *              spinner will stop
      */
-    private fun launchDataLoad(block: suspend () -> UserProperty?): Unit {
+    private fun launchDataLoad(block: suspend () -> User?): Unit {
         /*
         The library adds a viewModelScope as an extension function of the ViewModel class.
         This scope is bound to Dispatchers.Main and will automatically be cancelled when the ViewModel is cleared.
@@ -76,10 +73,10 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         viewModelScope.launch {
             try {
                 _spinner.value = true //progressBar
-                _userProperty.value = block()
+                _user.value = block()
             } catch (error: UserRepository.UserFetchingError) {
                 _toast.value = error.message
-                _userProperty.value = null
+                _user.value = null
             } finally {
                 _spinner.value = false
             }

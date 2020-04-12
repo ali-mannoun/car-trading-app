@@ -11,45 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--    <com.google.android.material.appbar.AppBarLayout-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-        <!--
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/register_tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tabGravity="fill"
-                app:tabMaxWidth="0dp"
-                app:tabMode="fixed" />
-        -->
-
-        <!--        app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
-        <!--
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/register_viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/materialButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/register_tabs"
-                app:layout_constraintVertical_bias="0.0" />
-        -->
-
-
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/createbtn"
+            android:id="@+id/create_new_account_btn"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
@@ -67,10 +30,11 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="name"
+            android:hint="User name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="auto fill" />
 
         <EditText
             android:id="@+id/email"
@@ -78,11 +42,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="textEmailAddress"
             android:hint="email"
             app:layout_constraintEnd_toEndOf="@+id/name"
             app:layout_constraintStart_toStartOf="@+id/name"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            android:autofillHints="auto fill" />
 
         <EditText
             android:id="@+id/password"
@@ -90,11 +55,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:hint="password"
             app:layout_constraintEnd_toEndOf="@+id/email"
             app:layout_constraintStart_toStartOf="@+id/email"
-            app:layout_constraintTop_toBottomOf="@+id/email" />
+            app:layout_constraintTop_toBottomOf="@+id/email"
+            android:autofillHints="auto fill" />
 
         <EditText
             android:id="@+id/confirm_password"
@@ -102,152 +68,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:hint="confirm password"
             app:layout_constraintEnd_toEndOf="@+id/password"
             app:layout_constraintStart_toStartOf="@+id/password"
-            app:layout_constraintTop_toBottomOf="@+id/password" />
+            app:layout_constraintTop_toBottomOf="@+id/password"
+            android:autofillHints="auto fill" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--
-       <ScrollView
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
-
-
-              <androidx.constraintlayout.widget.ConstraintLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  tools:context=".ui.account.register.RegisterFragment">
-
-                  <Switch
-                      android:id="@+id/switch_account_sign_up"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginStart="32dp"
-                      app:layout_constraintBottom_toBottomOf="@+id/textView18"
-                      app:layout_constraintStart_toEndOf="@+id/textView18"
-                      app:layout_constraintTop_toTopOf="@+id/textView18" />
-
-                  <TextView
-                      android:id="@+id/textView18"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginStart="144dp"
-                      android:layout_marginTop="32dp"
-                      android:text="Admin Account"
-                      app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toTopOf="parent" />
-
-                  <EditText
-                      android:id="@+id/editText6"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="32dp"
-                      android:ems="10"
-                      android:hint="First name"
-                      android:inputType="textPersonName"
-                      app:layout_constraintEnd_toEndOf="parent"
-                      app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
-                  <EditText
-                      android:id="@+id/editText8"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Last name"
-                      android:inputType="textPersonName"
-                      app:layout_constraintEnd_toEndOf="@+id/editText6"
-                      app:layout_constraintStart_toStartOf="@+id/editText6"
-                      app:layout_constraintTop_toBottomOf="@+id/editText6" />
-
-                  <EditText
-                      android:id="@+id/editText9"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Password"
-                      android:inputType="textPassword"
-                      app:layout_constraintEnd_toEndOf="@+id/editText10"
-                      app:layout_constraintHorizontal_bias="1.0"
-                      app:layout_constraintStart_toStartOf="@+id/editText10"
-                      app:layout_constraintTop_toBottomOf="@+id/editText10" />
-
-                  <EditText
-                      android:id="@+id/editText10"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Email address"
-                      android:inputType="textEmailAddress"
-                      app:layout_constraintEnd_toEndOf="@+id/editText11"
-                      app:layout_constraintStart_toStartOf="@+id/editText11"
-                      app:layout_constraintTop_toBottomOf="@+id/editText11" />
-
-                  <EditText
-                      android:id="@+id/editText11"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Phone number"
-                      android:inputType="phone"
-                      app:layout_constraintEnd_toEndOf="@+id/editText8"
-                      app:layout_constraintStart_toStartOf="@+id/editText8"
-                      app:layout_constraintTop_toBottomOf="@+id/editText8" />
-
-                  <EditText
-                      android:id="@+id/editText12"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Company name"
-                      android:inputType="textPersonName"
-                      app:layout_constraintEnd_toEndOf="@+id/editText9"
-                      app:layout_constraintStart_toStartOf="@+id/editText9"
-                      app:layout_constraintTop_toBottomOf="@+id/editText9" />
-
-                  <EditText
-                      android:id="@+id/editText13"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Copmany location"
-                      android:inputType="textPersonName"
-                      app:layout_constraintEnd_toEndOf="@+id/editText12"
-                      app:layout_constraintStart_toStartOf="@+id/editText12"
-                      app:layout_constraintTop_toBottomOf="@+id/editText12" />
-
-                  <EditText
-                      android:id="@+id/editText14"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="16dp"
-                      android:ems="10"
-                      android:hint="Company Description"
-                      android:inputType="textPersonName"
-                      app:layout_constraintEnd_toEndOf="@+id/editText13"
-                      app:layout_constraintStart_toStartOf="@+id/editText13"
-                      app:layout_constraintTop_toBottomOf="@+id/editText13" />
-
-                  <Button
-                      android:id="@+id/save_btn"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="24dp"
-                      android:text="Save"
-                      app:layout_constraintEnd_toEndOf="@+id/editText14"
-                      app:layout_constraintStart_toStartOf="@+id/editText14"
-                      app:layout_constraintTop_toBottomOf="@+id/editText14" />
-
-              </androidx.constraintlayout.widget.ConstraintLayout>
-          </ScrollView>
-          -->
 </layout>

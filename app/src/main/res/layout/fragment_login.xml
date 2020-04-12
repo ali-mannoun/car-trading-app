@@ -13,32 +13,14 @@
         android:padding="16dp"
         tools:context=".ui.account.login.LoginFragment">
 
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/textView21"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <!--        app:helperText="ali"-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input_layout"
             style="@style/Widget.Shrine.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:hint="Email address"
+            android:hint="Email Address"
             app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
             app:helperText="example@android.com"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +31,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,8 +42,6 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
             app:counterEnabled="true"
             app:counterMaxLength="20"
@@ -74,7 +54,7 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberPassword"
+                android:inputType="textPassword"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,7 +73,7 @@
             android:layout_height="wrap_content"
             android:text="Forget password ?"
             android:textColor="@color/colorAccent"
-            app:cornerRadius="50dp"
+            app:cornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/remember_me_check_box"
             app:layout_constraintEnd_toEndOf="@+id/password_input_layout"
             app:layout_constraintTop_toTopOf="@+id/remember_me_check_box" />
@@ -103,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:text="Login"
-            app:cornerRadius="50dp"
+            app:cornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="@+id/forget_password_btn"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/remember_me_check_box"
@@ -137,7 +117,7 @@
             android:layout_height="wrap_content"
             android:text="Create new account"
             android:textColor="@color/colorAccent"
-            app:cornerRadius="50dp"
+            app:cornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="@+id/textView20"
             app:layout_constraintStart_toStartOf="@+id/textView20"
             app:layout_constraintTop_toBottomOf="@+id/textView20" />
@@ -152,7 +132,6 @@
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

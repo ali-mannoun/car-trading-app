@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_profile_user">
+    app:startDestination="@+id/nav_profile_menu">
 
     <fragment
-        android:id="@+id/navigation_profile_user"
+        android:id="@+id/nav_profile_menu"
         android:name="com.example.projectapp.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
-        android:id="@+id/navigation_cars_user"
+        android:id="@+id/nav_cars_menu"
         android:name="com.example.projectapp.ui.cars.CarsFragment"
         android:label="Cars"
         tools:layout="@layout/fragment_cars" >
@@ -22,7 +22,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_recommended_user"
+        android:id="@+id/nav_recommended_menu"
         android:name="com.example.projectapp.ui.recommended.RecommendedFragment"
         android:label="Recommended Cars"
         tools:layout="@layout/fragment_recommended" />

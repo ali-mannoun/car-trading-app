@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.projectapp.R
 import com.example.projectapp.databinding.FragmentLoginBinding
 import com.example.projectapp.network.getNetworkService
@@ -40,6 +41,7 @@ class LoginFragment : Fragment() {
         binding.loginBtn.setOnClickListener { view: View? ->
             val email = binding.email.text.toString()
             val password = binding.password.text.toString()
+            //TODO add remember me functionality
 
             bottomSheet = LoadingBottomSheetDialog()
             //bottomSheet.show(parentFragmentManager, "LoginFragment...")
@@ -75,26 +77,21 @@ class LoginFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner, Observer { user ->
             if (user != null) {
                 Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
+                this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
             } else {
                 Toast.makeText(context, "No user found", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.toast.observe(viewLifecycleOwner, Observer {message: String? ->
+            if(message !=null){
+            Log.e("TOAST : ", message +" ...")
+            viewModel.onToastShown()
             }
         })
         return binding.root
     }
 }
-/*
-sharedViewModel.getSelected().observe(this, accountTypeLabel -> {
-    if (accountTypeLabel != null) {
-        if (accountTypeLabel.equals(getString(R.string.admin_account)) || accountTypeLabel.equals(getString(R.string.user_account))) {
-            Navigation.findNavController(binding.getRoot()).navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment(accountTypeLabel));
-        } else if (accountTypeLabel.equals(getString(R.string.employee_account))) {
-            //DialogFragment dialog = new EmployeeDialogFragment();
-            //  dialog.show(getFragmentManager(), "EmployeeDialogFragment");
-        }
-        sharedViewModel.navigationComplete();
-    }
-});
-*/
 /*
         sharedViewModel.getDialogPositiveClicked().observe(this, id -> {
             if (id != null) {

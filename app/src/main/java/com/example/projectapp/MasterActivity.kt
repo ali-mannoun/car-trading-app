@@ -12,12 +12,12 @@ class MasterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_master)
-        val controller = Navigation.findNavController(this, R.id.admin_nav_host_fragment)
+        val controller = Navigation.findNavController(this, R.id.get_started_nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, controller)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val controller = Navigation.findNavController(this, R.id.admin_nav_host_fragment)
+        val controller = Navigation.findNavController(this, R.id.get_started_nav_host_fragment)
         return controller.navigateUp()
     }
 }

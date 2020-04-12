@@ -14,7 +14,14 @@ import com.example.projectapp.network.*
  */
 class UserRepository(private val webService: IApiService) {
 
+    suspend fun checkCredentials(email: String, password: String):Int {
+        val credentials = LoginProperty(email = email, password = password)
+        val checkResponse = webService.checkUserCredentials(user = credentials)
+        return checkResponse.code()
+    }
+
     suspend fun login(email: String, password: String): User? {
+
         val loginInfo = LoginProperty(email = email, password = password)
         //Check if the user exists in the database. if the user exists, then we login the user to the system.
         // else we return null
@@ -29,7 +36,7 @@ class UserRepository(private val webService: IApiService) {
         return null
     }
 
-    suspend fun createNewAccount(name: String, email: String, password: String): UserProperty? {
+    suspend fun createNewAccount(name: String, email: String, password: String): User? {
         val loginInfo = LoginProperty(email = email, password = password)
         val checkResponse = webService.checkUserCredentials(user = loginInfo)
         when (checkResponse.code()) {
@@ -38,7 +45,7 @@ class UserRepository(private val webService: IApiService) {
                 val userInfo = RegisterProperty(name = name, email = email, password = password)
                 val response = webService.createNewAccount(user = userInfo)
                 if (response.isSuccessful) {
-                    return webService.login(user = loginInfo).body()
+                    return webService.login(user = loginInfo).body()?.asUserDomainModel()
                 }
             }
         }

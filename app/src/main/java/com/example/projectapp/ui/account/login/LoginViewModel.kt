@@ -3,7 +3,6 @@ package com.example.projectapp.ui.account.login
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.projectapp.domain.User
-import com.example.projectapp.network.UserProperty
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
@@ -24,8 +23,8 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     val user: LiveData<User>
         get() = _user
 
-    private val _toast = MutableLiveData<String>()
-    val toast: LiveData<String>
+    private val _toast = MutableLiveData<String?>()
+    val toast: LiveData<String?>
         get() = _toast
 
     private val _spinner = MutableLiveData<Boolean>()
@@ -39,7 +38,8 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
      * a toast.
      */
     fun onLoginBtnClicked(email: String, password: String) = launchDataLoad {
-        Log.i("LoginViewModel","before login")
+        val responseCode = userRepository.checkCredentials(email, password)
+        _toast.value = responseCode.toString()
         userRepository.login(email, password)
     }
 

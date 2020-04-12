@@ -5,30 +5,17 @@
     android:id="@+id/master_navigation"
     app:startDestination="@id/getStartedFragment">
 
-    <activity
-        android:id="@+id/userDetailsActivity"
-        android:name="com.example.projectapp.DetailsActivity"
-        android:label="activity_user_details"
-        tools:layout="@layout/activity_details" />
-    <activity
-        android:id="@+id/adminDetailsActivity"
-        android:name="com.example.projectapp.AdminDetailsActivity"
-        android:label="activity_admin_details"
-        tools:layout="@layout/activity_admin_details" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.projectapp.ui.account.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_userDetailsActivity"
-            app:destination="@id/userDetailsActivity" />
-        <action
-            android:id="@+id/action_loginFragment_to_adminDetailsActivity"
-            app:destination="@id/adminDetailsActivity" />
-        <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
     </fragment>
     <fragment
         android:id="@+id/getStartedFragment"
@@ -39,14 +26,18 @@
             android:id="@+id/action_getStartedFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
-    <dialog
-        android:id="@+id/accountTypeBottomSheetDialog2"
-        android:name="com.example.projectapp.ui.account.accountType.AccountTypeBottomSheetDialog"
-        android:label="fragment_account_type_bottom_sheet_dialog"
-        tools:layout="@layout/fragment_account_type_bottom_sheet_dialog" />
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.projectapp.ui.account.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/detailsActivity"
+        android:name="com.example.projectapp.DetailsActivity"
+        android:label="DetailsActivity"
+        tools:layout="@layout/activity_details"/>
 </navigation>

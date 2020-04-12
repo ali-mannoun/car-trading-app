@@ -6,13 +6,16 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 // Since we only have one service, this can all go in one file.
 // If you add more services, split this to multiple files and make sure to share the retrofit
 // object between services.
 
-private const val BASE_URL = "http://192.168.1.101/api/"
+private const val BASE_URL = "http://192.168.1.102/api/"
 private const val ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiM2U1YmQxZmE4YmJkZTk4ZTU1NDNjMTBlMGEwNWNkN2NkMmViMjAzZDM0ZmUxZjhkMGY5Yjg0MzFkNTA3ZDBlNjQ1MjNlMDA1OGUyMWE0ZDMiLCJpYXQiOjE1ODMzMTczMTIsIm5iZiI6MTU4MzMxNzMxMiwiZXhwIjoxNjE0ODUzMzExLCJzdWIiOiI2Iiwic2NvcGVzIjpbXX0.qQE9bQj9j3FEn8s0BmYlfYtdEbGIbsSC9ZgSPZAEo0RKVFxtOUHjWWtzXyDBR-HvtHKE7DuAKqmrrsvPbFgiEJKk4BJOnNwDGZ_oERBAjBxs4y3Tw78ukqPiB-o-gylIy2IqHX7L-QExzJaCbyPotBP2-Hpk0aKjNQTVoT9Y_D0oAYCYf4hBdtU5LnV4lDIoZ_uVZaB2sA1h2jg0367kH_FSo_TbqBBvp0s-6_Hh6j6UVbhUTRwVaPZJ0j2p9awSxNOql1UaRvqcY8WauQO2xn9mVffsKqFc5H6-aK8Ayje-0Ch0RyF6kz7_Lfw0LTGIYylaKdWDRYTYyBl2dvRmtoLsDF4z-TDBWOu3aCULJmQHSoNavhNYT21zY99zddWt7CpjbITeF8vN4oSOqlC_TjtYvQPccBcF95nFsgf5RzDKpKQHhTWbp0p67da8L_5pbB6dPByArwCfas4pk6pD1mmH6N-5BFg-Qk6lWOXhMVhzGipz1ZuUQCZh_8JTHUmqBoxDwH84sFLo9dKHhuUFS7FxzPpCLgCMC2orG5srBZzfrVrMn0BCmAFqG47sWnZNorVIte-Z6UEG6Pj5RErZdoZja_m3Pd6Ns6e8myioCZJ5UlFFlG0Q-mm2gpJ6neOpQIlorPfzmtMi24LAE8fKp0UfiiAhhoN64eg73VIMRuA"
 
 /**
