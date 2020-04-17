@@ -12,6 +12,7 @@ class MasterActivity : AppCompatActivity() {
     private var binding: ActivityMasterBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_master)
 
         val controller = Navigation.findNavController(this, R.id.get_started_nav_host_fragment)
