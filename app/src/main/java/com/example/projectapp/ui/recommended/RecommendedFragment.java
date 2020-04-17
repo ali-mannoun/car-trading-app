@@ -24,12 +24,12 @@ public class RecommendedFragment extends Fragment {
                 ViewModelProviders.of(this).get(RecommendedViewModel.class);
         View root = inflater.inflate(R.layout.fragment_recommended, container, false);
         final TextView textView = root.findViewById(R.id.text_slideshow);
-        slideshowViewModel.getText().observe(this, new Observer<String>() {
+       /* slideshowViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText("recommended");
             }
-        });
+        });*/
         return root;
     }
 }

@@ -9,18 +9,22 @@ import androidx.navigation.ui.NavigationUI
 import com.example.projectapp.databinding.ActivityMasterBinding
 
 class MasterActivity : AppCompatActivity() {
-    private var binding: ActivityMasterBinding? = null
+    private lateinit var binding: ActivityMasterBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_master)
 
         val controller = Navigation.findNavController(this, R.id.get_started_nav_host_fragment)
-        NavigationUI.setupActionBarWithNavController(this, controller)
+
+        //NavigationUI.setupActionBarWithNavController(this, controller)
     }
 
+    /*
     override fun onSupportNavigateUp(): Boolean {
         val controller = Navigation.findNavController(this, R.id.get_started_nav_host_fragment)
         return controller.navigateUp()
     }
+    */
 }

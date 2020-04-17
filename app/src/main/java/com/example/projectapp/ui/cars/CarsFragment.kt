@@ -61,7 +61,7 @@ class CarsFragment : Fragment() {
         binding.carsRecyclerView.adapter = adapter
 
         //TODO disable the loading process when clikcing the button more times at once,so the loading process runs once.
-        viewModel.startLoadingCars()
+        //viewModel.startLoadingCars()
         /*
         Your code needs to tell the ListAdapter when a changed list is available.
         ListAdapter provides a method called submitList() to tell ListAdapter that a new version of the list is available.

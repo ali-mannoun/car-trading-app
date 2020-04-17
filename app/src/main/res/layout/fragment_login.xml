@@ -15,19 +15,23 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input_layout"
-            style="@style/Widget.Shrine.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
             android:hint="Email Address"
             app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
-            app:helperText="example@android.com"
+            app:boxCornerRadiusTopEnd="10dp"
+            app:endIconMode="clear_text"
+            app:boxCornerRadiusTopStart="10dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintBottom_toTopOf="@+id/password_input_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView21">
+            app:layout_constraintTop_toBottomOf="@+id/textView21"
+            app:startIconDrawable="@drawable/ic_email_black_24dp">
+            <!--            app:helperText="example@android.com"-->
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email"
@@ -39,20 +43,22 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_input_layout"
-            style="@style/Widget.Shrine.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:hint="Password"
             app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="20"
+            app:boxCornerRadiusTopEnd="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email_input_layout"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:startIconDrawable="@drawable/ic_lock_black_24dp">
+            <!--            app:counterEnabled="true"-->
+            <!--            app:counterMaxLength="20"-->
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
@@ -76,7 +82,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Forget password ?"
-            android:textColor="@color/colorAccent"
             app:cornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/remember_me_check_box"
             app:layout_constraintEnd_toEndOf="@+id/password_input_layout"
@@ -120,7 +125,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create new account"
-            android:textColor="@color/colorAccent"
             app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/textView20"
             app:layout_constraintStart_toStartOf="@+id/textView20"

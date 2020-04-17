@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,6 +38,22 @@ class LoginFragment : Fragment() {
 
         //  allDone = TestLoginFragmentFields.testPasswordField(binding);
 //  allDone = TestLoginFragmentFields.testEmailField(binding);
+
+        binding.email.doOnTextChanged { text, start, count, after ->
+            if (!text.toString().contains("@")) {
+                binding.emailInputLayout.error = "Invalid Email !"
+            } else {
+                binding.emailInputLayout.error = null
+            }
+        }
+
+        binding.password.doOnTextChanged { text, start, count, after ->
+            if (count < 8) {
+                binding.passwordInputLayout.error = "Must at least 8 characters!"
+            } else {
+                binding.passwordInputLayout.error = null
+            }
+        }
 
         binding.loginBtn.setOnClickListener { view: View? ->
             val email = binding.email.text.toString()

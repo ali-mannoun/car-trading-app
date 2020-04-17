@@ -14,11 +14,13 @@ import com.example.projectapp.network.CarProperty
  */
 
 //TODO check the foriegn key (test) ONDELETE CASCADE.
-
+/*
 @Entity(tableName = "favourite_cars",
         foreignKeys = [
             ForeignKey(entity = CarEntity::class, parentColumns = arrayOf("id"), childColumns = arrayOf("car_id"))
-        ])
+        ])*/
+/*
+@Entity(tableName = "favourite_cars")
 data class FavouriteCarEntity(
         @PrimaryKey
         val id: String,
@@ -26,16 +28,18 @@ data class FavouriteCarEntity(
         val carId: String
 //the rest
 )
+*/
 
 /**
  * Map [FavouriteCarEntity] to [CarSpecifications] domain entities
  */
+/*
 fun FavouriteCarEntity.asCarsDomainModel(): CarSpecifications {
     return CarSpecifications(
 
     )
 }
-
+*/
 
 @Entity(tableName = "cars")
 data class CarEntity(
@@ -53,7 +57,7 @@ data class CarEntity(
         val model: String,
         @ColumnInfo(name = "max_speed")
         val maxSpeed: String)
-
+/*
 /**
  * Map [CarEntity] to [Car] domain entities
  */
@@ -79,17 +83,18 @@ fun List<CarProperty>.asCarsDatabaseModel(): List<CarEntity> {
                 id = it.id,
                 brand = it.brand,
                 model = it.model,
-                mainImageUrl = it.mainImageUrl,
+                mainImageUrl = it.imageUrl,
                 maxSpeed = it.maxSpeed,
                 companyId = it.companyId
         )
     }
 }
-
+*/
 /**
  * Map [Car] to [CarEntity] domain entities
  */
+/*
 fun CarSpecifications.asFavouriteCarEntityDatabaseModel(): FavouriteCarEntity {
     return FavouriteCarEntity(
     )
-}
+}*/

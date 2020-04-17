@@ -21,7 +21,7 @@ import kotlinx.coroutines.*
  * when data is updated. You can consider repositories to be mediators between different data
  * sources, in our case it mediates between a network API and an offline database cache.
  */
-class CarRepository(private val webService: IApiService, private val dataSource: CarsDatabaseDao) {
+class CarRepository(private val webService: IApiService, private val dataSource: CarsDatabaseDao?) {
 
     /**
      * [LiveData] to load data.
@@ -40,18 +40,18 @@ class CarRepository(private val webService: IApiService, private val dataSource:
      */
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    val cars: LiveData<List<Car>> =Transformations.map(dataSource.getAllCars()){
-        it.asCarsDomainModel()
-    }
+   // val cars: LiveData<List<Car>> =Transformations.map(dataSource.getAllCars()){
+    //    it.asCarsDomainModel()
+   // }
 
     //Add car to the favourite list
     suspend fun insertCar(car: CarSpecifications) {
-        dataSource.insert(car.asFavouriteCarEntityDatabaseModel())
+        //dataSource.insert(car.asFavouriteCarEntityDatabaseModel())
     }
 
     //Delete car from favourite list
     suspend fun deleteCar(carId: Long) {
-        dataSource.delete(carId)
+       // dataSource.delete(carId)
     }
 
     /**
@@ -67,7 +67,7 @@ class CarRepository(private val webService: IApiService, private val dataSource:
             Log.e("CarRepo","refresh cars is called");
             val cars = webService.getCarsProperties()
             cars.body()?.let {
-            dataSource.insertAll(it.asCarsDatabaseModel())
+           // dataSource.insertAll(it.asCarsDatabaseModel())
             }
         }
     }

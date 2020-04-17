@@ -9,7 +9,7 @@ import com.example.projectapp.network.CarProperty
  */
 @Dao
 interface CarsDatabaseDao {
-
+/*
     //Main Cars operations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(cars: List<CarEntity>)
@@ -18,9 +18,9 @@ interface CarsDatabaseDao {
     fun getAllCars(): LiveData<List<CarEntity>>
 
     // Favourite List
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+  /*  @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(car: FavouriteCarEntity)
-
+*/
     @Delete
-    suspend fun delete(carId: Long)
+    suspend fun delete(carId: String)*/
 }
