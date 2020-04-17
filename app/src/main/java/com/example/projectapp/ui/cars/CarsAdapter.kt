@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectapp.R
 import com.example.projectapp.databinding.ListItemCarBinding
+import com.example.projectapp.domain.Car
 import com.example.projectapp.network.CarProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ but you should not do list manipulation in addHeaderAndSubmitList() on the UI th
 Imagine a list with hundreds of items, multiple headers, and logic to decide where items need to be inserted.
 This work belongs in a coroutine.
  */
-    fun addHeaderAndSubmitList(list: List<CarProperty>?) {
+    fun addHeaderAndSubmitList(list: List<Car>?) {
     //uses coroutines to add the header to the dataset and then calls submitList().
         adapterScope.launch {
             val items = when (list) {
@@ -85,7 +86,7 @@ This work belongs in a coroutine.
         : RecyclerView.ViewHolder(binding.root) {
         //The best pace to get information about one clicked item is in the ViewHolder object, since it represents one list item.
         //While the ViewHolder is a great place to listen for clicks, it's not usually the right place to handle them.
-        fun bind(clickListener: CarsListener, item: CarProperty) {
+        fun bind(clickListener: CarsListener, item: Car) {
             //here we put in this way because we use binding adapters and set the values in the xml file using data bindings
             binding.carData = item
             binding.clickListener = clickListener
@@ -130,7 +131,7 @@ class CarsDiffCallback : DiffUtil.ItemCallback<DataItem>() {
  * The clickListener callback only needs the night.nightId to access data from the database.
  */
 class CarsListener(val clickListener: (carId: Long) -> Unit) {
-    fun onClick(car: CarProperty) = clickListener(car.id.toLong())
+    fun onClick(car: Car) = clickListener(car.id.toLong())
 }
 /*
 A sealed class defines a closed type, which means that all subclasses of DataItem must be defined in this file.
@@ -138,7 +139,7 @@ As a result, the number of subclasses is known to the compiler.
 It's not possible for another part of your code to define a new type of DataItem that could break your adapter.
  */
 sealed class DataItem {
-    data class CarItem(val car: CarProperty) : DataItem() {
+    data class CarItem(val car: Car) : DataItem() {
         override val id = car.id.toLong()
     }
 /*

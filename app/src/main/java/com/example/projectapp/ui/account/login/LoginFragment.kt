@@ -53,6 +53,7 @@ class LoginFragment : Fragment() {
                 Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.onLoginBtnClicked(email, password)
+                //TODO disable btn after clikcing to handlge the request.
             }
             /*
             if (allDone) {
@@ -83,15 +84,16 @@ class LoginFragment : Fragment() {
             }
         })
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer {message: String? ->
-            if(message !=null){
-            Log.e("TOAST : ", message +" ...")
-            viewModel.onToastShown()
+        viewModel.toast.observe(viewLifecycleOwner, Observer { message: String? ->
+            if (message != null) {
+                Log.e("TOAST : ", message + " ...")
+                viewModel.onToastShown()
             }
         })
         return binding.root
     }
 }
+
 /*
         sharedViewModel.getDialogPositiveClicked().observe(this, id -> {
             if (id != null) {

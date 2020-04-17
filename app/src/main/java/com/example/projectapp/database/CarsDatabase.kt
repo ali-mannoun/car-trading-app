@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  */
-@Database(entities = [CarEntity::class], version = 1, exportSchema = false)
+@Database(entities = [CarEntity::class, FavouriteCarEntity::class], version = 1, exportSchema = false)
 abstract class CarsDatabase : RoomDatabase() {
 
     /**
@@ -60,17 +60,17 @@ abstract class CarsDatabase : RoomDatabase() {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
-            synchronized(this){
+            synchronized(this) {
                 // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
                 // Smart cast is only available to local variables.
                 var instance = INSTANCE
                 // If instance is `null` make a new database instance.
                 if (instance == null) {
                     instance = Room.databaseBuilder(
-                                    context.applicationContext,
-                                    CarsDatabase::class.java,
-                                    "cars_database"
-                            )
+                            context.applicationContext,
+                            CarsDatabase::class.java,
+                            "cars_database"
+                    )
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this lesson. You can learn more about
                             // migration with Room in this blog post:

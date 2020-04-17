@@ -11,6 +11,16 @@ import com.example.projectapp.utils.smartTruncate
  * @see network for objects that parse or prepare network calls
  */
 
+data class Car(
+        val id: String,
+        val brand: String,
+        val model: String,
+        val mainImageUrl: String,
+        val maxSpeed: String,
+        val companyId: String
+)
+
+
 data class CarSpecifications(val generalInformation: GeneralInformation,
                         val engine: InternalCombustionEngine,
                         val performance: Performance,

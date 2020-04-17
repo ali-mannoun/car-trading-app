@@ -1,5 +1,6 @@
 package com.example.projectapp.utils
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -8,6 +9,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.projectapp.R
+import com.example.projectapp.domain.Car
 import com.example.projectapp.network.CarProperty
 import com.example.projectapp.ui.cars.CarsApiStatus
 
@@ -23,18 +25,19 @@ for each of the binding adapters, change the type of the item argument to nullab
 and wrap the body with item?.let{...}.
  */
 @BindingAdapter("bindingCarNameAndModel")
-fun TextView.setCarNameAndModel(item: CarProperty?) {
+fun TextView.setCarNameAndModel(item: Car?) {
     item?.let {
-
+        Log.e("Binding", it.mainImageUrl)
+        this.text = it.mainImageUrl
     }
     //TODO this.text = item.model
 }
 
 @BindingAdapter("bindinCarCompany")
-fun TextView.setCarCompany(item: CarProperty?) {
+fun TextView.setCarCompany(item: Car?) {
     //TODO this.text = item.carCompany.name
     item?.let {
-
+        this.text = it.brand
     }
 }
 
@@ -43,10 +46,17 @@ fun TextView.setCarCompany(item: CarProperty?) {
  */
 @BindingAdapter("imageUrl")
 fun ImageView.bindImage(imgUrl: String?) {
+    val imageName = imgUrl?.drop(24) //to get image name not the full url. we use this to replace the host name website.test with the local host ip
+    val mainImageUrl = "http://192.168.1.102/img/$imageName"
+
     imgUrl?.let {
-        val imgUri = imgUrl.toUri().buildUpon().scheme("http").build()
+        val imgUri2 = mainImageUrl.toUri().buildUpon().scheme("http").build()
+        // imgUri = imgUrl.toUri().buildUpon().build()
+        //Log.e("Glide",imgUri.toString())
+        Log.e("Glide2",mainImageUrl.toString())
+
         Glide.with(this.context)
-                .load(imgUri)
+                .load(mainImageUrl)
                 .apply(RequestOptions()
                         .placeholder(R.drawable.loading_animation)
                         .error(R.drawable.ic_broken_image_black_24dp))
@@ -62,6 +72,7 @@ fun ImageView.bindImage(imgUrl: String?) {
  */
 @BindingAdapter("carsApiStatus")
 fun ImageView.bindStatus(status: CarsApiStatus?) {
+    Log.e("STATUS", status.toString())
     when (status) {
         CarsApiStatus.LOADING -> {
             this.visibility = View.VISIBLE
@@ -81,10 +92,10 @@ fun ImageView.bindStatus(status: CarsApiStatus?) {
  * Binding adapter used to hide the spinner once data is available.
  */
 @BindingAdapter("isNetworkError", "playlist")
-fun View.hideIfNetworkError(isNetWorkError:Boolean , playlist :Any?) {
+fun View.hideIfNetworkError(isNetWorkError: Boolean, playlist: Any?) {
     visibility = if (playlist != null) View.GONE else View.VISIBLE
 //TODO
-    if(isNetWorkError) {
+    if (isNetWorkError) {
         visibility = View.GONE
     }
 }

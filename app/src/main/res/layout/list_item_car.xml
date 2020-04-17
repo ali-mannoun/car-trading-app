@@ -8,7 +8,7 @@
 
         <variable
             name="carData"
-            type="com.example.projectapp.network.CarProperty" />
+            type="com.example.projectapp.domain.Car" />
 
         <variable
             name="clickListener"
@@ -23,12 +23,12 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:onClick="@{() -> clickListener.onClick(carData)}"
             app:cardCornerRadius="15dp"
-            app:cardElevation="10dp"
+            app:cardElevation="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -41,12 +41,11 @@
                     android:id="@+id/carImage"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
-                    android:layout_marginBottom="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="car image"
-                    android:padding="2dp"
+                    android:paddingTop="8dp"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{carData.imageUrl}"
+                    app:imageUrl="@{carData.mainImageUrl}"
                     app:layout_constraintBottom_toTopOf="@+id/car_name_and_model_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -59,9 +58,9 @@
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
                     android:text="TextView111"
                     app:bindingCarNameAndModel="@{carData}"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -73,8 +72,10 @@
                     android:id="@+id/company_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingEnd="8dp"
                     android:text="TextView"
                     app:bindinCarCompany="@{carData}"
                     app:layout_constraintBottom_toBottomOf="parent"

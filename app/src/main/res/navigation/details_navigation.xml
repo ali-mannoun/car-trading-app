@@ -17,8 +17,8 @@
         android:label="Cars"
         tools:layout="@layout/fragment_cars" >
         <action
-            android:id="@+id/action_navigation_cars_user_to_userCarDetailsFragment"
-            app:destination="@id/userCarDetailsFragment" />
+            android:id="@+id/action_nav_cars_menu_to_carSpecificationsFragment"
+            app:destination="@id/carSpecificationsFragment" />
     </fragment>
 
     <fragment
@@ -26,9 +26,14 @@
         android:name="com.example.projectapp.ui.recommended.RecommendedFragment"
         android:label="Recommended Cars"
         tools:layout="@layout/fragment_recommended" />
+
     <fragment
-        android:id="@+id/userCarDetailsFragment"
-        android:name="com.example.projectapp.ui.cars_details.UserCarDetailsFragment"
-        android:label="fragment_user_car_details"
-        tools:layout="@layout/fragment_car_details" />
+        android:id="@+id/carSpecificationsFragment"
+        android:name="com.example.projectapp.ui.cars_specifications.CarSpecificationsFragment"
+        android:label="CarSpecificationsFragment"
+        tools:layout="@layout/fragment_car_details">
+        <argument
+            android:name="carId"
+            app:argType="long" />
+    </fragment>
 </navigation>

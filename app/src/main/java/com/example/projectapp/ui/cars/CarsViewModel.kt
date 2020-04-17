@@ -1,11 +1,15 @@
 package com.example.projectapp.ui.cars
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.projectapp.database.CarsDatabaseDao
+import com.example.projectapp.domain.Car
+import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.CarProperty
 import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 enum class CarsApiStatus { LOADING, ERROR, DONE }
@@ -23,6 +27,10 @@ enum class CarsApiStatus { LOADING, ERROR, DONE }
  */
 class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
 
+    init {
+        startLoadingCars()
+    }
+
     private val _status = MutableLiveData<CarsApiStatus>()
     val status: LiveData<CarsApiStatus>
         get() = _status
@@ -31,18 +39,17 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     val spinner: LiveData<Boolean>
         get() = _spinner
 
-    private val _toast = MutableLiveData<String>()
-    val toast: LiveData<String>
+    private val _toast = MutableLiveData<String?>()
+    val toast: LiveData<String?>
         get() = _toast
 
-    private val _cars = MutableLiveData<List<CarProperty>>()
-    val cars: LiveData<List<CarProperty>>
+    private val _cars = MutableLiveData<List<Car>>()
+    val cars: LiveData<List<Car>>
         get() = _cars
 
-    private val _selectedCar = MutableLiveData<CarProperty>()
-    val selectedCar: LiveData<CarProperty>
+    private val _selectedCar = MutableLiveData<Car>()
+    val selectedCar: LiveData<Car>
         get() = _selectedCar
-
 
     private val _navigateToSelectedCarDetails = MutableLiveData<Long>()
     val navigateToSelectedCarDetails: LiveData<Long>
@@ -55,6 +62,17 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
          * @param arg the repository to pass to [CarsViewModel]
          */
         val FACTORY = singleArgViewModelFactory(::CarsViewModel)
+    }
+
+    fun addCarToFavouriteList(car: CarSpecifications) = viewModelScope.launch(Dispatchers.IO) {
+        //todo show load label
+        carRepository.insertCar(car)
+        //todo hide load label
+    }
+
+    //Load the main list of cars.
+    private fun startLoadingCars() = launchDataLoad {
+        carRepository.getCars()
     }
 
     /**
@@ -93,7 +111,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
      *              lambda the loading spinner will display, after completion or error the loading
      *              spinner will stop
      */
-    private fun launchDataLoad(block: suspend () -> CarProperty?): Unit {
+    private fun launchDataLoad(block: suspend () -> List<Car>?): Unit {
         /*
         The library adds a viewModelScope as an extension function of the ViewModel class.
         This scope is bound to Dispatchers.Main and will automatically be cancelled when the ViewModel is cleared.
@@ -101,20 +119,20 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 onStartDownloading()
-                //_spinner.value = true //progressBar
-                //_userProperty.value = block()
+                _spinner.value = true //progressBar
+                _cars.value = block()
                 onDoneDownloading()
             } catch (error: CarRepository.CarFetchingError) {
-                //_toast.value = error.message
-                //_userProperty.value = null
+                _toast.value = error.message
+                _cars.value = null
                 onErrorDownloading()
             } finally {
-                //_spinner.value = false
+                _spinner.value = false
             }
         }
     }
 
-    private suspend fun onDoneDownloading() {
+    private fun onDoneDownloading() {
         _status.value = CarsApiStatus.DONE
     }
 
