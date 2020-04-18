@@ -67,7 +67,8 @@ dependencies {
     // Moshi
     implementation "com.squareup.moshi:moshi:1.9.2"
     implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"//This for @JsonClass(generateAdapter = true)
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"
+//This for @JsonClass(generateAdapter = true)
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"

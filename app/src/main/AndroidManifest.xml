@@ -15,7 +15,16 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".SplashScreenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".CarDetailsActivity" />
+
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".SearchableActivity" />
@@ -28,6 +37,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -36,13 +46,12 @@
         <activity
             android:name=".DetailsActivity"
             android:label="@string/title_activity_main" />
+        <activity android:name=".MasterActivity">
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-        <activity android:name=".MasterActivity"  >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
     </application>
 
