@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.List;
 //Change the superclass to RecyclerView.Adapter for paging through views, or FragmentStateAdapter for paging through fragments.
@@ -26,9 +25,9 @@ public class IntroViewPagerAdapter extends RecyclerView.Adapter<IntroViewPagerAd
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.layout_get_started,parent,false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.intro,parent,false);
        // LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //View layoutScreen = inflater.inflate(R.layout.layout_get_started, parent,false);
+        //View layoutScreen = inflater.inflate(R.layout.intro, parent,false);
 
 
         //parent.addView(layoutScreen);
