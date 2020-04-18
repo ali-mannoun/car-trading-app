@@ -37,7 +37,7 @@
             android:name=".DetailsActivity"
             android:label="@string/title_activity_main" />
 
-        <activity android:name=".MasterActivity">
+        <activity android:name=".MasterActivity"  >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

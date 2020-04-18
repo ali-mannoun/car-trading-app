@@ -12,5 +12,6 @@
   <color name="gradientStartColor">#1976d2</color>
   <color name="gradientEndColor">#63a4ff</color>
 
+  <color name="gray">#c0c0c0</color>
 
 </resources>
