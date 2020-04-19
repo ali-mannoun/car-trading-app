@@ -42,18 +42,17 @@ class GetStartedFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_get_started, container, false)
 
-        var pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
-        val isIntroOpenedBefore :Boolean = pref.getBoolean("isIntroOpened",false)
-        if(isIntroOpenedBefore){
-            //todo remove from the back stack so when we enter the login screen we can press the back button to go back the launcher
+        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
+        val isIntroOpenedBefore: Boolean = pref.getBoolean("isIntroOpened", false)
+        if (isIntroOpenedBefore) {
             this.findNavController().navigate(GetStartedFragmentDirections.actionGetStartedFragmentToLoginFragment())
-        }
 
+        }
 
         binding.getStartedBtn.setOnClickListener { view: View? ->
             view?.findNavController()?.navigate(GetStartedFragmentDirections.actionGetStartedFragmentToLoginFragment())
-            var sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
-            var editor: SharedPreferences.Editor = sp.edit()
+            val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sp.edit()
             editor.putBoolean("isIntroOpened", true)
             editor.apply()
         }
@@ -85,7 +84,7 @@ class GetStartedFragment : Fragment() {
                 position++
                 screenPager.setCurrentItem(position)
             }
-            if (position == mList.size-1) {
+            if (position == mList.size - 1) {
                 //we reach the last screen
                 binding.nextBtn.visibility = View.INVISIBLE
                 binding.tabLayout.visibility = View.INVISIBLE

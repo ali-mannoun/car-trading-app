@@ -1,7 +1,10 @@
 package com.example.projectapp.ui.account.login
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +21,9 @@ import com.example.projectapp.databinding.FragmentLoginBinding
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.ui.LoadingBottomSheetDialog
+import com.example.projectapp.utils.CheckNetworkConnectivity
 import com.google.android.material.snackbar.Snackbar
+import java.util.regex.Pattern
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -35,85 +40,98 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
-        //  allDone = TestLoginFragmentFields.testPasswordField(binding);
-//  allDone = TestLoginFragmentFields.testEmailField(binding);
+        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val isRememberMeChecked: Boolean = pref.getBoolean("isRememberMeChecked", false)
+        if (isRememberMeChecked) {
+            //to navigate to the deatils activity immediatley.
+            this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
+        } else {
 
-        binding.email.doOnTextChanged { text, start, count, after ->
-            if (!text.toString().contains("@")) {
-                binding.emailInputLayout.error = "Invalid Email !"
-            } else {
-                binding.emailInputLayout.error = null
+            binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
+
+            binding.email.doOnTextChanged { text, _, _, _ ->
+                val emailPattern: Pattern = Patterns.EMAIL_ADDRESS
+                val isValid = emailPattern.matcher(text.toString()).matches()
+
+                if (!isValid) {
+                    binding.emailInputLayout.error = "Invalid Email !"
+                } else {
+                    binding.emailInputLayout.error = null
+                }
             }
+
+            binding.password.doOnTextChanged { text, _, _, _ ->
+                if (text!!.length < 8) {
+                    binding.passwordInputLayout.error = "Must at least 8 characters!"
+                } else {
+                    binding.passwordInputLayout.error = null
+                }
+            }
+
+            binding.loginBtn.setOnClickListener { view: View? ->
+                val email = binding.email.text.toString()
+                val password = binding.password.text.toString()
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
+                } else if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
+                    Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
+                } else {
+                    bottomSheet = LoadingBottomSheetDialog()
+                    //bottomSheet.show(parentFragmentManager, "LoginFragment...")
+                    bottomSheet.isCancelable = false
+
+                    viewModel.onLoginBtnClicked(email, password)
+                    //bottomSheet.dismiss()
+                }
+            }
+
+            binding.createNewAccountBtn.setOnClickListener { view: View ->
+                val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+                view.findNavController().navigate(action)
+            }
+
+            viewModel.spinner.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    binding.loginBtn.isEnabled = false
+                    bottomSheet.show(parentFragmentManager, "LoginFragment...")
+                } else {
+                    binding.loginBtn.isEnabled = true
+                    bottomSheet.dismiss()
+                }
+            })
+
+            viewModel.user.observe(viewLifecycleOwner, Observer { user ->
+                if (user != null) {
+                    Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
+
+                    //put the user info so that we can query data for that user.
+                    if (binding.rememberMeCheckBox.isChecked) {
+                        val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                        val editor: SharedPreferences.Editor = sp.edit()
+                        editor.putBoolean("isRememberMeChecked", true)
+                        editor.putString("user_name", user.name)
+                        editor.putString("email", user.email)
+                        editor.apply()
+                    }
+
+                    this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
+                } else {
+                    binding.emailInputLayout.error = "Incorrect Email or Password"
+                    Snackbar.make(binding.root, "Please check your information !", Snackbar.LENGTH_LONG).show();
+                }
+            })
+
+            viewModel.toast.observe(viewLifecycleOwner, Observer { message: String? ->
+                if (message != null) {
+                    //Log.e("TOAST : ", message + " ...")
+                    Toast.makeText(context, "Something went wrong, please try again !", Toast.LENGTH_SHORT).show()
+                    viewModel.onToastShown()
+                }
+            })
+            return binding.root
         }
-
-        binding.password.doOnTextChanged { text, start, count, after ->
-            if (text!!.length < 8) {
-                binding.passwordInputLayout.error = "Must at least 8 characters!"
-            } else {
-                binding.passwordInputLayout.error = null
-            }
-        }
-
-        binding.loginBtn.setOnClickListener { view: View? ->
-            val email = binding.email.text.toString()
-            val password = binding.password.text.toString()
-            //TODO add remember me functionality
-            if (email.isEmpty() || password.isEmpty()) {
-                //TODO add pattern to check the email regex
-                Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
-            } else {
-
-                bottomSheet = LoadingBottomSheetDialog()
-                //bottomSheet.show(parentFragmentManager, "LoginFragment...")
-                bottomSheet.isCancelable = false
-
-                viewModel.onLoginBtnClicked(email, password)
-                //TODO disable btn after clikcing to handlge the request.
-                //bottomSheet.dismiss()
-            }
-
-            /*
-            if (allDone) {
-                Navigation.findNavController(view!!).navigate(LoginFragmentDirections.actionLoginFragmentToUserDetailsActivity())
-            }
-             */
-        }
-
-        binding.createNewAccountBtn.setOnClickListener { view: View ->
-            val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-            view.findNavController().navigate(action)
-        }
-
-        viewModel.spinner.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                binding.loginBtn.isEnabled = false
-                bottomSheet.show(parentFragmentManager, "LoginFragment...")
-            } else {
-                binding.loginBtn.isEnabled = true
-                bottomSheet.dismiss()
-            }
-        })
-
-        viewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            if (user != null) {
-                Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
-                this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
-            } else {
-                Snackbar.make(binding.root, "No user found !", Snackbar.LENGTH_LONG).show();
-            }
-        })
-
-        viewModel.toast.observe(viewLifecycleOwner, Observer { message: String? ->
-            if (message != null) {
-                //Log.e("TOAST : ", message + " ...")
-                //todo show the internet message or cann't connect to internet (separate them into two separate logic)
-                Toast.makeText(context, "Please check you internet connection !", Toast.LENGTH_SHORT).show()
-                viewModel.onToastShown()
-            }
-        })
-        return binding.root
+        return null
     }
 }
 

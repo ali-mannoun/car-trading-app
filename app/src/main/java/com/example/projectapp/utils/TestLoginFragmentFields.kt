@@ -29,25 +29,4 @@ object TestLoginFragmentFields {
         return allDone.get()
     }
 
-    fun testPasswordField(binding: FragmentLoginBinding): Boolean {
-        val allDone = AtomicBoolean(false)
-        binding.password.setOnKeyListener { view: View?, i: Int, keyEvent: KeyEvent? ->
-            if (binding.passwordInputLayout.error == null) {
-                binding.passwordInputLayout.error = null
-                if (binding.passwordInputLayout.editText!!.text.toString().length > 20) {
-                    binding.passwordInputLayout.error = "Limited exceed !"
-                    allDone.set(false)
-                } else {
-                    binding.passwordInputLayout.error = null
-                    allDone.set(true)
-                }
-                binding.executePendingBindings()
-            } else if (binding.passwordInputLayout.editText!!.text.toString().length <= 20) {
-                binding.passwordInputLayout.error = null
-                allDone.set(true)
-            }
-            false
-        }
-        return allDone.get()
-    }
 }

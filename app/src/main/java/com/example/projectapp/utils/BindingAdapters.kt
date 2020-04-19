@@ -70,9 +70,9 @@ fun ImageView.bindImage(imgUrl: String?) {
  * displays a broken image to reflect the connection error.  When the request is finished, it
  * hides the image view.
  */
+
 @BindingAdapter("carsApiStatus")
 fun ImageView.bindStatus(status: CarsApiStatus?) {
-    //DEPRECATED
     Log.e("BindinAdapter STATUS", status.toString())
     when (status) {
         CarsApiStatus.LOADING -> {
