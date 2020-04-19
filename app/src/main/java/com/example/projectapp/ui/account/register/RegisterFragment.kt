@@ -27,7 +27,7 @@ class RegisterFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
         binding.createNewAccountBtn.setOnClickListener { view: View ->
-            val name = binding.name.text.toString()
+            val name = binding.username.text.toString()
             val email = binding.email.text.toString()
             val password = binding.password.text.toString()
             val passwordConfirm = binding.confirmPassword.text.toString()

@@ -2,7 +2,7 @@
 <resources>
   <color name="primaryColor">#1976d2</color>
   <color name="primaryLightColor">#63a4ff</color>
-  <color name="primaryDarkColor">#1976d2</color>
+<!--  <color name="primaryDarkColor">#1976d2</color>-->
   <color name="secondaryColor">#a142f4</color>
   <color name="secondaryLightColor">#d774ff</color>
   <color name="secondaryDarkColor">#6b00c0</color>
@@ -14,7 +14,7 @@
 
   <color name="gray">#c0c0c0</color>
 
-<!--  <color name="primaryDarkColor">#004ba0</color>-->
+  <color name="primaryDarkColor">#004ba0</color>
 
 
 </resources>

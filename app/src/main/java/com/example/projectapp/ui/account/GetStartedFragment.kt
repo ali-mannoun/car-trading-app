@@ -85,7 +85,7 @@ class GetStartedFragment : Fragment() {
                 position++
                 screenPager.setCurrentItem(position)
             }
-            if (position == mList.size) {
+            if (position == mList.size-1) {
                 //we reach the last screen
                 binding.nextBtn.visibility = View.INVISIBLE
                 binding.tabLayout.visibility = View.INVISIBLE

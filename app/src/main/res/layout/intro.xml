@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textAppearance="@style/CustomHeadline6"
-        android:textColor="@color/primaryColor"
+        android:textColor="@color/primaryDarkColor"
         android:textSize="35sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"

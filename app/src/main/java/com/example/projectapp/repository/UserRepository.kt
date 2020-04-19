@@ -58,6 +58,6 @@ class UserRepository(private val webService: IApiService) {
      * @property message user ready error message
      * @property cause the original cause of this exception
      */
-    class UserFetchingError(message: String, cause: Throwable) : Throwable(message, cause)
+    class UserFetchingError(message: String, cause: Throwable) : Exception(message, cause)
 
 }

@@ -17,18 +17,16 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        //val toolbar = findViewById<Toolbar>(R.id.toolbar)
-       // setSupportActionBar(toolbar)
-
-        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
 
         // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
 
-        /*mAppBarConfiguration = AppBarConfiguration.Builder(
+        mAppBarConfiguration = AppBarConfiguration.Builder(
                 R.id.nav_profile_menu, R.id.nav_cars_menu, R.id.nav_recommended_menu)
                 .build()
-*/
+
         mAppBarConfiguration = AppBarConfiguration(
                 setOf(R.id.nav_profile_menu, R.id.nav_cars_menu, R.id.nav_recommended_menu))
 
@@ -38,13 +36,15 @@ class DetailsActivity : AppCompatActivity() {
         setupActionBar(navController, mAppBarConfiguration)
     }
 
-/*
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.top_app_bar_menu, menu)
         return true
     }
-*/
+
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         return this.findNavController(R.id.nav_host_fragment).navigateUp(mAppBarConfiguration)
@@ -59,6 +59,5 @@ class DetailsActivity : AppCompatActivity() {
     private fun setupActionBar(navController: NavController,
                                appBarConfig: AppBarConfiguration) {
         setupActionBarWithNavController(navController, appBarConfig)
-        //TODO THE LAST inst gives error
     }
 }

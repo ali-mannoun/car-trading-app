@@ -18,6 +18,7 @@ import com.example.projectapp.databinding.FragmentLoginBinding
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.ui.LoadingBottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -48,7 +49,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.password.doOnTextChanged { text, start, count, after ->
-            if (count < 8) {
+            if (text!!.length < 8) {
                 binding.passwordInputLayout.error = "Must at least 8 characters!"
             } else {
                 binding.passwordInputLayout.error = null
@@ -59,19 +60,20 @@ class LoginFragment : Fragment() {
             val email = binding.email.text.toString()
             val password = binding.password.text.toString()
             //TODO add remember me functionality
-
-            bottomSheet = LoadingBottomSheetDialog()
-            //bottomSheet.show(parentFragmentManager, "LoginFragment...")
-            bottomSheet.isCancelable = false
-            //bottomSheet.dismiss()
-
             if (email.isEmpty() || password.isEmpty()) {
                 //TODO add pattern to check the email regex
                 Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
             } else {
+
+                bottomSheet = LoadingBottomSheetDialog()
+                //bottomSheet.show(parentFragmentManager, "LoginFragment...")
+                bottomSheet.isCancelable = false
+
                 viewModel.onLoginBtnClicked(email, password)
                 //TODO disable btn after clikcing to handlge the request.
+                //bottomSheet.dismiss()
             }
+
             /*
             if (allDone) {
                 Navigation.findNavController(view!!).navigate(LoginFragmentDirections.actionLoginFragmentToUserDetailsActivity())
@@ -86,8 +88,10 @@ class LoginFragment : Fragment() {
 
         viewModel.spinner.observe(viewLifecycleOwner, Observer {
             if (it) {
+                binding.loginBtn.isEnabled = false
                 bottomSheet.show(parentFragmentManager, "LoginFragment...")
             } else {
+                binding.loginBtn.isEnabled = true
                 bottomSheet.dismiss()
             }
         })
@@ -97,13 +101,14 @@ class LoginFragment : Fragment() {
                 Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
                 this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
             } else {
-                Toast.makeText(context, "No user found", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "No user found !", Snackbar.LENGTH_LONG).show();
             }
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer { message: String? ->
             if (message != null) {
-                Log.e("TOAST : ", message + " ...")
+                //Log.e("TOAST : ", message + " ...")
+                Toast.makeText(context, "Please check you internet connection !", Toast.LENGTH_SHORT).show()
                 viewModel.onToastShown()
             }
         })

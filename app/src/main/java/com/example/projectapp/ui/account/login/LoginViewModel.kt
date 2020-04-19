@@ -6,6 +6,7 @@ import com.example.projectapp.domain.User
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class LoginViewModel(//savedStateHandle: SavedStateHandle,
         private val userRepository: UserRepository) : ViewModel() {
@@ -39,7 +40,7 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
      */
     fun onLoginBtnClicked(email: String, password: String) = launchDataLoad {
         val responseCode = userRepository.checkCredentials(email, password)
-        _toast.value = responseCode.toString()
+        //_toast.value = responseCode.toString()
         userRepository.login(email, password)
     }
 
@@ -75,9 +76,10 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
             try {
                 _spinner.value = true //progressBar
                 _user.value = block()
-            } catch (error: UserRepository.UserFetchingError) {
+           // } catch (error: UserRepository.UserFetchingError) {
+            } catch (error: IOException) {
                 _toast.value = error.message
-                _user.value = null
+                //_user.value = null
             } finally {
                 _spinner.value = false
             }
