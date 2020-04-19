@@ -37,7 +37,8 @@ class CarsFragment : Fragment() {
 
         val adapter = CarsAdapter(CarsListener { carId ->
             Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
-            viewModel.onCarClicked(carId)
+            //viewModel.onCarClicked(carId)
+
             //      Bundle bundle = new Bundle();
             //       bundle.putParcelable("amount", car);
             //Navigation.findNavController(binding.getRoot()).navigate(CarsFragmentDirections.actionNavigationCarsUserToUserCarDetailsFragment())

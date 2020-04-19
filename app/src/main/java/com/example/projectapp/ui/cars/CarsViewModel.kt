@@ -11,6 +11,7 @@ import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 enum class CarsApiStatus { LOADING, ERROR, DONE }
 
@@ -26,6 +27,8 @@ enum class CarsApiStatus { LOADING, ERROR, DONE }
  * or fragment lifecycle events.
  */
 class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
+
+    val carsList = carRepository.cars
 
     init {
         startLoadingCars()
@@ -122,7 +125,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
                 _spinner.value = true //progressBar
                 _cars.value = block()
                 onDoneDownloading()
-            } catch (error: CarRepository.CarFetchingError) {
+            } catch (error: IOException) {
                 _toast.value = error.message
                 _cars.value = null
                 onErrorDownloading()

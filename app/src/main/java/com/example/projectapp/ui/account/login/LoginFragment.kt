@@ -108,6 +108,7 @@ class LoginFragment : Fragment() {
         viewModel.toast.observe(viewLifecycleOwner, Observer { message: String? ->
             if (message != null) {
                 //Log.e("TOAST : ", message + " ...")
+                //todo show the internet message or cann't connect to internet (separate them into two separate logic)
                 Toast.makeText(context, "Please check you internet connection !", Toast.LENGTH_SHORT).show()
                 viewModel.onToastShown()
             }

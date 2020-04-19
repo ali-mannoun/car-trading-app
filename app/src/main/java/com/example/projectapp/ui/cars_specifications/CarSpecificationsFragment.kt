@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.projectapp.R
+import com.example.projectapp.database.CarsDatabase
 import com.example.projectapp.databinding.FragmentCarDetailsBinding
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
@@ -18,7 +19,8 @@ class CarSpecificationsFragment : Fragment() {
     private lateinit var binding: FragmentCarDetailsBinding
     private val viewModel: CarSpecificationsViewModel by viewModels(
             factoryProducer = {
-                CarSpecificationsViewModel.FACTORY(CarRepository(getNetworkService(), null))
+                CarSpecificationsViewModel.FACTORY(CarRepository(getNetworkService(),
+                        CarsDatabase.getInstance(requireNotNull(this.activity).application).carsDatabaseDao))
             })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +38,7 @@ class CarSpecificationsFragment : Fragment() {
         viewModel.loadCarSpecificationsById(carId)
 
         viewModel.cars.observe(viewLifecycleOwner, Observer {
-            it?.let {carSpecifications :CarSpecifications ->
+            it?.let { carSpecifications: CarSpecifications ->
                 binding.result.text = carSpecifications.generalInformation.mainImageUrl
             }
         })

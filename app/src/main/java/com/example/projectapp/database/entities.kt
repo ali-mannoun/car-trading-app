@@ -19,7 +19,7 @@ import com.example.projectapp.network.CarProperty
         foreignKeys = [
             ForeignKey(entity = CarEntity::class, parentColumns = arrayOf("id"), childColumns = arrayOf("car_id"))
         ])*/
-/*
+
 @Entity(tableName = "favourite_cars")
 data class FavouriteCarEntity(
         @PrimaryKey
@@ -28,7 +28,7 @@ data class FavouriteCarEntity(
         val carId: String
 //the rest
 )
-*/
+
 
 /**
  * Map [FavouriteCarEntity] to [CarSpecifications] domain entities
@@ -57,7 +57,7 @@ data class CarEntity(
         val model: String,
         @ColumnInfo(name = "max_speed")
         val maxSpeed: String)
-/*
+
 /**
  * Map [CarEntity] to [Car] domain entities
  */
@@ -89,7 +89,7 @@ fun List<CarProperty>.asCarsDatabaseModel(): List<CarEntity> {
         )
     }
 }
-*/
+
 /**
  * Map [Car] to [CarEntity] domain entities
  */
