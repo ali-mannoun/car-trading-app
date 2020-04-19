@@ -1,6 +1,7 @@
 package com.example.projectapp.ui.cars
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,7 @@ class CarsFragment : Fragment() {
          */
         viewModel.cars.observe(viewLifecycleOwner, Observer {
             it?.let {
+                Log.e("CarsFragment","called")
                 adapter.addHeaderAndSubmitList(it)
             }
         })

@@ -66,7 +66,6 @@ class CarRepository(private val webService: IApiService, private val dataSource:
      */
     suspend fun refreshCars() {
         withContext(Dispatchers.IO) {
-            Log.e("CarRepo", "refresh cars is called");
             val cars = webService.getCarsProperties()
             cars.body()?.let {
                 dataSource.insertAll(it.asCarsDatabaseModel())

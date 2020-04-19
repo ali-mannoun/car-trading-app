@@ -72,7 +72,8 @@ fun ImageView.bindImage(imgUrl: String?) {
  */
 @BindingAdapter("carsApiStatus")
 fun ImageView.bindStatus(status: CarsApiStatus?) {
-    Log.e("STATUS", status.toString())
+    //DEPRECATED
+    Log.e("BindinAdapter STATUS", status.toString())
     when (status) {
         CarsApiStatus.LOADING -> {
             this.visibility = View.VISIBLE

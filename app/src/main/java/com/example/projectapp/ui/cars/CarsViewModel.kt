@@ -28,11 +28,7 @@ enum class CarsApiStatus { LOADING, ERROR, DONE }
  */
 class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
 
-    val carsList = carRepository.cars
-
-    init {
-        startLoadingCars()
-    }
+    val cars: LiveData<List<Car>> = carRepository.cars
 
     private val _status = MutableLiveData<CarsApiStatus>()
     val status: LiveData<CarsApiStatus>
@@ -46,9 +42,9 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     val toast: LiveData<String?>
         get() = _toast
 
-    private val _cars = MutableLiveData<List<Car>>()
-    val cars: LiveData<List<Car>>
-        get() = _cars
+//    private val _cars = MutableLiveData<List<Car>>()
+//    val cars: LiveData<List<Car>>
+//        get() = _cars
 
     private val _selectedCar = MutableLiveData<Car>()
     val selectedCar: LiveData<Car>
@@ -67,6 +63,11 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
         val FACTORY = singleArgViewModelFactory(::CarsViewModel)
     }
 
+    init {
+        refreshDataFromRepository()
+    }
+
+
     fun addCarToFavouriteList(car: CarSpecifications) = viewModelScope.launch(Dispatchers.IO) {
         //todo show load label
         carRepository.insertCar(car)
@@ -74,8 +75,8 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     }
 
     //Load the main list of cars.
-    private fun startLoadingCars() = launchDataLoad {
-        carRepository.getCars()
+    private fun refreshDataFromRepository() = launchDataLoad {
+        carRepository.refreshCars()
     }
 
     /**
@@ -114,7 +115,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
      *              lambda the loading spinner will display, after completion or error the loading
      *              spinner will stop
      */
-    private fun launchDataLoad(block: suspend () -> List<Car>?): Unit {
+    private fun launchDataLoad(block: suspend () -> Unit) {
         /*
         The library adds a viewModelScope as an extension function of the ViewModel class.
         This scope is bound to Dispatchers.Main and will automatically be cancelled when the ViewModel is cleared.
@@ -122,28 +123,30 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 onStartDownloading()
-                _spinner.value = true //progressBar
-                _cars.value = block()
+                block()
                 onDoneDownloading()
             } catch (error: IOException) {
                 _toast.value = error.message
-                _cars.value = null
+                Log.e("CarsViewmodel error", error.message.toString())
                 onErrorDownloading()
             } finally {
-                _spinner.value = false
+                onDoneDownloading()
             }
         }
     }
 
     private fun onDoneDownloading() {
         _status.value = CarsApiStatus.DONE
+        _spinner.value = false //progressBar
     }
 
     private fun onErrorDownloading() {
         _status.value = CarsApiStatus.ERROR
+        _spinner.value = false //progressBar
     }
 
     private fun onStartDownloading() {
         _status.value = CarsApiStatus.LOADING
+        _spinner.value = true //progressBar
     }
 }
