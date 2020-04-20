@@ -27,6 +27,13 @@ enum class CarsApiStatus { LOADING, ERROR, DONE }
  * or fragment lifecycle events.
  */
 class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
+    /*
+        enum class NavTabs {
+            PROFILE_TAB,
+            CARS_TAB,
+            RECOMMENDED_TAB
+        }
+      */
 
     val cars: LiveData<List<Car>> = carRepository.cars
 
@@ -64,7 +71,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     }
 
     init {
-        refreshDataFromRepository()
+        //refreshDataFromRepository()
     }
 
 
@@ -126,8 +133,10 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
                 block()
                 onDoneDownloading()
             } catch (error: IOException) {
-                _toast.value = error.message
-                Log.e("CarsViewmodel error", error.message.toString())
+                if (cars.value.isNullOrEmpty()) {
+                    _toast.value = error.message
+                    Log.e("CarsViewmodel error", error.message.toString())
+                }
                 onErrorDownloading()
             } finally {
                 onDoneDownloading()

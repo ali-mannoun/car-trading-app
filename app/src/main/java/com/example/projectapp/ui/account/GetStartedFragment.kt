@@ -45,12 +45,12 @@ class GetStartedFragment : Fragment() {
         val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
         val isIntroOpenedBefore: Boolean = pref.getBoolean("isIntroOpened", false)
         if (isIntroOpenedBefore) {
-            this.findNavController().navigate(GetStartedFragmentDirections.actionGetStartedFragmentToLoginFragment())
+            this.findNavController().navigate(GetStartedFragmentDirections.actionGetStartedFragmentToNavCarsMenu())
 
         }
 
         binding.getStartedBtn.setOnClickListener { view: View? ->
-            view?.findNavController()?.navigate(GetStartedFragmentDirections.actionGetStartedFragmentToLoginFragment())
+            view?.findNavController()?.navigate(GetStartedFragmentDirections.actionGetStartedFragmentToNavCarsMenu())
             val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sp.edit()
             editor.putBoolean("isIntroOpened", true)

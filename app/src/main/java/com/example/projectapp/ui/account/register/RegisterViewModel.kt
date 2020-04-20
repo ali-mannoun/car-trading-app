@@ -1,5 +1,6 @@
 package com.example.projectapp.ui.account.register
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,46 @@ import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
+
+    enum class RegistrationState {
+        COLLECT_PROFILE_DATA,
+        COLLECT_USER_PASSWORD,
+        REGISTRATION_COMPLETED
+    }
+
+    init {
+        Log.e("RegisterViewModel","init constructor")
+    }
+
+    val registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_PROFILE_DATA)
+
+    // Simulation of real-world scenario, where an auth token may be provided as
+    // an alternate authentication mechanism instead of passing the password
+    // around. This is set at the end of the registration process.
+    var authToken = ""
+        private set
+
+    fun collectProfileData(name: String, bio: String) {
+        // ... validate and store data
+
+        // Change State to collecting username and password
+        registrationState.value = RegistrationState.COLLECT_USER_PASSWORD
+    }
+//called when register btn clicked
+    fun createAccountAndLogin(email: String, password: String) {
+        // ... create account
+        // ... authenticate
+        this.authToken = "the token"
+        // Change State to registration completed
+        registrationState.value = RegistrationState.REGISTRATION_COMPLETED
+    }
+
+    fun userCancelledRegistration() : Boolean {
+        // Clear existing registration data
+        registrationState.value = RegistrationState.COLLECT_PROFILE_DATA
+        authToken = ""
+        return true
+    }
 
     companion object {
         /**

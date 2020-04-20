@@ -9,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -20,16 +22,19 @@ import com.example.projectapp.R
 import com.example.projectapp.databinding.FragmentLoginBinding
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.UserRepository
+import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.LoadingBottomSheetDialog
 import com.example.projectapp.utils.CheckNetworkConnectivity
 import com.google.android.material.snackbar.Snackbar
 import java.util.regex.Pattern
+import kotlin.math.max
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var bottomSheet: LoadingBottomSheetDialog
+    private var maxAttemptsToPressBackKey = 1
 
-    private val viewModel: LoginViewModel by viewModels(
+    private val viewModel: LoginViewModel by activityViewModels(
             factoryProducer = {
                 LoginViewModel.FACTORY(UserRepository(getNetworkService()))
             }
@@ -38,14 +43,48 @@ class LoginFragment : Fragment() {
     //private val sharedViewModel: SharedViewModel? = null
     //private val allDone = false
 
+    private fun showErrorMessage() {
+        if (maxAttemptsToPressBackKey > 0) {
+            Toast.makeText(context, "Please login to continue", Toast.LENGTH_LONG).show()
+            maxAttemptsToPressBackKey--
+        } else if (maxAttemptsToPressBackKey == 0) {
+            requireNotNull(activity).finish()
+        }
+    }
+
+    private fun processLogin() {
+        if (bottomSheet.isVisible) {
+            bottomSheet.dismiss()
+        }
+        findNavController().popBackStack()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            viewModel.refuseAuthentication()
+            findNavController().popBackStack(R.id.nav_cars_menu, false)
+        }
+
+        viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
+            when (authenticationState) {
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> processLogin()
+                LoginViewModel.AuthenticationState.UNAUTHENTICATED -> showErrorMessage()
+            }
+        })
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        sharedViewModel.setBottomNavigationViewVisibility(false)
 
         val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         val isRememberMeChecked: Boolean = pref.getBoolean("isRememberMeChecked", false)
         if (isRememberMeChecked) {
             //to navigate to the deatils activity immediatley.
-            this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
+            // todo =========111111111 this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
         } else {
 
             binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
@@ -53,7 +92,6 @@ class LoginFragment : Fragment() {
             binding.email.doOnTextChanged { text, _, _, _ ->
                 val emailPattern: Pattern = Patterns.EMAIL_ADDRESS
                 val isValid = emailPattern.matcher(text.toString()).matches()
-
                 if (!isValid) {
                     binding.emailInputLayout.error = "Invalid Email !"
                 } else {
@@ -78,11 +116,8 @@ class LoginFragment : Fragment() {
                     Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
                 } else {
                     bottomSheet = LoadingBottomSheetDialog()
-                    //bottomSheet.show(parentFragmentManager, "LoginFragment...")
                     bottomSheet.isCancelable = false
-
-                    viewModel.onLoginBtnClicked(email, password)
-                    //bottomSheet.dismiss()
+                    viewModel.authenticate(email, password)
                 }
             }
 
@@ -115,7 +150,7 @@ class LoginFragment : Fragment() {
                         editor.apply()
                     }
 
-                    this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
+                    //todo ============ this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
                 } else {
                     binding.emailInputLayout.error = "Incorrect Email or Password"
                     Snackbar.make(binding.root, "Please check your information !", Snackbar.LENGTH_LONG).show();

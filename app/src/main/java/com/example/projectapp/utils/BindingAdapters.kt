@@ -12,6 +12,8 @@ import com.example.projectapp.R
 import com.example.projectapp.domain.Car
 import com.example.projectapp.network.CarProperty
 import com.example.projectapp.ui.cars.CarsApiStatus
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomnavigation.LabelVisibilityMode
 
 /*
 The binding adapters take care of all the work of formatting and updating the views as the data changes,
@@ -51,10 +53,6 @@ fun ImageView.bindImage(imgUrl: String?) {
 
     imgUrl?.let {
         val imgUri2 = mainImageUrl.toUri().buildUpon().scheme("http").build()
-        // imgUri = imgUrl.toUri().buildUpon().build()
-        //Log.e("Glide",imgUri.toString())
-        Log.e("Glide2",mainImageUrl.toString())
-
         Glide.with(this.context)
                 .load(mainImageUrl)
                 .apply(RequestOptions()
@@ -73,7 +71,6 @@ fun ImageView.bindImage(imgUrl: String?) {
 
 @BindingAdapter("carsApiStatus")
 fun ImageView.bindStatus(status: CarsApiStatus?) {
-    Log.e("BindinAdapter STATUS", status.toString())
     when (status) {
         CarsApiStatus.LOADING -> {
             this.visibility = View.VISIBLE
@@ -99,4 +96,12 @@ fun View.hideIfNetworkError(isNetWorkError: Boolean, playlist: Any?) {
     if (isNetWorkError) {
         visibility = View.GONE
     }
+}
+
+/**
+ * Binding adapter used to show the bottom navigation view when car,profile,recommended and hide otherwise.
+ */
+@BindingAdapter("bottomNavVisibility")
+fun BottomNavigationView.controlVisibility(isVisible : Boolean) {
+    visibility = if (isVisible) View.VISIBLE else View.GONE
 }

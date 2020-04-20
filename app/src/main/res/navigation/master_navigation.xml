@@ -3,8 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/master_navigation"
-    app:startDestination="@id/getStartedFragment">
+    app:startDestination="@id/nav_cars_menu">
 
+    <fragment
+        android:id="@+id/nav_recommended_menu"
+        android:name="com.example.projectapp.ui.recommended.RecommendedFragment"
+        android:label="Recommended Cars"
+        tools:layout="@layout/fragment_recommended" />
+    <fragment
+        android:id="@+id/nav_cars_menu"
+        android:name="com.example.projectapp.ui.cars.CarsFragment"
+        android:label="Cars"
+        tools:layout="@layout/fragment_cars">
+        <action
+            android:id="@+id/action_nav_cars_menu_to_carSpecificationsFragment"
+            app:destination="@id/carSpecificationsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_profile_menu"
+        android:name="com.example.projectapp.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/carSpecificationsFragment"
+        android:name="com.example.projectapp.ui.cars_specifications.CarSpecificationsFragment"
+        android:label="CarSpecificationsFragment"
+        tools:layout="@layout/fragment_car_details">
+        <argument
+            android:name="carId"
+            app:argType="long" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.projectapp.ui.account.login.LoginFragment"
@@ -13,9 +41,6 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_detailsActivity"
-            app:destination="@id/detailsActivity" />
     </fragment>
     <fragment
         android:id="@+id/getStartedFragment"
@@ -23,26 +48,12 @@
         android:label="fragment_get_started"
         tools:layout="@layout/fragment_get_started" >
         <action
-            android:id="@+id/action_getStartedFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/getStartedFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_getStartedFragment_to_detailsActivity"
-            app:destination="@id/detailsActivity" />
+            android:id="@+id/action_getStartedFragment_to_nav_cars_menu"
+            app:destination="@id/nav_cars_menu" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.projectapp.ui.account.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" >
-        <action
-            android:id="@+id/action_registerFragment_to_detailsActivity"
-            app:destination="@id/detailsActivity" />
-    </fragment>
-    <activity
-        android:id="@+id/detailsActivity"
-        android:name="com.example.projectapp.DetailsActivity"
-        android:label="DetailsActivity"
-        tools:layout="@layout/activity_details"/>
+        tools:layout="@layout/fragment_register" />
 </navigation>

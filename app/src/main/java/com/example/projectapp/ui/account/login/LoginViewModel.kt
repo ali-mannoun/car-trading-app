@@ -20,6 +20,18 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
         val FACTORY = singleArgViewModelFactory(::LoginViewModel)
     }
 
+    enum class AuthenticationState {
+        UNAUTHENTICATED,        // Initial state, the user needs to authenticate
+        AUTHENTICATED,        // The user has authenticated successfully
+        INVALID_AUTHENTICATION  // Authentication failed
+    }
+
+    private val SUCCESS_RESPONSE = 200
+
+    private val _authenticationState = MutableLiveData<AuthenticationState>()
+    val authenticationState: LiveData<AuthenticationState>
+        get() = _authenticationState
+
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
         get() = _user
@@ -32,15 +44,48 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     val spinner: LiveData<Boolean>
         get() = _spinner
 
+    //to control bottom nav visibility
+    private val _bottomNavigationViewVisibility = MutableLiveData<Boolean>()
+    val bottomNavigationViewVisibility: LiveData<Boolean>
+        get() = _bottomNavigationViewVisibility
+
+    init {
+        _bottomNavigationViewVisibility.value = false
+        Log.e("LoginViewModel", "init constructor")
+        //the user is always unauthenticated when MainActivity is launched
+        _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+    }
+
+    fun authenticate(email: String, password: String) {
+        viewModelScope.launch {
+            try {
+                _spinner.value = true //progressBar
+                val responseCode = userRepository.checkCredentials(email, password)
+                if (responseCode == SUCCESS_RESPONSE) {
+                    _authenticationState.value = AuthenticationState.AUTHENTICATED
+                } else {
+                    _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
+                }
+            } catch (error: IOException) {
+                _toast.value = error.message
+            } finally {
+                _spinner.value = false
+                onLoginBtnClicked(email, password)
+            }
+        }
+    }
+
+    fun refuseAuthentication() {
+        _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+    }
+
     /**
      * Respond to onClick events .
      *
      * The loading spinner will display until a result is returned, and errors will trigger
      * a toast.
      */
-    fun onLoginBtnClicked(email: String, password: String) = launchDataLoad {
-        val responseCode = userRepository.checkCredentials(email, password)
-        //_toast.value = responseCode.toString()
+    private fun onLoginBtnClicked(email: String, password: String) = launchDataLoad {
         userRepository.login(email, password)
     }
 
@@ -76,7 +121,7 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
             try {
                 _spinner.value = true //progressBar
                 _user.value = block()
-           // } catch (error: UserRepository.UserFetchingError) {
+                // } catch (error: UserRepository.UserFetchingError) {
             } catch (error: IOException) {
                 _toast.value = error.message
                 //_user.value = null
