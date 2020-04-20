@@ -45,8 +45,8 @@ class GetStartedFragment : Fragment() {
         val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
         val isIntroOpenedBefore: Boolean = pref.getBoolean("isIntroOpened", false)
         if (isIntroOpenedBefore) {
+            this.findNavController().graph.startDestination = R.id.nav_cars_menu
             this.findNavController().navigate(GetStartedFragmentDirections.actionGetStartedFragmentToNavCarsMenu())
-
         }
 
         binding.getStartedBtn.setOnClickListener { view: View? ->

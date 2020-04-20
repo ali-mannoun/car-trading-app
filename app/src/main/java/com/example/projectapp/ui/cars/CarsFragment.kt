@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -44,7 +45,10 @@ class CarsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("CarFragment", "callback122222")
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            requireActivity().finish()
+        }
 
         loginViewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
             when (authenticationState) {
@@ -56,7 +60,7 @@ class CarsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.e("CarFragment", "callback1111")
+
         sharedViewModel.setBottomNavigationViewVisibility(true)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_cars, container, false)
@@ -65,6 +69,7 @@ class CarsFragment : Fragment() {
         // Giving the binding access to the CarsViewModel
         binding.viewModel = carsViewModel
 
+        carsViewModel.refreshCars()
 
         val adapter = CarsAdapter(CarsListener { carId ->
             Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
@@ -77,7 +82,11 @@ class CarsFragment : Fragment() {
 
         //TODO when rotate the device show two grids . when the device isn't rotated show one grid.
 
-        val manager = GridLayoutManager(activity, 2)
+        //val manager = GridLayoutManager(activity, 2)
+        val manager = GridLayoutManager(activity, 1)
+/*
+//todo this when rotate device
+
         manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) = when (position) {
                 //here we make the header only 2 spans wide , and the others have 1 span wide
@@ -89,11 +98,10 @@ class CarsFragment : Fragment() {
                 else -> 1
             }
         }
+        */
         binding.carsRecyclerView.layoutManager = manager
         binding.carsRecyclerView.adapter = adapter
 
-        //TODO disable the loading process when clikcing the button more times at once,so the loading process runs once.
-        //viewModel.startLoadingCars()
         /*
         Your code needs to tell the ListAdapter when a changed list is available.
         ListAdapter provides a method called submitList() to tell ListAdapter that a new version of the list is available.
@@ -102,7 +110,7 @@ class CarsFragment : Fragment() {
          */
         carsViewModel.cars.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.e("CarsFragment", "called")
+                Log.e("CarsFragment", "cars observed")
                 adapter.addHeaderAndSubmitList(it)
             }
         })
@@ -114,9 +122,10 @@ class CarsFragment : Fragment() {
                 carsViewModel.onCarDetailsNavigated()
             }
         })
+
         binding.swipe.setOnRefreshListener {
-            Log.e("swipe", "ref")
-            //binding.swipe.isRefreshing = false
+            carsViewModel.refreshCars()
+            binding.swipe.isRefreshing = false
         }
 
         return binding.root

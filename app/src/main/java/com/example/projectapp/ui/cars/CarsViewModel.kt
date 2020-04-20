@@ -86,6 +86,10 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
         carRepository.refreshCars()
     }
 
+    fun refreshCars() {
+        refreshDataFromRepository()
+    }
+
     /**
      * You should usually handle clicks in the ViewModel,
      * because the ViewModel has access to the data and logic

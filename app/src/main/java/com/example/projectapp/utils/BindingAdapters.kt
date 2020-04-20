@@ -30,14 +30,12 @@ and wrap the body with item?.let{...}.
 fun TextView.setCarNameAndModel(item: Car?) {
     item?.let {
         Log.e("Binding", it.mainImageUrl)
-        this.text = it.mainImageUrl
+        this.text = it.model.smartTruncate(20)
     }
-    //TODO this.text = item.model
 }
 
 @BindingAdapter("bindinCarCompany")
 fun TextView.setCarCompany(item: Car?) {
-    //TODO this.text = item.carCompany.name
     item?.let {
         this.text = it.brand
     }

@@ -18,17 +18,20 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:orientation="vertical">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
+            android:elevation="8dp"
             android:onClick="@{() -> clickListener.onClick(carData)}"
             app:cardCornerRadius="15dp"
-            app:cardElevation="5dp"
+            app:cardElevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -40,50 +43,85 @@
                 <ImageView
                     android:id="@+id/carImage"
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
+                    android:layout_height="250dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="car image"
-                    android:paddingTop="8dp"
                     android:scaleType="centerCrop"
                     app:imageUrl="@{carData.mainImageUrl}"
-                    app:layout_constraintBottom_toTopOf="@+id/car_name_and_model_text_view"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@tools:sample/backgrounds/scenic" />
 
-                <TextView
-                    android:id="@+id/car_name_and_model_text_view"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:text="TextView111"
-                    app:bindingCarNameAndModel="@{carData}"
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_gravity="bottom"
+                    android:alpha="0.7"
+                    android:background="@color/design_default_color_surface"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/carImage"
-                    tools:text="Car name and model" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
-                    android:id="@+id/company_text_view"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/car_name_model"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:paddingStart="8dp"
+                    android:maxLines="1"
                     android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    bindingCarNameAndModel="@{carData}"
                     android:paddingEnd="8dp"
-                    android:text="TextView"
-                    app:bindinCarCompany="@{carData}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/car_name_and_model_text_view"
-                    app:layout_constraintTop_toBottomOf="@+id/car_name_and_model_text_view"
-                    tools:text="Compnay" />
+                    android:textAppearance="@style/CustomHeadline6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/view2"
+                    tools:text="the titel car" />
+
+                <TextView
+                    android:id="@+id/car_company"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingStart="8dp"
+                    bindinCarCompany="@{carData}"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textAppearance="@style/CustomHeadline6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/car_name_model"
+                    tools:text="car company" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent">-->
+
+            <!--                <ImageView-->
+            <!--                    android:id="@+id/carImage"-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="250dp"-->
+            <!--                    android:adjustViewBounds="true"-->
+            <!--                    android:contentDescription="car image"-->
+            <!--                    android:scaleType="centerCrop"-->
+            <!--                    app:imageUrl="@{carData.mainImageUrl}"-->
+            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                    app:layout_constraintHorizontal_bias="0.0"-->
+            <!--                    app:layout_constraintStart_toStartOf="parent"-->
+            <!--                    app:layout_constraintTop_toTopOf="parent"-->
+            <!--                    tools:src="@tools:sample/backgrounds/scenic" />-->
+
+            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         </com.google.android.material.card.MaterialCardView>
 

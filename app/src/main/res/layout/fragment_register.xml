@@ -6,10 +6,13 @@
     <data>
 
     </data>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".ui.account.login.LoginFragment">
 
         <ImageView
@@ -19,6 +22,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/top_screen"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +30,7 @@
             android:id="@+id/imageView3"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="40dp"
             android:scaleType="centerInside"
             android:src="@drawable/logo"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +54,9 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:hint="Username"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
@@ -82,6 +88,8 @@
             app:boxCornerRadiusBottomStart="10dp"
             app:boxCornerRadiusTopEnd="10dp"
             app:boxCornerRadiusTopStart="10dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="@+id/user_name_input_layout"
             app:layout_constraintStart_toStartOf="@+id/user_name_input_layout"
@@ -104,6 +112,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Password"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
             app:boxCornerRadiusTopEnd="10dp"
@@ -131,6 +141,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:hint="Confirm Password"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
@@ -172,7 +184,6 @@
             app:layout_constraintEnd_toEndOf="@+id/confirm_password_input_layout"
             app:layout_constraintStart_toStartOf="@+id/remember_me_check_box"
             app:layout_constraintTop_toBottomOf="@+id/remember_me_check_box" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 </layout>

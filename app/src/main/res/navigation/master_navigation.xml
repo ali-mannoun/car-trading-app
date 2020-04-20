@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/master_navigation"
-    app:startDestination="@id/nav_cars_menu">
+    app:startDestination="@id/getStartedFragment">
 
     <fragment
         android:id="@+id/nav_recommended_menu"
@@ -27,7 +27,7 @@
     <fragment
         android:id="@+id/carSpecificationsFragment"
         android:name="com.example.projectapp.ui.cars_specifications.CarSpecificationsFragment"
-        android:label="CarSpecificationsFragment"
+        android:label="Car Details"
         tools:layout="@layout/fragment_car_details">
         <argument
             android:name="carId"
@@ -36,8 +36,8 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.projectapp.ui.account.login.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        android:label="Login to continue"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
@@ -45,8 +45,8 @@
     <fragment
         android:id="@+id/getStartedFragment"
         android:name="com.example.projectapp.ui.account.GetStartedFragment"
-        android:label="fragment_get_started"
-        tools:layout="@layout/fragment_get_started" >
+        android:label="Welcome to CDT"
+        tools:layout="@layout/fragment_get_started">
         <action
             android:id="@+id/action_getStartedFragment_to_nav_cars_menu"
             app:destination="@id/nav_cars_menu" />
@@ -54,6 +54,6 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.projectapp.ui.account.register.RegisterFragment"
-        android:label="fragment_register"
+        android:label="Register new account"
         tools:layout="@layout/fragment_register" />
 </navigation>

@@ -63,14 +63,15 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
                 val responseCode = userRepository.checkCredentials(email, password)
                 if (responseCode == SUCCESS_RESPONSE) {
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
+                    onLoginBtnClicked(email, password)
                 } else {
                     _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
+                    _user.value = null
                 }
             } catch (error: IOException) {
                 _toast.value = error.message
             } finally {
                 _spinner.value = false
-                onLoginBtnClicked(email, password)
             }
         }
     }
@@ -119,14 +120,14 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
          */
         viewModelScope.launch {
             try {
-                _spinner.value = true //progressBar
+                //_spinner.value = true //progressBar
                 _user.value = block()
                 // } catch (error: UserRepository.UserFetchingError) {
             } catch (error: IOException) {
                 _toast.value = error.message
                 //_user.value = null
             } finally {
-                _spinner.value = false
+                //_spinner.value = false
             }
         }
     }

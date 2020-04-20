@@ -57,6 +57,7 @@ class LoginFragment : Fragment() {
             bottomSheet.dismiss()
         }
         findNavController().popBackStack()
+        //findNavController().navigate(R.id.nav_cars_menu)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
