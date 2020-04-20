@@ -14,7 +14,6 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -27,12 +26,12 @@ import com.example.projectapp.ui.LoadingBottomSheetDialog
 import com.example.projectapp.utils.CheckNetworkConnectivity
 import com.google.android.material.snackbar.Snackbar
 import java.util.regex.Pattern
-import kotlin.math.max
+
+private var maxAttemptsToPressBackKey = 1
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var bottomSheet: LoadingBottomSheetDialog
-    private var maxAttemptsToPressBackKey = 1
 
     private val viewModel: LoginViewModel by activityViewModels(
             factoryProducer = {
@@ -40,16 +39,8 @@ class LoginFragment : Fragment() {
             }
     )
 
-    //private val sharedViewModel: SharedViewModel? = null
-    //private val allDone = false
-
     private fun showErrorMessage() {
-        if (maxAttemptsToPressBackKey > 0) {
-            Toast.makeText(context, "Please login to continue", Toast.LENGTH_LONG).show()
-            maxAttemptsToPressBackKey--
-        } else if (maxAttemptsToPressBackKey == 0) {
-            requireNotNull(activity).finish()
-        }
+        Toast.makeText(context, "Please login to continue", Toast.LENGTH_LONG).show()
     }
 
     private fun processLogin() {
@@ -57,20 +48,25 @@ class LoginFragment : Fragment() {
             bottomSheet.dismiss()
         }
         findNavController().popBackStack()
-        //findNavController().navigate(R.id.nav_cars_menu)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            viewModel.refuseAuthentication()
-            findNavController().popBackStack(R.id.nav_cars_menu, false)
+            if (maxAttemptsToPressBackKey > 0) {
+                maxAttemptsToPressBackKey--
+                viewModel.refuseAuthentication()
+                findNavController().popBackStack(R.id.nav_cars_menu, false)
+            } else {
+                requireActivity().finish()
+            }
         }
 
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
             when (authenticationState) {
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> processLogin()
+                LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME -> processLogin()
                 LoginViewModel.AuthenticationState.UNAUTHENTICATED -> showErrorMessage()
             }
         })
@@ -80,13 +76,7 @@ class LoginFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
         sharedViewModel.setBottomNavigationViewVisibility(false)
-
-        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        val isRememberMeChecked: Boolean = pref.getBoolean("isRememberMeChecked", false)
-        if (isRememberMeChecked) {
-            //to navigate to the deatils activity immediatley.
-            // todo =========111111111 this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
-        } else {
+        sharedViewModel.setActiveIntroStarted(false)
 
             binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
@@ -116,6 +106,12 @@ class LoginFragment : Fragment() {
                 } else if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
                     Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
                 } else {
+                    if(binding.rememberMeCheckBox.isChecked){
+                        val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                        val editor: SharedPreferences.Editor = sp.edit()
+                        editor.putBoolean("rememberMeChecked", true)
+                        editor.apply()
+                    }
                     bottomSheet = LoadingBottomSheetDialog()
                     bottomSheet.isCancelable = false
                     viewModel.authenticate(email, password)
@@ -141,18 +137,12 @@ class LoginFragment : Fragment() {
                 if (user != null) {
                     Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
 
-                    //put the user info so that we can query data for that user.
-                    if (binding.rememberMeCheckBox.isChecked) {
-                        val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-                        val editor: SharedPreferences.Editor = sp.edit()
-                        editor.putBoolean("isRememberMeChecked", true)
-                        editor.putString("user_name", user.name)
-                        editor.putString("email", user.email)
-                        editor.apply()
-                    }
-
-                    //todo ============ this.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDetailsActivity())
                 } else {
+                    val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                    val editor: SharedPreferences.Editor = sp.edit()
+                    editor.remove("rememberMeChecked")
+                    editor.apply()
+
                     binding.emailInputLayout.error = "Incorrect Email or Password"
                     Snackbar.make(binding.root, "Please check your information !", Snackbar.LENGTH_LONG).show();
                 }
@@ -167,8 +157,6 @@ class LoginFragment : Fragment() {
             })
             return binding.root
         }
-        return null
-    }
 }
 
 /*

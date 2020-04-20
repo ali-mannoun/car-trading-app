@@ -1,6 +1,7 @@
 package com.example.projectapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.projectapp.databinding.ActivityMasterBinding
 import com.example.projectapp.utils.SharedViewModel
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_master.*
 
 val sharedViewModel: SharedViewModel = SharedViewModel()
@@ -37,7 +40,7 @@ class MasterActivity : AppCompatActivity() {
 
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
-        setupBottomNavMenu(navController)
+        val bottomNav = setupBottomNavMenu(navController)
         setupActionBar(navController, mAppBarConfiguration)
 
         //window.decorView.systemUiVisibility=  View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -46,6 +49,7 @@ class MasterActivity : AppCompatActivity() {
 
         binding.sharedViewModel = sharedViewModel
         sharedViewModel.setBottomNavigationViewVisibility(false)
+        sharedViewModel.setActiveIntroStarted(false)
 
         sharedViewModel.onBottomNavigationViewVisibilitySelected.observe(this, Observer {
             if (it) {
@@ -55,6 +59,17 @@ class MasterActivity : AppCompatActivity() {
             }
         })
 
+        bottomNav.setOnNavigationItemReselectedListener {
+            Snackbar.make(binding.root, "The tab is currently selected", Snackbar.LENGTH_SHORT).show();
+        }
+
+        sharedViewModel.onStartIntroLayout.observe(this, Observer {
+            if (it) {
+                toolbar.visibility = View.GONE
+            } else {
+                toolbar.visibility = View.VISIBLE
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -69,9 +84,10 @@ class MasterActivity : AppCompatActivity() {
     }
 
 
-    private fun setupBottomNavMenu(navController: NavController) {
+    private fun setupBottomNavMenu(navController: NavController): BottomNavigationView {
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         bottomNavView?.setupWithNavController(navController)
+        return bottomNavView
     }
 
     private fun setupActionBar(navController: NavController,

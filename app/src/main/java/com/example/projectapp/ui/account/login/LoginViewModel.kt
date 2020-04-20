@@ -23,7 +23,8 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     enum class AuthenticationState {
         UNAUTHENTICATED,        // Initial state, the user needs to authenticate
         AUTHENTICATED,        // The user has authenticated successfully
-        INVALID_AUTHENTICATION  // Authentication failed
+        INVALID_AUTHENTICATION,  // Authentication failed
+        AUTHENTICATED_AND_REMEMBER_ME //remember me
     }
 
     private val SUCCESS_RESPONSE = 200
@@ -76,8 +77,18 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
         }
     }
 
+    fun setRememberedUser(user: User) {
+        _user.value = user
+    }
+
     fun refuseAuthentication() {
         _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+    }
+
+    fun rememberUser(rememberMe: Boolean) {
+        if(rememberMe){
+        _authenticationState.value = AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.example.projectapp.ui.cars
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,6 +43,7 @@ class CarsFragment : Fragment() {
 
     private fun showWelcomeMessage() {
         Toast.makeText(context, "welcome from car fragment", Toast.LENGTH_LONG).show()
+        carsViewModel.refreshCars()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,9 +53,16 @@ class CarsFragment : Fragment() {
             requireActivity().finish()
         }
 
+        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val isRememberMeChecked: Boolean = pref.getBoolean("rememberMeChecked", false)
+        if (isRememberMeChecked) {
+            loginViewModel.rememberUser(true)
+        }
+
         loginViewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
             when (authenticationState) {
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> showWelcomeMessage()
+                LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME -> showWelcomeMessage()
                 LoginViewModel.AuthenticationState.UNAUTHENTICATED -> findNavController().navigate(R.id.loginFragment)
             }
         })
@@ -62,6 +72,7 @@ class CarsFragment : Fragment() {
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         sharedViewModel.setBottomNavigationViewVisibility(true)
+        sharedViewModel.setActiveIntroStarted(false)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_cars, container, false)
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
@@ -69,7 +80,6 @@ class CarsFragment : Fragment() {
         // Giving the binding access to the CarsViewModel
         binding.viewModel = carsViewModel
 
-        carsViewModel.refreshCars()
 
         val adapter = CarsAdapter(CarsListener { carId ->
             Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()

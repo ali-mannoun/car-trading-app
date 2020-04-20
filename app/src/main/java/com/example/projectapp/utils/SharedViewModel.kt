@@ -14,4 +14,14 @@ class SharedViewModel : ViewModel() {
 
     val onBottomNavigationViewVisibilitySelected: LiveData<Boolean>
         get() = onBottomNavigationViewVisible
+
+    private val onIntroLayoutStarted = MutableLiveData<Boolean>()
+
+    fun setActiveIntroStarted(value: Boolean) {
+        onIntroLayoutStarted.value = value
+    }
+
+    val onStartIntroLayout: LiveData<Boolean>
+        get() = onIntroLayoutStarted
+
 }

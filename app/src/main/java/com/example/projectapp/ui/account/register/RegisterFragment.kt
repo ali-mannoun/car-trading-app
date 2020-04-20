@@ -66,8 +66,7 @@ class RegisterFragment : Fragment() {
                 // REGISTRATION_COMPLETED when ready, and for this example, the username
                 // is accessed as a read-only property from RegistrationViewModel and is
                 // used to directly authenticate with loginViewModel.
-                registerViewModel.registrationState.observe(
-                        viewLifecycleOwner, Observer { state ->
+                registerViewModel.registrationState.observe(viewLifecycleOwner, Observer { state ->
                     if (state == RegisterViewModel.RegistrationState.REGISTRATION_COMPLETED) {
                         // Here we authenticate with the token provided by the ViewModel
                         // then pop back to the profie_fragment, where the user authentication
@@ -76,8 +75,7 @@ class RegisterFragment : Fragment() {
                         //todo loginViewModel.authenticate(authToken)
                         findNavController().popBackStack(R.id.nav_cars_menu, false)
                     }
-                }
-                )
+                })
 
                 registerViewModel.onCreateNewAccountBtnClicked(name, email, password)
             }

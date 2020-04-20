@@ -27,13 +27,7 @@ enum class CarsApiStatus { LOADING, ERROR, DONE }
  * or fragment lifecycle events.
  */
 class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
-    /*
-        enum class NavTabs {
-            PROFILE_TAB,
-            CARS_TAB,
-            RECOMMENDED_TAB
-        }
-      */
+
 
     val cars: LiveData<List<Car>> = carRepository.cars
 
