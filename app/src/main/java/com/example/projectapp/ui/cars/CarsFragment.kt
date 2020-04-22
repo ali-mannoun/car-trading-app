@@ -25,6 +25,7 @@ import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.account.login.LoginViewModel
+import com.example.projectapp.utils.CheckNetworkConnectivity
 
 class CarsFragment : Fragment() {
     private lateinit var binding: FragmentCarsBinding
@@ -134,8 +135,17 @@ class CarsFragment : Fragment() {
         })
 
         binding.swipe.setOnRefreshListener {
-            carsViewModel.refreshCars()
+            if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
+                Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
+            } else {
+                carsViewModel.refreshCars()
+            }
             binding.swipe.isRefreshing = false
+
+        }
+
+        if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
+            Toast.makeText(context, "Load data from offline cache !", Toast.LENGTH_SHORT).show()
         }
 
         return binding.root

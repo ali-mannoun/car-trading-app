@@ -12,25 +12,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-<!--        <com.google.android.material.appbar.CollapsingToolbarLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            app:expandedTitleGravity="top"-->
-<!--            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">-->
+        <!--        <com.google.android.material.appbar.CollapsingToolbarLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            app:expandedTitleGravity="top"-->
+        <!--            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">-->
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="8dp"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/top_app_bar_menu"
-                app:title="Car Digital Trading" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="8dp"
+            app:menu="@menu/top_app_bar_menu"
+            app:title="Car Digital Trading" />
 
-            <!--            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
-            <!--            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-<!--        </com.google.android.material.appbar.CollapsingToolbarLayout>-->
+        <!--            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
+        <!--            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
+        <!--        </com.google.android.material.appbar.CollapsingToolbarLayout>-->
 
     </com.google.android.material.appbar.AppBarLayout>
 
