@@ -24,7 +24,7 @@ class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) 
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
         child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy))
     }
-
+/*
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
         if (dependency is Snackbar.SnackbarLayout) {
             updateSnackbar(child, dependency)
@@ -42,5 +42,5 @@ class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) 
             snackbarLayout.layoutParams = params
         }
     }
-
+*/
 }

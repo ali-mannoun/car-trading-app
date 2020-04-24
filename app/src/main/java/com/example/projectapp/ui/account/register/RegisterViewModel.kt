@@ -13,8 +13,9 @@ import kotlinx.coroutines.launch
 class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     enum class RegistrationState {
-        COLLECT_PROFILE_DATA,
-        COLLECT_USER_PASSWORD,
+        //COLLECT_PROFILE_DATA,
+        //COLLECT_USER_PASSWORD,
+        COLLECT_USER_CREDENTIALS,
         REGISTRATION_COMPLETED
     }
 
@@ -22,7 +23,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         Log.e("RegisterViewModel","init constructor")
     }
 
-    val registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_PROFILE_DATA)
+    val registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_USER_CREDENTIALS)
 
     // Simulation of real-world scenario, where an auth token may be provided as
     // an alternate authentication mechanism instead of passing the password
@@ -30,12 +31,13 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     var authToken = ""
         private set
 
-    fun collectProfileData(name: String, bio: String) {
+    fun collectProfileData(name: String, email: String,password: String) {
         // ... validate and store data
 
         // Change State to collecting username and password
-        registrationState.value = RegistrationState.COLLECT_USER_PASSWORD
+        registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
     }
+    /*
 //called when register btn clicked
     fun createAccountAndLogin(email: String, password: String) {
         // ... create account
@@ -43,11 +45,11 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         this.authToken = "the token"
         // Change State to registration completed
         registrationState.value = RegistrationState.REGISTRATION_COMPLETED
-    }
+    }*/
 
     fun userCancelledRegistration() : Boolean {
         // Clear existing registration data
-        registrationState.value = RegistrationState.COLLECT_PROFILE_DATA
+        registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
         authToken = ""
         return true
     }
@@ -81,6 +83,14 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
      */
     fun onCreateNewAccountBtnClicked(name: String, email: String, password: String) = launchDataLoad {
         userRepository.createNewAccount(name, email, password)
+    }
+
+    fun userRegisteredAndLoginSuccessfully(){
+        // ... create account
+        // ... authenticate
+        this.authToken = "the token"
+        // Change State to registration completed
+        registrationState.value = RegistrationState.REGISTRATION_COMPLETED
     }
 
     fun onToastShown() {

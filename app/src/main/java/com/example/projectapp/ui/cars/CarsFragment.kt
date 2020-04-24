@@ -26,6 +26,7 @@ import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.account.login.LoginViewModel
 import com.example.projectapp.utils.CheckNetworkConnectivity
+import com.google.android.material.snackbar.Snackbar
 
 class CarsFragment : Fragment() {
     private lateinit var binding: FragmentCarsBinding
@@ -67,6 +68,14 @@ class CarsFragment : Fragment() {
                 LoginViewModel.AuthenticationState.UNAUTHENTICATED -> findNavController().navigate(R.id.loginFragment)
             }
         })
+
+        if (loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME ||
+                loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
+
+            if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
+                Toast.makeText(context, "Load data from offline cache !", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -81,20 +90,23 @@ class CarsFragment : Fragment() {
         // Giving the binding access to the CarsViewModel
         binding.viewModel = carsViewModel
 
+        if (loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME ||
+                loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
 
-        val adapter = CarsAdapter(CarsListener { carId ->
-            Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
-            //viewModel.onCarClicked(carId)
 
-            //      Bundle bundle = new Bundle();
-            //       bundle.putParcelable("amount", car);
-            //Navigation.findNavController(binding.getRoot()).navigate(CarsFragmentDirections.actionNavigationCarsUserToUserCarDetailsFragment())
-        })
+            val adapter = CarsAdapter(CarsListener { carId ->
+                Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
+                //viewModel.onCarClicked(carId)
 
-        //TODO when rotate the device show two grids . when the device isn't rotated show one grid.
+                //      Bundle bundle = new Bundle();
+                //       bundle.putParcelable("amount", car);
+                //Navigation.findNavController(binding.getRoot()).navigate(CarsFragmentDirections.actionNavigationCarsUserToUserCarDetailsFragment())
+            })
 
-        //val manager = GridLayoutManager(activity, 2)
-        val manager = GridLayoutManager(activity, 1)
+            //TODO when rotate the device show two grids . when the device isn't rotated show one grid.
+
+            //val manager = GridLayoutManager(activity, 2)
+            val manager = GridLayoutManager(activity, 1)
 /*
 //todo this when rotate device
 
@@ -110,44 +122,40 @@ class CarsFragment : Fragment() {
             }
         }
         */
-        binding.carsRecyclerView.layoutManager = manager
-        binding.carsRecyclerView.adapter = adapter
+            binding.carsRecyclerView.layoutManager = manager
+            binding.carsRecyclerView.adapter = adapter
 
-        /*
+            /*
         Your code needs to tell the ListAdapter when a changed list is available.
         ListAdapter provides a method called submitList() to tell ListAdapter that a new version of the list is available.
         When this method is called, the ListAdapter diffs the new list against the old one and detects items that were added,
         removed, moved, or changed. Then the ListAdapter updates the items shown by RecyclerView.
          */
-        carsViewModel.cars.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Log.e("CarsFragment", "cars observed")
-                adapter.addHeaderAndSubmitList(it)
-            }
-        })
+            carsViewModel.cars.observe(viewLifecycleOwner, Observer {
+                it?.let {
+                    Log.e("CarsFragment", "cars observed")
+                    adapter.addHeaderAndSubmitList(it)
+                }
+            })
 
-        carsViewModel.navigateToSelectedCarDetails.observe(viewLifecycleOwner, Observer {
-            it?.let { id: Long ->
-                //load specifications
-                this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsFragment(id))
-                carsViewModel.onCarDetailsNavigated()
-            }
-        })
+            carsViewModel.navigateToSelectedCarDetails.observe(viewLifecycleOwner, Observer {
+                it?.let { id: Long ->
+                    //load specifications
+                    this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsFragment(id))
+                    carsViewModel.onCarDetailsNavigated()
+                }
+            })
 
-        binding.swipe.setOnRefreshListener {
-            if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
-                Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
-            } else {
-                carsViewModel.refreshCars()
-            }
-            binding.swipe.isRefreshing = false
+            binding.swipe.setOnRefreshListener {
+                if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
+                    Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
+                } else {
+                    carsViewModel.refreshCars()
+                }
+                binding.swipe.isRefreshing = false
 
+            }
         }
-
-        if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
-            Toast.makeText(context, "Load data from offline cache !", Toast.LENGTH_SHORT).show()
-        }
-
         return binding.root
     }
 }

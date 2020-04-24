@@ -8,19 +8,21 @@ import android.os.Bundle;
 //import com.example.projectapp.databinding.ActivityCarDetailsBinding;
 //import com.example.projectapp.domain.Car;
 
+import com.example.projectapp.databinding.ActivityCarDetailsBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CarDetailsActivity extends AppCompatActivity {
-   // private ActivityCarDetailsBinding binding;
+    private ActivityCarDetailsBinding binding;
   //  private Car car;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-     //   setContentView(R.layout.activity_car_details);
+        setContentView(R.layout.activity_car_details);
 
-     //   binding = DataBindingUtil.setContentView(this,R.layout.activity_car_details);
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_car_details);
 
 
       //  car = CarDetailsActivityArgs.fromBundle(Objects.requireNonNull(getIntent().getExtras())).getCar();
