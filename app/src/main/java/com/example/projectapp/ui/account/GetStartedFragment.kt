@@ -3,6 +3,7 @@ package com.example.projectapp.ui.account
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Html
 import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,9 @@ import com.example.projectapp.sharedViewModel
 import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.fragment_get_started.*
 import kotlinx.android.synthetic.main.fragment_get_started.view.*
+import org.w3c.dom.Text
 
 class GetStartedFragment : Fragment() {
     private lateinit var binding: FragmentGetStartedBinding
@@ -42,7 +45,9 @@ class GetStartedFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_get_started, container, false)
+
         sharedViewModel.setActiveIntroStarted(true)
 
 
@@ -51,7 +56,7 @@ class GetStartedFragment : Fragment() {
         if (isIntroOpenedBefore) {
             this.findNavController().graph.startDestination = R.id.nav_cars_menu
             this.findNavController().navigate(GetStartedFragmentDirections.actionGetStartedFragmentToNavCarsMenu())
-        }else{
+        } else {
             this.findNavController().graph.startDestination = R.id.getStartedFragment
         }
 
@@ -106,4 +111,5 @@ class GetStartedFragment : Fragment() {
 */
         return binding.root
     }
+
 }

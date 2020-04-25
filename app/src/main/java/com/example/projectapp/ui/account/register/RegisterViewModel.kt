@@ -16,11 +16,11 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         //COLLECT_PROFILE_DATA,
         //COLLECT_USER_PASSWORD,
         COLLECT_USER_CREDENTIALS,
-        REGISTRATION_COMPLETED
+        REGISTRATION_COMPLETED,
+        REGISTRATION_COMPLETED_AND_AUTHENTICATED
     }
 
     init {
-        Log.e("RegisterViewModel","init constructor")
     }
 
     val registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_USER_CREDENTIALS)
@@ -31,7 +31,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     var authToken = ""
         private set
 
-    fun collectProfileData(name: String, email: String,password: String) {
+    fun collectProfileData(name: String, email: String, password: String) {
         // ... validate and store data
 
         // Change State to collecting username and password
@@ -47,7 +47,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         registrationState.value = RegistrationState.REGISTRATION_COMPLETED
     }*/
 
-    fun userCancelledRegistration() : Boolean {
+    fun userCancelledRegistration(): Boolean {
         // Clear existing registration data
         registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
         authToken = ""
@@ -85,10 +85,11 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         userRepository.createNewAccount(name, email, password)
     }
 
-    fun userRegisteredAndLoginSuccessfully(){
+    fun userRegisteredAndLoginSuccessfully() {
         // ... create account
         // ... authenticate
-        this.authToken = "the token"
+        this.authToken = requireNotNull(_user.value?.verificationToken)
+        Log.e("RegisterViewModel", authToken)
         // Change State to registration completed
         registrationState.value = RegistrationState.REGISTRATION_COMPLETED
     }

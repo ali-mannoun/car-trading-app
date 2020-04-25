@@ -6,10 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 // Since we only have one service, this can all go in one file.
 // If you add more services, split this to multiple files and make sure to share the retrofit
@@ -53,6 +50,9 @@ interface IApiService {
 
     @POST("users")
     suspend fun createNewAccount(@Body user: RegisterProperty): Response<UserProperty>
+
+    @PUT("")
+    suspend fun verifyAccount(@Path("verify") authCode: String):Response<>
 
     @GET("cars")
     suspend fun getCarsProperties(): Response<List<CarProperty>>

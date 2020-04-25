@@ -65,6 +65,8 @@ class MasterActivity : AppCompatActivity() {
             Snackbar.make(binding.root, "The tab is currently selected", Snackbar.LENGTH_SHORT).show();
         }
 
+
+
         sharedViewModel.onStartIntroLayout.observe(this, Observer {
             if (it) {
                 toolbar.visibility = View.GONE

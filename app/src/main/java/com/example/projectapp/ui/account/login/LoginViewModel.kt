@@ -78,18 +78,16 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     }
 
     fun authenticate(authCode: String) {
-        //todo
+        //todo if the verification token is null then the user authenticated
         viewModelScope.launch {
             try {
                 _spinner.value = true //progressBar
-                //val responseCode = userRepository.checkCredentials(email, password)
-                //if (responseCode == SUCCESS_RESPONSE) {
+                val isVerified = userRepository.verifyAccount(authCode)
+                if (isVerified) {
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
-                    //onLoginBtnClicked(email, password)
-                //} else {
+                } else {
                     _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
-                    _user.value = null
-                //}
+                }
             } catch (error: IOException) {
                 _toast.value = error.message
             } finally {
@@ -107,8 +105,8 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     }
 
     fun rememberUser(rememberMe: Boolean) {
-        if(rememberMe){
-        _authenticationState.value = AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME
+        if (rememberMe) {
+            _authenticationState.value = AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME
         }
     }
 

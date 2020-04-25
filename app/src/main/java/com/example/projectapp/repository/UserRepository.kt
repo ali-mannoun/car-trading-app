@@ -14,7 +14,7 @@ import com.example.projectapp.network.*
  */
 class UserRepository(private val webService: IApiService) {
 
-    suspend fun checkCredentials(email: String, password: String):Int {
+    suspend fun checkCredentials(email: String, password: String): Int {
         val credentials = LoginProperty(email = email, password = password)
         val checkResponse = webService.checkUserCredentials(user = credentials)
         return checkResponse.code()
@@ -50,6 +50,12 @@ class UserRepository(private val webService: IApiService) {
             }
         }
         return null
+    }
+
+    fun verifyAccount(authCode: String): Boolean {
+        val response = webService.verifyAccount(authCode)
+        //todo  verify
+        return false
     }
 
     //TODO store uesr class when remember me is checked so we can fetch that user to show in profile fragment

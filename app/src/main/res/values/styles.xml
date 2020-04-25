@@ -12,8 +12,6 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="textAppearanceHeadline6">@style/CustomHeadline6</item>
 
-        <item name="android:windowTranslucentStatus">true</item>
-
 <!--        <item name="android:windowTranslucentStatus">true</item>-->
 
         <!--        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>-->

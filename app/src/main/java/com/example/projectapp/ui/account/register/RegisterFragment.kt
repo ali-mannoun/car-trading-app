@@ -56,9 +56,10 @@ class RegisterFragment : Fragment() {
                 // Here we authenticate with the token provided by the ViewModel
                 // then pop back to the profie_fragment, where the user authentication
                 // status will be tested and should be authenticated.
+                Toast.makeText(context, "Verifying your account... please wait ! ", Toast.LENGTH_LONG).show()
                 Log.e("registration", "complete")
                 val authToken = registerViewModel.authToken
-                //todo loginViewModel.authenticate(authToken)
+                loginViewModel.authenticate(authToken)
                 findNavController().popBackStack(R.id.nav_cars_menu, false)
             }
         })
@@ -91,7 +92,7 @@ class RegisterFragment : Fragment() {
 
         binding.confirmPassword.doOnTextChanged { text, _, _, _ ->
             if (binding.password.text.toString() != text.toString()) {
-                binding.confirmPasswordInputLayout.error = "password doesn't match!"
+                binding.confirmPasswordInputLayout.error = "Password doesn't match!"
             } else {
                 binding.confirmPasswordInputLayout.error = null
             }
@@ -115,11 +116,11 @@ class RegisterFragment : Fragment() {
             if (it != null) {
                 //user registered successfully
                 //loginViewModel.authenticate(registerViewModel.authToken)
-                loginViewModel.authenticate(registerViewModel.authToken)
                 registerViewModel.userRegisteredAndLoginSuccessfully()
                 Toast.makeText(context, it.name, Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context, "false", Toast.LENGTH_LONG).show()
+                binding.emailInputLayout.error = "Email address already exists !"
+                Toast.makeText(context, "Email address already exists !", Toast.LENGTH_LONG).show()
             }
         })
 
