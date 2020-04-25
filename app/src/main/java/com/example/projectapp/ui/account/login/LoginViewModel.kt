@@ -78,14 +78,15 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     }
 
     fun authenticate(authCode: String) {
-        //todo if the verification token is null then the user authenticated
         viewModelScope.launch {
             try {
                 _spinner.value = true //progressBar
                 val isVerified = userRepository.verifyAccount(authCode)
                 if (isVerified) {
+                    _toast.value = "Authenticated successfully"
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
                 } else {
+                    _toast.value = "Unauthenticated, please try again !"
                     _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
                 }
             } catch (error: IOException) {

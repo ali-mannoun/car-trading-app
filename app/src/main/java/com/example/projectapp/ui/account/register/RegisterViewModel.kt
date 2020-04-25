@@ -9,6 +9,7 @@ import com.example.projectapp.domain.User
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -16,8 +17,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         //COLLECT_PROFILE_DATA,
         //COLLECT_USER_PASSWORD,
         COLLECT_USER_CREDENTIALS,
-        REGISTRATION_COMPLETED,
-        REGISTRATION_COMPLETED_AND_AUTHENTICATED
+        REGISTRATION_COMPLETED
     }
 
     init {
@@ -28,7 +28,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     // Simulation of real-world scenario, where an auth token may be provided as
     // an alternate authentication mechanism instead of passing the password
     // around. This is set at the end of the registration process.
-    var authToken = ""
+    var authToken: String? = ""
         private set
 
     fun collectProfileData(name: String, email: String, password: String) {
@@ -88,8 +88,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     fun userRegisteredAndLoginSuccessfully() {
         // ... create account
         // ... authenticate
-        this.authToken = requireNotNull(_user.value?.verificationToken)
-        Log.e("RegisterViewModel", authToken)
+        this.authToken = _user.value?.verificationToken
         // Change State to registration completed
         registrationState.value = RegistrationState.REGISTRATION_COMPLETED
     }
@@ -117,7 +116,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
      *              lambda the loading spinner will display, after completion or error the loading
      *              spinner will stop
      */
-    private fun launchDataLoad(block: suspend () -> User?): Unit {
+    private fun launchDataLoad(block: suspend () -> User?) {
         /*
         The library adds a viewModelScope as an extension function of the ViewModel class.
         This scope is bound to Dispatchers.Main and will automatically be cancelled when the ViewModel is cleared.
@@ -126,7 +125,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
             try {
                 _spinner.value = true //progressBar
                 _user.value = block()
-            } catch (error: UserRepository.UserFetchingError) {
+            } catch (error: IOException) {
                 _toast.value = error.message
                 _user.value = null
             } finally {

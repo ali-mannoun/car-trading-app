@@ -51,8 +51,8 @@ interface IApiService {
     @POST("users")
     suspend fun createNewAccount(@Body user: RegisterProperty): Response<UserProperty>
 
-    @PUT("")
-    suspend fun verifyAccount(@Path("verify") authCode: String):Response<>
+    @GET("users/verify/{token}")
+    suspend fun verifyAccount(@Path("token") authCode: String):Response<ResponseProperty>
 
     @GET("cars")
     suspend fun getCarsProperties(): Response<List<CarProperty>>

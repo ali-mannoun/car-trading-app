@@ -14,6 +14,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -32,8 +33,10 @@ private var maxAttemptsToPressBackKey = 1
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var bottomSheet: LoadingBottomSheetDialog
+    private var allInputFieldsValidated = false
 
-    private val viewModel: LoginViewModel by activityViewModels(
+
+    private val viewModel: LoginViewModel by viewModels(
             factoryProducer = {
                 LoginViewModel.FACTORY(UserRepository(getNetworkService()))
             }
@@ -84,16 +87,20 @@ class LoginFragment : Fragment() {
             val emailPattern: Pattern = Patterns.EMAIL_ADDRESS
             val isValid = emailPattern.matcher(text.toString()).matches()
             if (!isValid) {
+                allInputFieldsValidated = false
                 binding.emailInputLayout.error = "Invalid Email !"
             } else {
+                allInputFieldsValidated = true
                 binding.emailInputLayout.error = null
             }
         }
 
         binding.password.doOnTextChanged { text, _, _, _ ->
             if (text!!.length < 8) {
+                allInputFieldsValidated = false
                 binding.passwordInputLayout.error = "Must at least 8 characters!"
             } else {
+                allInputFieldsValidated = true
                 binding.passwordInputLayout.error = null
             }
         }
@@ -105,7 +112,7 @@ class LoginFragment : Fragment() {
                 Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
             } else if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
                 Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
-            } else {
+            } else if(allInputFieldsValidated) {
                 if (binding.rememberMeCheckBox.isChecked) {
                     val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
                     val editor: SharedPreferences.Editor = sp.edit()
@@ -126,7 +133,7 @@ class LoginFragment : Fragment() {
         viewModel.spinner.observe(viewLifecycleOwner, Observer {
             if (it) {
                 binding.loginBtn.isEnabled = false
-                bottomSheet.show(parentFragmentManager, "LoginFragment...")
+                bottomSheet.show(childFragmentManager, "LoginFragment...")
             } else {
                 binding.loginBtn.isEnabled = true
                 bottomSheet.dismiss()

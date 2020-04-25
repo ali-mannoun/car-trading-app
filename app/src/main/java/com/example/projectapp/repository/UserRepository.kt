@@ -52,9 +52,11 @@ class UserRepository(private val webService: IApiService) {
         return null
     }
 
-    fun verifyAccount(authCode: String): Boolean {
+    suspend fun verifyAccount(authCode: String): Boolean {
         val response = webService.verifyAccount(authCode)
-        //todo  verify
+        if (response.isSuccessful) {
+            return true
+        }
         return false
     }
 
