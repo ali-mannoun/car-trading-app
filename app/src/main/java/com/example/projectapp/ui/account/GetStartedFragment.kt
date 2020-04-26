@@ -3,8 +3,6 @@ package com.example.projectapp.ui.account
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Html
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
-import com.example.projectapp.IntroViewPagerAdapter
 import com.example.projectapp.R
-import com.example.projectapp.ScreenItem
 import com.example.projectapp.databinding.FragmentGetStartedBinding
 import com.example.projectapp.sharedViewModel
-import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_get_started.*
-import kotlinx.android.synthetic.main.fragment_get_started.view.*
-import org.w3c.dom.Text
 
 class GetStartedFragment : Fragment() {
     private lateinit var binding: FragmentGetStartedBinding

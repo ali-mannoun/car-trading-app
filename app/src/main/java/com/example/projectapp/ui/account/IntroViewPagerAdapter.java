@@ -1,4 +1,4 @@
-package com.example.projectapp;
+package com.example.projectapp.ui.account;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.projectapp.R;
 
 import java.util.List;
 //Change the superclass to RecyclerView.Adapter for paging through views, or FragmentStateAdapter for paging through fragments.

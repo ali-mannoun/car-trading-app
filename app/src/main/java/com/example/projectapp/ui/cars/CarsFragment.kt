@@ -94,7 +94,7 @@ class CarsFragment : Fragment() {
 
             val adapter = CarsAdapter(CarsListener { carId ->
                 Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
-                //viewModel.onCarClicked(carId)
+                carsViewModel.onCarClicked(carId)
 
                 //      Bundle bundle = new Bundle();
                 //       bundle.putParcelable("amount", car);
@@ -139,7 +139,7 @@ class CarsFragment : Fragment() {
             carsViewModel.navigateToSelectedCarDetails.observe(viewLifecycleOwner, Observer {
                 it?.let { id: Long ->
                     //load specifications
-                    this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsFragment(id))
+                    this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsActivity(id))
                     carsViewModel.onCarDetailsNavigated()
                 }
             })
