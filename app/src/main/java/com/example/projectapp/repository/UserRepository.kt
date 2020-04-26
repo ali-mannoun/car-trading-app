@@ -21,7 +21,6 @@ class UserRepository(private val webService: IApiService) {
     }
 
     suspend fun login(email: String, password: String): User? {
-
         val loginInfo = LoginProperty(email = email, password = password)
         //Check if the user exists in the database. if the user exists, then we login the user to the system.
         // else we return null

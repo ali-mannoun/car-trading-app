@@ -1,5 +1,7 @@
 package com.example.projectapp.ui.account.register
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -86,7 +88,7 @@ class RegisterFragment : Fragment() {
 
 
         binding.username.doOnTextChanged { text, _, _, _ ->
-            if (text!!.length > 3) {
+            if (text!!.length < 3) {
                 allInputFieldsValidated = false
                 binding.userNameInputLayout.error = "At least 3 characters !"
             } else {
@@ -136,6 +138,12 @@ class RegisterFragment : Fragment() {
             if (name.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
                 Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
             } else if (allInputFieldsValidated) {
+                if(binding.rememberMeCheckBox.isChecked){
+                    val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                    val editor: SharedPreferences.Editor = sp.edit()
+                    editor.putBoolean("rememberMeChecked", true)
+                    editor.apply()
+                }
                 bottomSheet = LoadingBottomSheetDialog()
                 bottomSheet.isCancelable = false
 
@@ -148,6 +156,11 @@ class RegisterFragment : Fragment() {
                 //user registered successfully
                 registerViewModel.userRegisteredAndLoginSuccessfully()
             } else {
+                val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = sp.edit()
+                editor.remove("rememberMeChecked")
+                editor.apply()
+
                 binding.emailInputLayout.error = "Email address already exists !"
                 Toast.makeText(context, "Email address already exists !", Toast.LENGTH_LONG).show()
             }

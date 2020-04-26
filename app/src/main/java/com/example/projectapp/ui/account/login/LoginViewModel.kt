@@ -151,14 +151,10 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
          */
         viewModelScope.launch {
             try {
-                //_spinner.value = true //progressBar
                 _user.value = block()
-                // } catch (error: UserRepository.UserFetchingError) {
             } catch (error: IOException) {
                 _toast.value = error.message
-                //_user.value = null
             } finally {
-                //_spinner.value = false
             }
         }
     }

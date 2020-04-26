@@ -66,7 +66,6 @@ class MasterActivity : AppCompatActivity() {
         }
 
 
-
         sharedViewModel.onStartIntroLayout.observe(this, Observer {
             if (it) {
                 toolbar.visibility = View.GONE
@@ -86,7 +85,6 @@ class MasterActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return this.findNavController(R.id.nav_host_fragment).navigateUp(mAppBarConfiguration)
     }
-
 
     private fun setupBottomNavMenu(navController: NavController): BottomNavigationView {
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)

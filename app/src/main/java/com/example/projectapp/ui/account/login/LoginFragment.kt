@@ -36,7 +36,7 @@ class LoginFragment : Fragment() {
     private var allInputFieldsValidated = false
 
 
-    private val viewModel: LoginViewModel by viewModels(
+    private val viewModel: LoginViewModel by activityViewModels(
             factoryProducer = {
                 LoginViewModel.FACTORY(UserRepository(getNetworkService()))
             }
@@ -125,6 +125,8 @@ class LoginFragment : Fragment() {
             }
         }
 
+        //TODO implment remember me in both register and login.
+
         binding.createNewAccountBtn.setOnClickListener { view: View ->
             val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             view.findNavController().navigate(action)
@@ -143,7 +145,6 @@ class LoginFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner, Observer { user ->
             if (user != null) {
                 Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
-
             } else {
                 val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = sp.edit()

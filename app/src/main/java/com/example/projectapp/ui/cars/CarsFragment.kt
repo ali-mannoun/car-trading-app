@@ -44,7 +44,6 @@ class CarsFragment : Fragment() {
     )
 
     private fun showWelcomeMessage() {
-        Toast.makeText(context, "welcome from car fragment", Toast.LENGTH_LONG).show()
         carsViewModel.refreshCars()
     }
 
@@ -53,12 +52,6 @@ class CarsFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireActivity().finish()
-        }
-
-        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        val isRememberMeChecked: Boolean = pref.getBoolean("rememberMeChecked", false)
-        if (isRememberMeChecked) {
-            loginViewModel.rememberUser(true)
         }
 
         loginViewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
@@ -81,6 +74,12 @@ class CarsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
+        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val isRememberMeChecked: Boolean = pref.getBoolean("rememberMeChecked", false)
+        if (isRememberMeChecked) {
+            loginViewModel.rememberUser(true)
+        }
+
         sharedViewModel.setBottomNavigationViewVisibility(true)
         sharedViewModel.setActiveIntroStarted(false)
 
@@ -92,7 +91,6 @@ class CarsFragment : Fragment() {
 
         if (loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME ||
                 loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
-
 
             val adapter = CarsAdapter(CarsListener { carId ->
                 Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
