@@ -32,9 +32,9 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
     val toast: LiveData<String?>
         get() = _toast
 
-    private val _car = MutableLiveData<CarSpecifications>()
-    val car: LiveData<CarSpecifications>
-        get() = _car
+    private val _carDetails = MutableLiveData<CarSpecifications>()
+    val carDetails: LiveData<CarSpecifications>
+        get() = _carDetails
 
     fun loadCarSpecificationsById(id: Long) = launchDataLoad {
         repository.getCarSpecificationsById(id)
@@ -69,11 +69,11 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
             try {
                 onStartDownloading()
                 _spinner.value = true //progressBar
-                _car.value = block()
+                _carDetails.value = block()
                 onDoneDownloading()
             } catch (error: CarRepository.CarFetchingError) {
                 _toast.value = error.message
-                _car.value = null
+                _carDetails.value = null
                 onErrorDownloading()
             } finally {
                 _spinner.value = false

@@ -2,6 +2,7 @@ package com.example.projectapp.ui.cars_specifications
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -11,14 +12,58 @@ import com.example.projectapp.R
 import com.example.projectapp.database.CarsDatabase
 import com.example.projectapp.databinding.ActivityCarSpecificationsBinding
 import com.example.projectapp.databinding.CarDetailsLayoutBinding
+import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CarSpecificationsActivity : AppCompatActivity() {
-    private lateinit var MainLayoutBinding: ActivityCarSpecificationsBinding
+    private lateinit var mainLayoutBinding: ActivityCarSpecificationsBinding
     private lateinit var detailsLayoutBinding: CarDetailsLayoutBinding
+    private lateinit var viewPager: ViewPager2
+    private lateinit var imagesSlideAdapter: CarImagesViewPagerAdapter
+    private lateinit var tabIndicator: TabLayout
+    private var carId: Long = -1L //initial value
+
+    //General Information
+    private lateinit var brand: TextView
+    private lateinit var model: TextView
+    private lateinit var generation: TextView
+    private lateinit var yearOfPuttingIntoProduction: TextView
+    private lateinit var yearOfStoppingProduction: TextView
+    private lateinit var description: TextView
+
+    //2. Internal combustion Engine
+    private lateinit var power: TextView
+    private lateinit var engineModel: TextView
+    private lateinit var maxEngineSpeed: TextView
+    private lateinit var engineOilCapacity: TextView
+    private lateinit var fuelSystem: TextView
+
+    //3. Performance
+    private lateinit var maxSpeed: TextView
+    private lateinit var acceleration100Km_h: TextView
+    private lateinit var fuelConsumption: TextView
+    private lateinit var co2Emission: TextView
+
+    //4. Body type
+    private lateinit var seats: TextView
+    private lateinit var doors: TextView
+    private lateinit var length: TextView
+    private lateinit var width: TextView
+    private lateinit var height: TextView
+    private lateinit var maxWeight: TextView
+    private lateinit var bodyType: TextView
+    private lateinit var fuelTankVolume: TextView
+
+    //5. Others
+    private lateinit var brakes: TextView
+    private lateinit var numberOfGears: TextView
+    private lateinit var gearType: TextView
+    private lateinit var tireSize: TextView
+    private lateinit var exteriorFeatures: TextView
+    private lateinit var interiorFeatures: TextView
 
     private val safeArgs: CarSpecificationsActivityArgs by navArgs()
     private val viewModel: CarSpecificationsViewModel by viewModels(
@@ -27,54 +72,102 @@ class CarSpecificationsActivity : AppCompatActivity() {
                         CarsDatabase.getInstance(requireNotNull(this).application).carsDatabaseDao))
             })
 
-    private lateinit var screenPager: ViewPager2
-    var imagesSlideAdapter: CarImagesViewPagerAdapter? = null
-    lateinit var tabIndicator: TabLayout
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MainLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_car_specifications)
+        mainLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_car_specifications)
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
-        MainLayoutBinding.lifecycleOwner = this
+        mainLayoutBinding.lifecycleOwner = this
         // Giving the binding access to the CarsViewModel
         // binding.viewModel = viewModel
-
-
-        val carId = safeArgs.carId
-
+        tabIndicator = mainLayoutBinding.tabLayout
+        viewPager = mainLayoutBinding.viewpager
+/*
+        brand = detailsLayoutBinding.brand
+        model = detailsLayoutBinding.model
+        generation = detailsLayoutBinding.generation
+        yearOfPuttingIntoProduction = detailsLayoutBinding.yearPuttingProduction
+        yearOfStoppingProduction = detailsLayoutBinding.yearStoppingProduction
+        description = detailsLayoutBinding.description
+        power = detailsLayoutBinding.power
+        engineModel = detailsLayoutBinding.engineModel
+        maxEngineSpeed = detailsLayoutBinding.engineSpeed
+        engineOilCapacity = detailsLayoutBinding.oilCapacity
+        fuelSystem = detailsLayoutBinding.fuelSystem
+        maxSpeed = detailsLayoutBinding.speed
+        acceleration100Km_h = detailsLayoutBinding.acceleration
+        fuelConsumption = detailsLayoutBinding.fuelConsumption
+        co2Emission = detailsLayoutBinding.co2Emission
+        seats = detailsLayoutBinding.seats
+        doors = detailsLayoutBinding.doors
+        length = detailsLayoutBinding.length
+        width = detailsLayoutBinding.width
+        height = detailsLayoutBinding.height
+        maxWeight = detailsLayoutBinding.maxWeight
+        bodyType = detailsLayoutBinding.bodyType
+        fuelTankVolume = detailsLayoutBinding.fuelTankSystem
+        brakes = detailsLayoutBinding.brakes
+        numberOfGears = detailsLayoutBinding.numOfGears
+        gearType = detailsLayoutBinding.gearType
+        tireSize = detailsLayoutBinding.tireSize
+        exteriorFeatures = detailsLayoutBinding.exteriorFeatures
+        interiorFeatures = detailsLayoutBinding.interiorFeatures
+*/
+        carId = safeArgs.carId
         viewModel.loadCarSpecificationsById(carId)
 
-        // fill list screen
-        val mList: MutableList<ImageItem> = ArrayList()
-        //mList.add(ImageItem())
-        //mList.add(ImageItem())
+        val carImagesList: MutableList<ImageItem> = ArrayList()
 
-        viewModel.car.observe(this, Observer {
-            mList.add(ImageItem(it.generalInformation.mainImageUrl))
-            mList.add(ImageItem(it.generalInformation.mainImageUrl))
-            mList.add(ImageItem(it.generalInformation.mainImageUrl))
+        viewModel.carDetails.observe(this, Observer {
+            carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
+            carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
+            carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
 
-            tabIndicator = MainLayoutBinding.tabLayout
-            screenPager = MainLayoutBinding.viewpager
-            imagesSlideAdapter = CarImagesViewPagerAdapter(this, mList)
-            screenPager.adapter = imagesSlideAdapter
+            imagesSlideAdapter = CarImagesViewPagerAdapter(this, carImagesList)
+            viewPager.adapter = imagesSlideAdapter
 
             // setup viewpager
-            TabLayoutMediator(tabIndicator, screenPager) { tab, position ->
+            TabLayoutMediator(tabIndicator, viewPager) { tab, position ->
             }.attach()
 
-            //binding.collapsingToolbarLayout.title = it.generalInformation.brand
+            bindCarDetailsIntoViews(it)
+
         })
+    }
 
-
-
-
-
-
-
-
-
-
+    private fun bindCarDetailsIntoViews(car: CarSpecifications) {
+        //1. General information
+        mainLayoutBinding.collapsingToolbarLayout.title = "${car.generalInformation.brand}, ${car.generalInformation.model}"
+        detailsLayoutBinding.generation.text = car.generalInformation.generation
+        detailsLayoutBinding.yearPuttingProduction.text = car.generalInformation.yearOfPuttingIntoProduction
+        detailsLayoutBinding.yearStoppingProduction.text = car.generalInformation.yearOfStoppingProduction
+        detailsLayoutBinding.description.text = car.generalInformation.description
+        //2. Internal combustion Engine
+        detailsLayoutBinding.power.text = car.engine.power
+        detailsLayoutBinding.engineModel.text = car.engine.model
+        detailsLayoutBinding.engineSpeed.text = car.engine.maxSpeed
+        detailsLayoutBinding.oilCapacity.text = car.engine.oilCapacity
+        detailsLayoutBinding.fuelSystem.text = car.engine.fuelSystem
+        //3. Performance
+        detailsLayoutBinding.speed.text = car.performance.maxSpeed
+        detailsLayoutBinding.acceleration.text = car.performance.acceleration100Kmh
+        detailsLayoutBinding.fuelConsumption.text = car.performance.fuelConsumption
+        detailsLayoutBinding.co2Emission.text = car.performance.co2Emissions
+        //4. Body type
+        detailsLayoutBinding.seats.text = car.body.seats
+        detailsLayoutBinding.doors.text = car.body.doors
+        detailsLayoutBinding.length.text = car.body.length
+        detailsLayoutBinding.width.text = car.body.width
+        detailsLayoutBinding.height.text = car.body.height
+        detailsLayoutBinding.maxWeight.text = car.body.maxWeight
+        detailsLayoutBinding.bodyType.text = car.body.bodyType
+        detailsLayoutBinding.fuelTankVolume.text = car.body.fuelTankVolume
+        //5. Others
+        detailsLayoutBinding.brakes.text = car.others.brakes
+        detailsLayoutBinding.numOfGears.text = car.others.numberOfGears
+        detailsLayoutBinding.tireSize.text = car.others.tireSize
+        detailsLayoutBinding.exteriorFeatures.text = car.others.exteriorFeatures
+        detailsLayoutBinding.interiorFeatures.text = car.others.interiorFeatures
 
     }
+
 }

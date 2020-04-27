@@ -29,7 +29,6 @@
                 app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:statusBarScrim="?attr/colorPrimaryVariant"
-                app:title="ali mannoun"
                 tools:title="Title">
 
                 <androidx.viewpager2.widget.ViewPager2
