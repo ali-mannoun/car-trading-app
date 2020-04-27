@@ -3,7 +3,6 @@ package com.example.projectapp.ui.cars_specifications
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -12,7 +11,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.projectapp.R
 import com.example.projectapp.database.CarsDatabase
 import com.example.projectapp.databinding.ActivityCarSpecificationsBinding
-import com.example.projectapp.databinding.CarDetailsLayoutBinding
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
