@@ -33,7 +33,7 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
         get() = _toast
 
     private val _car = MutableLiveData<CarSpecifications>()
-    val cars: LiveData<CarSpecifications>
+    val car: LiveData<CarSpecifications>
         get() = _car
 
     fun loadCarSpecificationsById(id: Long) = launchDataLoad {

@@ -68,8 +68,6 @@ class CarRepository(private val webService: IApiService, private val dataSource:
         withContext(Dispatchers.IO) {
             val cars = webService.getCarsProperties()
             cars.body()?.let {
-                Log.e("car repo666666", cars.body()?.get(0)?.imageUrl.toString())
-
                 dataSource.insertAll(it.asCarsDatabaseModel())
             }
         }

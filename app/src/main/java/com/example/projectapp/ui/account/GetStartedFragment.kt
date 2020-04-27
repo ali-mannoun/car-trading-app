@@ -28,11 +28,6 @@ class GetStartedFragment : Fragment() {
     private lateinit var screenPager: ViewPager2
     var introViewPagerAdapter: IntroViewPagerAdapter? = null
     lateinit var tabIndicator: TabLayout
-    var btnNext: Button? = null
-    var position = 0
-    var btnGetStarted: Button? = null
-    var btnAnim: Animation? = null
-    var tvSkip: TextView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

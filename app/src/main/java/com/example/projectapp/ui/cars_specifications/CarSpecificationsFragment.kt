@@ -37,7 +37,7 @@ class CarSpecificationsFragment : Fragment() {
 
         viewModel.loadCarSpecificationsById(carId)
 
-        viewModel.cars.observe(viewLifecycleOwner, Observer {
+        viewModel.car.observe(viewLifecycleOwner, Observer {
             it?.let { carSpecifications: CarSpecifications ->
                 binding.result.text = carSpecifications.generalInformation.mainImageUrl
             }

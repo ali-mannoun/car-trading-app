@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.Toast.makeText
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -93,12 +94,7 @@ class CarsFragment : Fragment() {
                 loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
 
             val adapter = CarsAdapter(CarsListener { carId ->
-                Toast.makeText(context, " clicked : $carId", Toast.LENGTH_SHORT).show()
                 carsViewModel.onCarClicked(carId)
-
-                //      Bundle bundle = new Bundle();
-                //       bundle.putParcelable("amount", car);
-                //Navigation.findNavController(binding.getRoot()).navigate(CarsFragmentDirections.actionNavigationCarsUserToUserCarDetailsFragment())
             })
 
             //TODO when rotate the device show two grids . when the device isn't rotated show one grid.
@@ -142,6 +138,10 @@ class CarsFragment : Fragment() {
                     this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsActivity(id))
                     carsViewModel.onCarDetailsNavigated()
                 }
+            })
+
+            carsViewModel.toast.observe(viewLifecycleOwner, Observer {
+                Snackbar.make(binding.root,"Cann't connect to the server. Please try again later",Snackbar.LENGTH_LONG).show()
             })
 
             binding.swipe.setOnRefreshListener {

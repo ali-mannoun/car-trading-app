@@ -134,7 +134,10 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
                 if (cars.value.isNullOrEmpty()) {
                     _toast.value = error.message
                     Log.e("CarsViewmodel error", error.message.toString())
+                    Log.e("car vm22",error.message.toString())
                 }
+                _toast.value = error.message
+                Log.e("car vm",error.message.toString())
                 onErrorDownloading()
             } finally {
                 onDoneDownloading()
