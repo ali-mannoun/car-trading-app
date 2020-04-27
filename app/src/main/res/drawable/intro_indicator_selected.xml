@@ -6,7 +6,7 @@
             android:innerRadius="3dp"
             android:thickness="2dp"
             android:useLevel="false">
-            <solid android:color="@color/secondaryLightColor"/>
+            <solid android:color="@color/secondaryColor"/>
         </shape>
     </item>
 

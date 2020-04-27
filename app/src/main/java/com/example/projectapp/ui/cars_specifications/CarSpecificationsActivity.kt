@@ -1,5 +1,6 @@
 package com.example.projectapp.ui.cars_specifications
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
@@ -20,12 +21,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class CarSpecificationsActivity : AppCompatActivity() {
     private lateinit var mainLayoutBinding: ActivityCarSpecificationsBinding
-    private lateinit var detailsLayoutBinding: CarDetailsLayoutBinding
+    //private lateinit var detailsLayoutBinding: CarDetailsLayoutBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var imagesSlideAdapter: CarImagesViewPagerAdapter
     private lateinit var tabIndicator: TabLayout
     private var carId: Long = -1L //initial value
-
+/*
     //General Information
     private lateinit var brand: TextView
     private lateinit var model: TextView
@@ -64,7 +65,7 @@ class CarSpecificationsActivity : AppCompatActivity() {
     private lateinit var tireSize: TextView
     private lateinit var exteriorFeatures: TextView
     private lateinit var interiorFeatures: TextView
-
+*/
     private val safeArgs: CarSpecificationsActivityArgs by navArgs()
     private val viewModel: CarSpecificationsViewModel by viewModels(
             factoryProducer = {
@@ -75,6 +76,7 @@ class CarSpecificationsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_car_specifications)
+
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         mainLayoutBinding.lifecycleOwner = this
         // Giving the binding access to the CarsViewModel
@@ -136,37 +138,38 @@ class CarSpecificationsActivity : AppCompatActivity() {
 
     private fun bindCarDetailsIntoViews(car: CarSpecifications) {
         //1. General information
+        mainLayoutBinding.collapsingToolbarLayout.setExpandedTitleColor(Color.argb(0,0,0,0))
         mainLayoutBinding.collapsingToolbarLayout.title = "${car.generalInformation.brand}, ${car.generalInformation.model}"
-        detailsLayoutBinding.generation.text = car.generalInformation.generation
-        detailsLayoutBinding.yearPuttingProduction.text = car.generalInformation.yearOfPuttingIntoProduction
-        detailsLayoutBinding.yearStoppingProduction.text = car.generalInformation.yearOfStoppingProduction
-        detailsLayoutBinding.description.text = car.generalInformation.description
+        mainLayoutBinding.generation.text = car.generalInformation.generation
+        mainLayoutBinding.yearPuttingProduction.text = car.generalInformation.yearOfPuttingIntoProduction
+        mainLayoutBinding.yearStoppingProduction.text = car.generalInformation.yearOfStoppingProduction
+        mainLayoutBinding.description.text = car.generalInformation.description
         //2. Internal combustion Engine
-        detailsLayoutBinding.power.text = car.engine.power
-        detailsLayoutBinding.engineModel.text = car.engine.model
-        detailsLayoutBinding.engineSpeed.text = car.engine.maxSpeed
-        detailsLayoutBinding.oilCapacity.text = car.engine.oilCapacity
-        detailsLayoutBinding.fuelSystem.text = car.engine.fuelSystem
+        mainLayoutBinding.power.text = car.engine.power
+        mainLayoutBinding.engineModel.text = car.engine.model
+        mainLayoutBinding.engineSpeed.text = car.engine.maxSpeed
+        mainLayoutBinding.oilCapacity.text = car.engine.oilCapacity
+        mainLayoutBinding.fuelSystem.text = car.engine.fuelSystem
         //3. Performance
-        detailsLayoutBinding.speed.text = car.performance.maxSpeed
-        detailsLayoutBinding.acceleration.text = car.performance.acceleration100Kmh
-        detailsLayoutBinding.fuelConsumption.text = car.performance.fuelConsumption
-        detailsLayoutBinding.co2Emission.text = car.performance.co2Emissions
+        mainLayoutBinding.speed.text = car.performance.maxSpeed
+        mainLayoutBinding.acceleration.text = car.performance.acceleration100Kmh
+        mainLayoutBinding.fuelConsumption.text = car.performance.fuelConsumption
+        mainLayoutBinding.co2Emission.text = car.performance.co2Emissions
         //4. Body type
-        detailsLayoutBinding.seats.text = car.body.seats
-        detailsLayoutBinding.doors.text = car.body.doors
-        detailsLayoutBinding.length.text = car.body.length
-        detailsLayoutBinding.width.text = car.body.width
-        detailsLayoutBinding.height.text = car.body.height
-        detailsLayoutBinding.maxWeight.text = car.body.maxWeight
-        detailsLayoutBinding.bodyType.text = car.body.bodyType
-        detailsLayoutBinding.fuelTankVolume.text = car.body.fuelTankVolume
+        mainLayoutBinding.seats.text = car.body.seats
+        mainLayoutBinding.doors.text = car.body.doors
+        mainLayoutBinding.length.text = car.body.length
+        mainLayoutBinding.width.text = car.body.width
+        mainLayoutBinding.height.text = car.body.height
+        mainLayoutBinding.maxWeight.text = car.body.maxWeight
+        mainLayoutBinding.bodyType.text = car.body.bodyType
+        mainLayoutBinding.fuelTankVolume.text = car.body.fuelTankVolume
         //5. Others
-        detailsLayoutBinding.brakes.text = car.others.brakes
-        detailsLayoutBinding.numOfGears.text = car.others.numberOfGears
-        detailsLayoutBinding.tireSize.text = car.others.tireSize
-        detailsLayoutBinding.exteriorFeatures.text = car.others.exteriorFeatures
-        detailsLayoutBinding.interiorFeatures.text = car.others.interiorFeatures
+        mainLayoutBinding.brakes.text = car.others.brakes
+        mainLayoutBinding.numOfGears.text = car.others.numberOfGears
+        mainLayoutBinding.tireSize.text = car.others.tireSize
+        mainLayoutBinding.exteriorFeatures.text = car.others.exteriorFeatures
+        mainLayoutBinding.interiorFeatures.text = car.others.interiorFeatures
 
     }
 
