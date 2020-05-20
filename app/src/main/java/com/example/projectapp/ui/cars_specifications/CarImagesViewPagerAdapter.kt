@@ -20,7 +20,7 @@ class CarImagesViewPagerAdapter(var mContext: Context, var mListScreen: List<Ima
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarImagesViewPagerAdapter.MyViewHolder {
         val v = LayoutInflater.from(mContext).inflate(R.layout.car_image_slide, parent, false)
         // LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //View layoutScreen = inflater.inflate(R.layout.intro, parent,false);
+        //View layoutScreen = inflater.inflate(R.layout.fragment_item_slider, parent,false);
 
         //parent.addView(layoutScreen);
         return MyViewHolder(v)

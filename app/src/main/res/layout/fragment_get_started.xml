@@ -15,13 +15,43 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/logo"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/intro_ui"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/textView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Why choosing CDT app ?"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="22sp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/logo"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginTop="24dp"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:gravity="center"-->
+<!--            android:text="As growing in cars market, it's important to choose the right car you are searching for that match your expectation."-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/textView" />-->
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
@@ -35,46 +65,57 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/next_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/get_started_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp"
-            android:text="Next"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Get Started"
             app:cornerRadius="10dp"
-            app:icon="@drawable/ic_arrow_forward_black_24dp"
             app:iconGravity="textEnd"
             app:iconPadding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/next_btn"
-                    app:layout_constraintEnd_toStartOf="@+id/next_btn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/next_btn"
-                    app:tabBackground="@drawable/intro_indicator_selector"
-                    app:tabIndicatorHeight="0dp"
-                    tools:background="@drawable/intro_indicator_selected"
-                    tools:layout_width="100dp">
-                </com.google.android.material.tabs.TabLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/get_started_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Get Started"
-            android:visibility="invisible"
-            app:cornerRadius="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/skip_btn"-->
+<!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:text="Skip"-->
+<!--            app:cornerRadius="10dp"-->
+<!--            app:iconGravity="textEnd"-->
+<!--            app:iconPadding="8dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@+id/get_started_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tabBackground="@drawable/intro_indicator_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            tools:background="@drawable/intro_indicator_selected"
+            tools:layout_width="100dp">
+        </com.google.android.material.tabs.TabLayout>
+
+<!--        <View-->
+<!--            android:id="@+id/view3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="3dp"-->
+<!--            android:alpha="0.5"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:background="@android:color/darker_gray"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/next_btn" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

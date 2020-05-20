@@ -1,5 +1,5 @@
 package com.example.projectapp.ui.account;
-
+/*
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +26,9 @@ public class IntroViewPagerAdapter extends RecyclerView.Adapter<IntroViewPagerAd
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.intro,parent,false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.fragment_item_slider,parent,false);
        // LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //View layoutScreen = inflater.inflate(R.layout.intro, parent,false);
+        //View layoutScreen = inflater.inflate(R.layout.fragment_item_slider, parent,false);
 
 
         //parent.addView(layoutScreen);
@@ -66,4 +66,4 @@ public class IntroViewPagerAdapter extends RecyclerView.Adapter<IntroViewPagerAd
             imgSlide.setImageResource(mListScreen.get(position).getScreenImg());
         }
     }
-}
+}*/
