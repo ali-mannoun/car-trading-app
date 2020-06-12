@@ -45,6 +45,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Welcome back !"
                 android:textSize="30sp"
+                android:textColor="@color/secondaryColor"
                 app:layout_constraintEnd_toEndOf="@+id/imageView3"
                 app:layout_constraintStart_toStartOf="@+id/imageView3"
                 app:layout_constraintTop_toBottomOf="@+id/imageView3" />

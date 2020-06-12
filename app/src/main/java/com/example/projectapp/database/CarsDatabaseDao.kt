@@ -15,13 +15,12 @@ interface CarsDatabaseDao {
 
     @Query("SELECT * FROM cars")
     fun getAllCars(): LiveData<List<CarEntity>>
-
-
+/*
     // Favourite List
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(car: FavouriteCarEntity)
 
     @Delete
     suspend fun delete(car: FavouriteCarEntity)
-
+*/
 }

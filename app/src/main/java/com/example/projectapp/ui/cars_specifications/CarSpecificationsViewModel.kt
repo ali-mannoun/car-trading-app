@@ -40,6 +40,16 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
         repository.getCarSpecificationsById(id)
     }
 
+    fun alterFavouriteCarInDatabase(save: Boolean, carId: Long) {
+        viewModelScope.launch {
+            if (save) {
+                repository.addCarToFavourite(carId)
+            } else {
+                repository.removeCarFromFavourite(carId)
+            }
+        }
+    }
+
 
     /**
      * Helper function to call a data load function with a loading spinner, errors will trigger a

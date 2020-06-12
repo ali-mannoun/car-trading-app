@@ -9,100 +9,98 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg2">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView9">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
+                    android:layout_marginTop="24dp"
+                    android:text="Ali Mannoun"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="User name" />
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="ali@gmail.com"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="@+id/user_name"
+                    app:layout_constraintStart_toStartOf="@+id/user_name"
+                    app:layout_constraintTop_toBottomOf="@+id/user_name"
+                    tools:text="email address" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/delete_account_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Delete my account"
+                    android:textAppearance="@style/CustomHeadline6"
+                    app:backgroundTint="@color/secondaryColor"
+                    app:cornerRadius="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/log_out_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Log out"
+                    android:textAppearance="@style/CustomHeadline6"
+                    app:backgroundTint="@color/secondaryColor"
+                    app:cornerRadius="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/delete_account_btn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/email" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.cardview.widget.CardView>
 
         <ImageView
             android:id="@+id/imageView9"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="84dp"
+            android:layout_marginTop="80dp"
             android:src="@drawable/ic_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/imageView9"
-            app:layout_constraintStart_toStartOf="@+id/imageView9"
-            app:layout_constraintTop_toBottomOf="@+id/imageView9"
-            tools:text="User name" />
-
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/user_name"
-            app:layout_constraintStart_toStartOf="@+id/user_name"
-            app:layout_constraintTop_toBottomOf="@+id/user_name"
-            tools:text="email address" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/delete_account_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Delete my account"
-            android:textAppearance="@style/CustomHeadline6"
-            android:textColor="@color/secondaryColor"
-            app:layout_constraintStart_toStartOf="@+id/change_name_btn"
-            app:layout_constraintTop_toBottomOf="@+id/change_name_btn" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/log_out_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Log out"
-            android:textAppearance="@style/CustomHeadline6"
-            android:textColor="@color/secondaryColor"
-            app:layout_constraintStart_toStartOf="@+id/delete_account_btn"
-            app:layout_constraintTop_toBottomOf="@+id/delete_account_btn" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/change_name_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="change name"
-            android:textAppearance="@style/CustomHeadline6"
-            android:textColor="@color/secondaryColor"
-            app:layout_constraintStart_toStartOf="@+id/change_password_btn"
-            app:layout_constraintTop_toBottomOf="@+id/change_password_btn" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/change_email_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="change email"
-            android:textAppearance="@style/CustomHeadline6"
-            android:textColor="@color/secondaryColor"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/email" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/change_password_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="change password"
-            android:textAppearance="@style/CustomHeadline6"
-            android:textColor="@color/secondaryColor"
-            app:layout_constraintStart_toStartOf="@+id/change_email_btn"
-            app:layout_constraintTop_toBottomOf="@+id/change_email_btn" />
-
-        <!--            android:background="?android:attr/listDivider"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,56 +14,59 @@ import com.example.projectapp.databinding.ActivityCarSpecificationsBinding
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CarSpecificationsActivity : AppCompatActivity() {
     private lateinit var mainLayoutBinding: ActivityCarSpecificationsBinding
+
     //private lateinit var detailsLayoutBinding: CarDetailsLayoutBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var imagesSlideAdapter: CarImagesViewPagerAdapter
     private lateinit var tabIndicator: TabLayout
     private var carId: Long = -1L //initial value
-/*
-    //General Information
-    private lateinit var brand: TextView
-    private lateinit var model: TextView
-    private lateinit var generation: TextView
-    private lateinit var yearOfPuttingIntoProduction: TextView
-    private lateinit var yearOfStoppingProduction: TextView
-    private lateinit var description: TextView
 
-    //2. Internal combustion Engine
-    private lateinit var power: TextView
-    private lateinit var engineModel: TextView
-    private lateinit var maxEngineSpeed: TextView
-    private lateinit var engineOilCapacity: TextView
-    private lateinit var fuelSystem: TextView
+    /*
+        //General Information
+        private lateinit var brand: TextView
+        private lateinit var model: TextView
+        private lateinit var generation: TextView
+        private lateinit var yearOfPuttingIntoProduction: TextView
+        private lateinit var yearOfStoppingProduction: TextView
+        private lateinit var description: TextView
 
-    //3. Performance
-    private lateinit var maxSpeed: TextView
-    private lateinit var acceleration100Km_h: TextView
-    private lateinit var fuelConsumption: TextView
-    private lateinit var co2Emission: TextView
+        //2. Internal combustion Engine
+        private lateinit var power: TextView
+        private lateinit var engineModel: TextView
+        private lateinit var maxEngineSpeed: TextView
+        private lateinit var engineOilCapacity: TextView
+        private lateinit var fuelSystem: TextView
 
-    //4. Body type
-    private lateinit var seats: TextView
-    private lateinit var doors: TextView
-    private lateinit var length: TextView
-    private lateinit var width: TextView
-    private lateinit var height: TextView
-    private lateinit var maxWeight: TextView
-    private lateinit var bodyType: TextView
-    private lateinit var fuelTankVolume: TextView
+        //3. Performance
+        private lateinit var maxSpeed: TextView
+        private lateinit var acceleration100Km_h: TextView
+        private lateinit var fuelConsumption: TextView
+        private lateinit var co2Emission: TextView
 
-    //5. Others
-    private lateinit var brakes: TextView
-    private lateinit var numberOfGears: TextView
-    private lateinit var gearType: TextView
-    private lateinit var tireSize: TextView
-    private lateinit var exteriorFeatures: TextView
-    private lateinit var interiorFeatures: TextView
-*/
+        //4. Body type
+        private lateinit var seats: TextView
+        private lateinit var doors: TextView
+        private lateinit var length: TextView
+        private lateinit var width: TextView
+        private lateinit var height: TextView
+        private lateinit var maxWeight: TextView
+        private lateinit var bodyType: TextView
+        private lateinit var fuelTankVolume: TextView
+
+        //5. Others
+        private lateinit var brakes: TextView
+        private lateinit var numberOfGears: TextView
+        private lateinit var gearType: TextView
+        private lateinit var tireSize: TextView
+        private lateinit var exteriorFeatures: TextView
+        private lateinit var interiorFeatures: TextView
+    */
     private val safeArgs: CarSpecificationsActivityArgs by navArgs()
     private val viewModel: CarSpecificationsViewModel by viewModels(
             factoryProducer = {
@@ -117,6 +120,7 @@ class CarSpecificationsActivity : AppCompatActivity() {
 
         val carImagesList: MutableList<ImageItem> = ArrayList()
 
+        var isFabClicked = false
         viewModel.carDetails.observe(this, Observer {
             carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
             carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
@@ -131,12 +135,30 @@ class CarSpecificationsActivity : AppCompatActivity() {
 
             bindCarDetailsIntoViews(it)
 
+            mainLayoutBinding.favouriteFab.setOnClickListener {fab ->
+                if(isFabClicked){
+                    //unsave car
+                    (fab as ExtendedFloatingActionButton).text = "UnSave"
+                    (fab as ExtendedFloatingActionButton).icon = applicationContext.getDrawable(R.drawable.ic_favorite_24)
+                    isFabClicked = true
+                }else{
+                    //save car
+
+                    (fab as ExtendedFloatingActionButton).text = "Save"
+                    (fab as ExtendedFloatingActionButton).icon = applicationContext.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                    isFabClicked = false
+                }
+            }
         })
+
+        mainLayoutBinding.favouriteFab.setOnClickListener { fab ->
+
+        }
     }
 
     private fun bindCarDetailsIntoViews(car: CarSpecifications) {
         //1. General information
-        mainLayoutBinding.collapsingToolbarLayout.setExpandedTitleColor(Color.argb(0,0,0,0))
+        mainLayoutBinding.collapsingToolbarLayout.setExpandedTitleColor(Color.argb(0, 0, 0, 0))
         mainLayoutBinding.collapsingToolbarLayout.title = "${car.generalInformation.brand}, ${car.generalInformation.model}"
         mainLayoutBinding.generation.text = car.generalInformation.generation
         mainLayoutBinding.yearPuttingProduction.text = car.generalInformation.yearOfPuttingIntoProduction

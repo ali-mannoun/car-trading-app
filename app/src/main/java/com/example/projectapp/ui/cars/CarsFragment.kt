@@ -156,4 +156,5 @@ class CarsFragment : Fragment() {
         }
         return binding.root
     }
+
 }

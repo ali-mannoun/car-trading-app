@@ -15,10 +15,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.cars_specifications.CarSpecificationsActivity"
-            android:theme="@style/Custom"
-            >
-        </activity>
+        <!--        <activity android:name=".OtherActivity">-->
+        <!--            <meta-data-->
+        <!--                android:name="android.app.default_searchable"-->
+        <!--                android:value=".SearchableActivity" />-->
+        <!--        </activity>-->
+        <activity
+            android:name=".ui.cars_specifications.CarSpecificationsActivity"
+            android:theme="@style/Custom" />
+
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,24 +32,22 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="android.app.default_searchable"
-            android:value=".SearchableActivity" />
-
         <provider
             android:name=".SearchSuggestionContentProvider"
             android:authorities="com.example.projectapp.SearchSuggestionContentProvider" />
 
-        <activity android:name=".SearchableActivity"> <!-- enable the search dialog to send searches to SearchableActivity -->
+        <activity
+            android:name=".SearchableActivity"> <!-- enable the search dialog to send searches to SearchableActivity -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
-        <activity android:name=".MasterActivity" />
+
+        <activity android:name=".MasterActivity">
+
+        </activity>
     </application>
 
 </manifest>

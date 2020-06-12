@@ -71,7 +71,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
 
     fun addCarToFavouriteList(car: CarSpecifications) = viewModelScope.launch(Dispatchers.IO) {
         //todo show load label
-        carRepository.insertCar(car)
+       // carRepository.insertCar(car)
         //todo hide load label
     }
 

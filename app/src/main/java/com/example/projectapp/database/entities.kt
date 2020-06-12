@@ -21,12 +21,12 @@ import com.example.projectapp.network.CarProperty
         ])*/
 
 @Entity(tableName = "favourite_cars")
-data class FavouriteCarEntity(
-        @PrimaryKey
-        val id: String,
+data class FavouriteCarSpecifications(
+        @PrimaryKey(autoGenerate = true)
+        val id: Int,
         @ColumnInfo(name = "car_id")
         val carId: String
-//the rest
+//the rest todo
 )
 
 
@@ -94,7 +94,8 @@ fun List<CarProperty>.asCarsDatabaseModel(): List<CarEntity> {
  * Map [Car] to [CarEntity] domain entities
  */
 /*
-fun CarSpecifications.asFavouriteCarEntityDatabaseModel(): FavouriteCarEntity {
-    return FavouriteCarEntity(
+fun CarSpecifications.asFavouriteCarEntityDatabaseModel(): FavouriteCarSpecifications {
+    return FavouriteCarSpecifications(
+           
     )
 }*/

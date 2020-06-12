@@ -45,13 +45,14 @@ class CarRepository(private val webService: IApiService, private val dataSource:
     }
 
     //Add car to the favourite list
-    suspend fun insertCar(car: CarSpecifications) {
+    suspend fun addCarToFavourite(carId: Long) {
         //dataSource.insert(car.asFavouriteCarEntityDatabaseModel())
         //todo favourite
+      //  dataSource.ins
     }
 
     //Delete car from favourite list
-    suspend fun deleteCar(carId: Long) {
+    suspend fun removeCarFromFavourite(carId: Long) {
         //todo favourite
         //dataSource.delete(carId)
     }

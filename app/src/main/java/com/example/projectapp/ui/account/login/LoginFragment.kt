@@ -3,7 +3,6 @@ package com.example.projectapp.ui.account.login
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -32,7 +30,8 @@ private var maxAttemptsToPressBackKey = 1
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var bottomSheet: LoadingBottomSheetDialog
+    private val bottomSheet: LoadingBottomSheetDialog = LoadingBottomSheetDialog()
+
     private var allInputFieldsValidated = false
 
 
@@ -47,9 +46,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun processLogin() {
-        if (bottomSheet.isVisible) {
-            bottomSheet.dismiss()
-        }
+         if (bottomSheet.isVisible) {
+             bottomSheet.dismiss()
+         }
         findNavController().popBackStack()
     }
 
@@ -112,14 +111,15 @@ class LoginFragment : Fragment() {
                 Toast.makeText(context, "empty not allowed", Toast.LENGTH_SHORT).show()
             } else if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
                 Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
-            } else if(allInputFieldsValidated) {
+            } else if (allInputFieldsValidated) {
                 if (binding.rememberMeCheckBox.isChecked) {
                     val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
                     val editor: SharedPreferences.Editor = sp.edit()
                     editor.putBoolean("rememberMeChecked", true)
                     editor.apply()
                 }
-                bottomSheet = LoadingBottomSheetDialog()
+
+                //bottomSheet = LoadingBottomSheetDialog()
                 bottomSheet.isCancelable = false
                 viewModel.authenticate(email, password)
             }
