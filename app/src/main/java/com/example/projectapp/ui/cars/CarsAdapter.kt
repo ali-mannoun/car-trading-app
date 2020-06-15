@@ -1,8 +1,12 @@
 package com.example.projectapp.ui.cars
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +18,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
+import kotlin.collections.ArrayList
 
-class CarsAdapter(val clickListener: CarsListener) : ListAdapter<DataItem, RecyclerView.ViewHolder>(CarsDiffCallback()) {
+class CarsAdapter(val clickListener: CarsListener) : ListAdapter<DataItem, RecyclerView.ViewHolder>(CarsDiffCallback()), Filterable {
 //Delete the override of getItemCount(), because the ListAdapter implements this method for you.
 
     /*
@@ -25,17 +31,32 @@ class CarsAdapter(val clickListener: CarsListener) : ListAdapter<DataItem, Recyc
      So, you have taken a click listener from the adapter constructor,
      and passed it all the way to the view holder and into the binding object.
      */
+    private var filteredData: List<Car>? = null
+    private var mainData: List<Car>? = null
+
     private val ITEM_VIEW_TYPE_HEADER = 0
     private val ITEM_VIEW_TYPE_ITEM = 1
     private val adapterScope = CoroutineScope(Dispatchers.Default)
-/*
-It doesn't matter much for a short list with one header,
-but you should not do list manipulation in addHeaderAndSubmitList() on the UI thread.
-Imagine a list with hundreds of items, multiple headers, and logic to decide where items need to be inserted.
-This work belongs in a coroutine.
- */
+
+    private var recyclerViewHeaderValue: String = "Main Cars List"
+
+    fun setListData(list: List<Car>?) {
+        mainData = list
+        filteredData = list
+    }
+
+    fun setHeaderValue(value: String) {
+        recyclerViewHeaderValue = value
+    }
+
+    /*
+    It doesn't matter much for a short list with one header,
+    but you should not do list manipulation in addHeaderAndSubmitList() on the UI thread.
+    Imagine a list with hundreds of items, multiple headers, and logic to decide where items need to be inserted.
+    This work belongs in a coroutine.
+     */
     fun addHeaderAndSubmitList(list: List<Car>?) {
-    //uses coroutines to add the header to the dataset and then calls submitList().
+        //uses coroutines to add the header to the dataset and then calls submitList().
         adapterScope.launch {
             val items = when (list) {
                 null -> listOf(DataItem.Header)
@@ -61,6 +82,10 @@ This work belongs in a coroutine.
                 val carItem = getItem(position) as DataItem.CarItem
                 holder.bind(clickListener, carItem.car)
             }
+            is TextViewHolder -> {
+                val headerValue = recyclerViewHeaderValue
+                holder.bind(headerValue)
+            }
         }
     }
 
@@ -71,7 +96,6 @@ This work belongs in a coroutine.
         }
     }
 
-
     class TextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         companion object {
             fun from(parent: ViewGroup): TextViewHolder {
@@ -79,6 +103,10 @@ This work belongs in a coroutine.
                 val view = layoutInflater.inflate(R.layout.header, parent, false)
                 return TextViewHolder(view)
             }
+        }
+
+        fun bind(header: String) {
+            itemView.findViewById<TextView>(R.id.rv_header).text = header
         }
     }
 
@@ -104,6 +132,39 @@ This work belongs in a coroutine.
                 val binding = ListItemCarBinding.inflate(layoutInflater, parent, false)
 
                 return CarViewHolder(binding)
+            }
+        }
+    }
+
+    override fun getFilter(): Filter {
+
+        return object : Filter() {
+            override fun performFiltering(p0: CharSequence?): FilterResults {
+                val key = p0.toString()
+                Log.e("key", key)
+                if (key.isEmpty()) {
+                    filteredData = mainData
+                } else {
+                    filteredData = mainData
+                    Log.e("else", "true")
+                    var filteredList: ArrayList<Car> = ArrayList()
+                    filteredData?.forEach {
+                        if (it.model.toLowerCase().contains(key.toLowerCase()) ||
+                                it.brand.toLowerCase().contains(key.toLowerCase())) {
+                            Log.e("enter", it.model)
+                            filteredList.add(it)
+                        }
+                    }
+                    filteredData = filteredList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredData
+                return filterResults
+            }
+
+            override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
+                filteredData = p1?.values as List<Car>?
+                addHeaderAndSubmitList(filteredData)
             }
         }
     }
@@ -133,6 +194,7 @@ class CarsDiffCallback : DiffUtil.ItemCallback<DataItem>() {
 class CarsListener(val clickListener: (carId: Long) -> Unit) {
     fun onClick(car: Car) = clickListener(car.id.toLong())
 }
+
 /*
 A sealed class defines a closed type, which means that all subclasses of DataItem must be defined in this file.
 As a result, the number of subclasses is known to the compiler.
@@ -142,18 +204,20 @@ sealed class DataItem {
     data class CarItem(val car: Car) : DataItem() {
         override val id = car.id.toLong()
     }
-/*
-The second class is Header, to represent a header.
-Since a header has no actual data, you can declare it as an object.
-That means there will only ever be one instance of Header. Again, have it extend DataItem.
- */
+
+    /*
+    The second class is Header, to represent a header.
+    Since a header has no actual data, you can declare it as an object.
+    That means there will only ever be one instance of Header. Again, have it extend DataItem.
+     */
     object Header : DataItem() {
-    //So,very small values , this will never conflict with any nightId in existence.
+        //So,very small values , this will never conflict with any nightId in existence.
         override val id = Long.MIN_VALUE
     }
-/*
-When the adapter uses DiffUtil to determine whether and how an item has changed,
-the DiffItemCallback needs to know the id of each item.
- */
+
+    /*
+    When the adapter uses DiffUtil to determine whether and how an item has changed,
+    the DiffItemCallback needs to know the id of each item.
+     */
     abstract val id: Long
 }

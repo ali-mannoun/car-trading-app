@@ -59,8 +59,6 @@ class UserRepository(private val webService: IApiService) {
         return false
     }
 
-    //TODO store uesr class when remember me is checked so we can fetch that user to show in profile fragment
-
     /**
      * Thrown when there was a error fetching a user
      *

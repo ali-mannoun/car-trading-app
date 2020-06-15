@@ -12,7 +12,7 @@
   <color name="gradientStartColor">#1976d2</color>
   <color name="gradientEndColor">#63a4ff</color>
 
-  <color name="gray">#c0c0c0</color>
+  <color name="gray">#F3F3F3</color>
 <!--  <color name="primaryDarkColor">#004ba0</color>-->
 
 </resources>

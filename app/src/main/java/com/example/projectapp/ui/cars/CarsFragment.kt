@@ -3,6 +3,8 @@ package com.example.projectapp.ui.cars
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.addCallback
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,11 +29,16 @@ import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.account.login.LoginViewModel
+import com.example.projectapp.ui.account.register.USER_ID
+import com.example.projectapp.ui.account.register.USER_NAME
 import com.example.projectapp.utils.CheckNetworkConnectivity
 import com.google.android.material.snackbar.Snackbar
 
 class CarsFragment : Fragment() {
     private lateinit var binding: FragmentCarsBinding
+    private lateinit var adapter: CarsAdapter
+    private var isMainCarsListShown = true
+
     private val loginViewModel: LoginViewModel by activityViewModels(
             factoryProducer = {
                 LoginViewModel.FACTORY(UserRepository(getNetworkService()))
@@ -62,14 +70,6 @@ class CarsFragment : Fragment() {
                 LoginViewModel.AuthenticationState.UNAUTHENTICATED -> findNavController().navigate(R.id.loginFragment)
             }
         })
-
-        if (loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME ||
-                loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
-
-            if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
-                Toast.makeText(context, "Load data from offline cache !", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -82,7 +82,7 @@ class CarsFragment : Fragment() {
         }
 
         sharedViewModel.setBottomNavigationViewVisibility(true)
-        sharedViewModel.setActiveIntroStarted(false)
+        sharedViewModel.setActiveIntroStarted(true)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_cars, container, false)
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
@@ -93,18 +93,20 @@ class CarsFragment : Fragment() {
         if (loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME ||
                 loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
 
-            val adapter = CarsAdapter(CarsListener { carId ->
+            adapter = CarsAdapter(CarsListener { carId ->
                 carsViewModel.onCarClicked(carId)
             })
+
+            val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+            val userId: String = requireNotNull(pref.getString(USER_ID, "-1"))
 
             //TODO when rotate the device show two grids . when the device isn't rotated show one grid.
 
             //val manager = GridLayoutManager(activity, 2)
             val manager = GridLayoutManager(activity, 1)
-/*
-//todo this when rotate device
+            /* todo this when rotate device
+            manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 
-        manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) = when (position) {
                 //here we make the header only 2 spans wide , and the others have 1 span wide
                 /*
@@ -125,10 +127,20 @@ class CarsFragment : Fragment() {
         When this method is called, the ListAdapter diffs the new list against the old one and detects items that were added,
         removed, moved, or changed. Then the ListAdapter updates the items shown by RecyclerView.
          */
+
             carsViewModel.cars.observe(viewLifecycleOwner, Observer {
                 it?.let {
                     Log.e("CarsFragment", "cars observed")
                     adapter.addHeaderAndSubmitList(it)
+                    adapter.setListData(it)
+                }
+            })
+
+            carsViewModel.favouriteCars.observe(viewLifecycleOwner, Observer {
+                it?.let {
+                    Log.e("CarsFragment", "cars favourite observed")
+                    adapter.addHeaderAndSubmitList(it)
+                    adapter.setListData(it)
                 }
             })
 
@@ -141,20 +153,62 @@ class CarsFragment : Fragment() {
             })
 
             carsViewModel.toast.observe(viewLifecycleOwner, Observer {
-                Snackbar.make(binding.root,"Cann't connect to the server. Please try again later",Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, "Cann't connect to the server. Please try again later", Snackbar.LENGTH_LONG).show()
             })
 
             binding.swipe.setOnRefreshListener {
+                binding.searchEditText.setText("")
                 if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
                     Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
                 } else {
-                    carsViewModel.refreshCars()
+                    if (isMainCarsListShown) {
+                        carsViewModel.refreshCars()
+                    } else {
+                        carsViewModel.fetchFavouriteCars(userId)
+                    }
                 }
                 binding.swipe.isRefreshing = false
+            }
 
+            binding.searchEditText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    adapter.filter.filter(p0)
+                }
+            })
+
+            binding.favouriteListFab.setOnClickListener {
+                if (isMainCarsListShown) {
+                    binding.favouriteListFab.setImageDrawable(context?.getDrawable(R.drawable.ic_favorite_border_black_24dp))
+                    binding.carsRecyclerView.adapter = null
+                    adapter.setHeaderValue("Favourite Cars List")
+                    binding.carsRecyclerView.adapter = adapter
+                    carsViewModel.onFavouriteFabClicked(userId, favouriteCarList = true)
+                    isMainCarsListShown = false
+                } else {
+                    binding.favouriteListFab.setImageDrawable(context?.getDrawable(R.drawable.ic_favorite_fill_24))
+                    binding.carsRecyclerView.adapter = null
+                    adapter.setHeaderValue("Main Cars List")
+                    binding.carsRecyclerView.adapter = adapter
+                    carsViewModel.onFavouriteFabClicked(userId, favouriteCarList = false)
+                    isMainCarsListShown = true
+                }
             }
         }
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val userId: String = requireNotNull(pref.getString(USER_ID, "-1"))
+        if (!isMainCarsListShown)
+            carsViewModel.fetchFavouriteCars(userId)
+    }
 }

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="sharedViewModel"
             type="com.example.projectapp.utils.SharedViewModel" />
@@ -15,13 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Scrollable view here -->
-
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
+            app:elevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -32,8 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:fitsSystemWindows="true"
-                app:menu="@menu/top_app_bar_menu"
-                app:title="Car Digital Trading" />
+                app:title="Car Digital Trading" >
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 

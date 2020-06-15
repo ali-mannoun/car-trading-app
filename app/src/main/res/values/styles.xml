@@ -12,13 +12,14 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="textAppearanceHeadline6">@style/CustomHeadline6</item>
 
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
 
         <!--        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>-->
     </style>
 
     <style name="Custom" parent="AppTheme">
-                <item name="android:windowTranslucentStatus">true</item>
+<!--        we put this because we don't need to show the toolbar-->
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="CustomHeadline6" parent="TextAppearance.MaterialComponents.Headline6">

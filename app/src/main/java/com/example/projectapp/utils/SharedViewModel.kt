@@ -7,21 +7,19 @@ import androidx.lifecycle.ViewModel
 class SharedViewModel : ViewModel() {
 
     private val onBottomNavigationViewVisible = MutableLiveData<Boolean>()
-
-    fun setBottomNavigationViewVisibility(value: Boolean) {
-        onBottomNavigationViewVisible.value = value
-    }
-
     val onBottomNavigationViewVisibilitySelected: LiveData<Boolean>
         get() = onBottomNavigationViewVisible
 
+    //To control the toolbar visibility when showing the GetStartedFragment
     private val onIntroLayoutStarted = MutableLiveData<Boolean>()
-
-    fun setActiveIntroStarted(value: Boolean) {
-        onIntroLayoutStarted.value = value
-    }
-
     val onStartIntroLayout: LiveData<Boolean>
         get() = onIntroLayoutStarted
 
+    fun setBottomNavigationViewVisibility(isVisible: Boolean) {
+        onBottomNavigationViewVisible.value = isVisible
+    }
+
+    fun setActiveIntroStarted(isVisible: Boolean) {
+        onIntroLayoutStarted.value = isVisible
+    }
 }

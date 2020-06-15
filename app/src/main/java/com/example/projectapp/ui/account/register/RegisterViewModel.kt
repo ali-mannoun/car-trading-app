@@ -20,9 +20,6 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         REGISTRATION_COMPLETED
     }
 
-    init {
-    }
-
     val registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_USER_CREDENTIALS)
 
     // Simulation of real-world scenario, where an auth token may be provided as
@@ -37,6 +34,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         // Change State to collecting username and password
         registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
     }
+
     /*
 //called when register btn clicked
     fun createAccountAndLogin(email: String, password: String) {

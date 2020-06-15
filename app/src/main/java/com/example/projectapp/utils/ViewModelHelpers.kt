@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import java.lang.reflect.Constructor
 
-
 /**
  * Convenience factory to handle ViewModels with one parameter.
  *

@@ -8,8 +8,7 @@ import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class LoginViewModel(//savedStateHandle: SavedStateHandle,
-        private val userRepository: UserRepository) : ViewModel() {
+class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     companion object {
         /**
@@ -44,27 +43,29 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
     private val _spinner = MutableLiveData<Boolean>()
     val spinner: LiveData<Boolean>
         get() = _spinner
-
+/*
     //to control bottom nav visibility
     private val _bottomNavigationViewVisibility = MutableLiveData<Boolean>()
     val bottomNavigationViewVisibility: LiveData<Boolean>
         get() = _bottomNavigationViewVisibility
+*/
 
     init {
-        _bottomNavigationViewVisibility.value = false
+        //_bottomNavigationViewVisibility.value = false
         Log.e("LoginViewModel", "init constructor")
-        //the user is always unauthenticated when MainActivity is launched
+        //the user is always unauthenticated when MainActivity is launched [default]
         _authenticationState.value = AuthenticationState.UNAUTHENTICATED
     }
 
     fun authenticate(email: String, password: String) {
         viewModelScope.launch {
             try {
-                _spinner.value = true //progressBar
+                _spinner.value = true //start progressBar
                 val responseCode = userRepository.checkCredentials(email, password)
                 if (responseCode == SUCCESS_RESPONSE) {
-                    _authenticationState.value = AuthenticationState.AUTHENTICATED
+                    //process to login.
                     onLoginBtnClicked(email, password)
+                    _authenticationState.value = AuthenticationState.AUTHENTICATED
                 } else {
                     _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
                     _user.value = null
@@ -72,7 +73,7 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
             } catch (error: IOException) {
                 _toast.value = error.message
             } finally {
-                _spinner.value = false
+                _spinner.value = false //hide progressbar
             }
         }
     }
@@ -95,10 +96,6 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
                 _spinner.value = false
             }
         }
-    }
-
-    fun setRememberedUser(user: User) {
-        _user.value = user
     }
 
     fun refuseAuthentication() {
@@ -154,7 +151,6 @@ class LoginViewModel(//savedStateHandle: SavedStateHandle,
                 _user.value = block()
             } catch (error: IOException) {
                 _toast.value = error.message
-            } finally {
             }
         }
     }

@@ -1,9 +1,13 @@
 package com.example.projectapp.ui.cars_specifications
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
@@ -14,59 +18,22 @@ import com.example.projectapp.databinding.ActivityCarSpecificationsBinding
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
+import com.example.projectapp.ui.account.register.USER_ID
+import com.example.projectapp.ui.account.register.USER_NAME
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.fragment_login.*
 
 class CarSpecificationsActivity : AppCompatActivity() {
-    private lateinit var mainLayoutBinding: ActivityCarSpecificationsBinding
 
-    //private lateinit var detailsLayoutBinding: CarDetailsLayoutBinding
+    private lateinit var mainLayoutBinding: ActivityCarSpecificationsBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var imagesSlideAdapter: CarImagesViewPagerAdapter
     private lateinit var tabIndicator: TabLayout
     private var carId: Long = -1L //initial value
+    private var isCarInFavouriteList = false //initial value
 
-    /*
-        //General Information
-        private lateinit var brand: TextView
-        private lateinit var model: TextView
-        private lateinit var generation: TextView
-        private lateinit var yearOfPuttingIntoProduction: TextView
-        private lateinit var yearOfStoppingProduction: TextView
-        private lateinit var description: TextView
-
-        //2. Internal combustion Engine
-        private lateinit var power: TextView
-        private lateinit var engineModel: TextView
-        private lateinit var maxEngineSpeed: TextView
-        private lateinit var engineOilCapacity: TextView
-        private lateinit var fuelSystem: TextView
-
-        //3. Performance
-        private lateinit var maxSpeed: TextView
-        private lateinit var acceleration100Km_h: TextView
-        private lateinit var fuelConsumption: TextView
-        private lateinit var co2Emission: TextView
-
-        //4. Body type
-        private lateinit var seats: TextView
-        private lateinit var doors: TextView
-        private lateinit var length: TextView
-        private lateinit var width: TextView
-        private lateinit var height: TextView
-        private lateinit var maxWeight: TextView
-        private lateinit var bodyType: TextView
-        private lateinit var fuelTankVolume: TextView
-
-        //5. Others
-        private lateinit var brakes: TextView
-        private lateinit var numberOfGears: TextView
-        private lateinit var gearType: TextView
-        private lateinit var tireSize: TextView
-        private lateinit var exteriorFeatures: TextView
-        private lateinit var interiorFeatures: TextView
-    */
     private val safeArgs: CarSpecificationsActivityArgs by navArgs()
     private val viewModel: CarSpecificationsViewModel by viewModels(
             factoryProducer = {
@@ -76,51 +43,31 @@ class CarSpecificationsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_car_specifications)
 
+        mainLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_car_specifications)
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         mainLayoutBinding.lifecycleOwner = this
         // Giving the binding access to the CarsViewModel
         // binding.viewModel = viewModel
         tabIndicator = mainLayoutBinding.tabLayout
         viewPager = mainLayoutBinding.viewpager
-/*
-        brand = detailsLayoutBinding.brand
-        model = detailsLayoutBinding.model
-        generation = detailsLayoutBinding.generation
-        yearOfPuttingIntoProduction = detailsLayoutBinding.yearPuttingProduction
-        yearOfStoppingProduction = detailsLayoutBinding.yearStoppingProduction
-        description = detailsLayoutBinding.description
-        power = detailsLayoutBinding.power
-        engineModel = detailsLayoutBinding.engineModel
-        maxEngineSpeed = detailsLayoutBinding.engineSpeed
-        engineOilCapacity = detailsLayoutBinding.oilCapacity
-        fuelSystem = detailsLayoutBinding.fuelSystem
-        maxSpeed = detailsLayoutBinding.speed
-        acceleration100Km_h = detailsLayoutBinding.acceleration
-        fuelConsumption = detailsLayoutBinding.fuelConsumption
-        co2Emission = detailsLayoutBinding.co2Emission
-        seats = detailsLayoutBinding.seats
-        doors = detailsLayoutBinding.doors
-        length = detailsLayoutBinding.length
-        width = detailsLayoutBinding.width
-        height = detailsLayoutBinding.height
-        maxWeight = detailsLayoutBinding.maxWeight
-        bodyType = detailsLayoutBinding.bodyType
-        fuelTankVolume = detailsLayoutBinding.fuelTankSystem
-        brakes = detailsLayoutBinding.brakes
-        numberOfGears = detailsLayoutBinding.numOfGears
-        gearType = detailsLayoutBinding.gearType
-        tireSize = detailsLayoutBinding.tireSize
-        exteriorFeatures = detailsLayoutBinding.exteriorFeatures
-        interiorFeatures = detailsLayoutBinding.interiorFeatures
-*/
         carId = safeArgs.carId
+
+        val pref: SharedPreferences = baseContext.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val userId: String = requireNotNull(pref.getString(USER_ID, "-1"))
+        val userName: String = requireNotNull(pref.getString(USER_NAME, "-1"))
+
         viewModel.loadCarSpecificationsById(carId)
+        viewModel.checkFavouriteStatus(userId, carId)
+
+        viewModel.favouriteStatus.observe(this, Observer { isFavourite ->
+            Log.e("1", "ali")
+            isCarInFavouriteList = isFavourite
+            toggleFavouriteFab(isFavourite)
+        })
 
         val carImagesList: MutableList<ImageItem> = ArrayList()
 
-        var isFabClicked = false
         viewModel.carDetails.observe(this, Observer {
             carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
             carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
@@ -128,31 +75,35 @@ class CarSpecificationsActivity : AppCompatActivity() {
 
             imagesSlideAdapter = CarImagesViewPagerAdapter(this, carImagesList)
             viewPager.adapter = imagesSlideAdapter
-
             // setup viewpager
             TabLayoutMediator(tabIndicator, viewPager) { tab, position ->
             }.attach()
 
             bindCarDetailsIntoViews(it)
-
-            mainLayoutBinding.favouriteFab.setOnClickListener {fab ->
-                if(isFabClicked){
-                    //unsave car
-                    (fab as ExtendedFloatingActionButton).text = "UnSave"
-                    (fab as ExtendedFloatingActionButton).icon = applicationContext.getDrawable(R.drawable.ic_favorite_24)
-                    isFabClicked = true
-                }else{
-                    //save car
-
-                    (fab as ExtendedFloatingActionButton).text = "Save"
-                    (fab as ExtendedFloatingActionButton).icon = applicationContext.getDrawable(R.drawable.ic_favorite_border_black_24dp)
-                    isFabClicked = false
-                }
-            }
         })
 
-        mainLayoutBinding.favouriteFab.setOnClickListener { fab ->
+        mainLayoutBinding.favouriteFab.setOnClickListener {
+            if (isCarInFavouriteList) {
+                isCarInFavouriteList = false
+                //remove car from favourite list.
+                viewModel.removeCarFromFavouriteList(userId, carId)
+                toggleFavouriteFab(false)
+            } else {
+                isCarInFavouriteList = true
+                //add car to favourite list.
+                viewModel.addCarToFavouriteList(userId, carId)
+                toggleFavouriteFab(true)
+            }
+        }
+    }
 
+    private fun toggleFavouriteFab(isFavourite: Boolean) {
+        if (isFavourite) {
+            mainLayoutBinding.favouriteFab.text = "UnSave"
+            mainLayoutBinding.favouriteFab.icon = applicationContext.getDrawable(R.drawable.ic_favorite_fill_24)
+        } else {
+            mainLayoutBinding.favouriteFab.text = "Save"
+            mainLayoutBinding.favouriteFab.icon = applicationContext.getDrawable(R.drawable.ic_favorite_border_black_24dp)
         }
     }
 

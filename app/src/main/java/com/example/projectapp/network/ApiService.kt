@@ -51,8 +51,20 @@ interface IApiService {
     @POST("users")
     suspend fun createNewAccount(@Body user: RegisterProperty): Response<UserProperty>
 
+    @GET("users/{user_id}/cars/{car_id}")
+    suspend fun checkIfCarInFavouriteList(@Path("user_id") userId: String, @Path("car_id") carId: String): Response<ResponseProperty>
+
+    @POST("users/{user_id}/cars")
+    suspend fun addCarToFavouriteList(@Body favouriteCar: FavouriteCarProperty, @Path("user_id") userId: String): Response<ResponseProperty>
+
+    @DELETE("users/{user_id}/cars/{car_id}")
+    suspend fun removeCarFromFavouriteList(@Path("user_id") userId: String, @Path("car_id") carId: String): Response<ResponseProperty>
+
+    @GET("users/{user_id}/cars")
+    suspend fun fetchFavouriteCars(@Path("user_id") userId: String): Response<List<CarProperty>>
+
     @GET("users/verify/{token}")
-    suspend fun verifyAccount(@Path("token") authCode: String):Response<ResponseProperty>
+    suspend fun verifyAccount(@Path("token") authCode: String): Response<ResponseProperty>
 
     @GET("cars")
     suspend fun getCarsProperties(): Response<List<CarProperty>>

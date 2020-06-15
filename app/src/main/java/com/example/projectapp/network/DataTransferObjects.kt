@@ -25,6 +25,12 @@ data class CarProperty(
 )
 
 @JsonClass(generateAdapter = true)
+data class FavouriteProperty(
+        @field:Json(name = "user_id") val userId: String,
+        @field:Json(name = "car_id") val carId: String
+)
+
+@JsonClass(generateAdapter = true)
 data class CarSpecificationsProperty(
         @field:Json(name = "id") val id: String,
         @field:Json(name = "company_id") val companyId: String,
@@ -97,6 +103,11 @@ data class UserProperty(
 data class ResponseProperty(
         @field:Json(name = "message") val message: String,
         @field:Json(name = "code") val code: Int
+)
+
+@JsonClass(generateAdapter = true)
+data class FavouriteCarProperty(
+        @field:Json(name = "car_id") val carId: String
 )
 
 /**

@@ -44,17 +44,30 @@ class CarRepository(private val webService: IApiService, private val dataSource:
         it.asCarsDomainModel()
     }
 
-    //Add car to the favourite list
-    suspend fun addCarToFavourite(carId: Long) {
-        //dataSource.insert(car.asFavouriteCarEntityDatabaseModel())
-        //todo favourite
-      //  dataSource.ins
+    suspend fun fetchFavouriteCarsList(userId: String): List<Car>? {
+        val response = webService.fetchFavouriteCars(userId)
+        if (response.isSuccessful) {
+            Log.e("response favourite", response.body()?.size.toString())
+            return response.body()?.asCarDomainModel()
+        }
+        return null
     }
 
-    //Delete car from favourite list
-    suspend fun removeCarFromFavourite(carId: Long) {
-        //todo favourite
-        //dataSource.delete(carId)
+    suspend fun addCarToFavouriteList(userId: String, carId: Long): Boolean {
+        val response = webService.addCarToFavouriteList(FavouriteCarProperty(carId.toString()), userId)
+        return response.isSuccessful
+    }
+
+    suspend fun removeCarFromFavouriteList(userId: String, carId: Long): Boolean {
+        val response = webService.removeCarFromFavouriteList(userId, carId.toString())
+        return response.isSuccessful
+    }
+
+    suspend fun getCarFavouriteStatus(userId: String, carId: Long): Boolean {
+        // val ids = FavouriteProperty(userId, carId.toString())
+        val response = webService.checkIfCarInFavouriteList(userId, carId.toString())
+        Log.e("response", response.isSuccessful.toString())
+        return response.isSuccessful
     }
 
     /**
@@ -65,11 +78,21 @@ class CarRepository(private val webService: IApiService, private val dataSource:
      * function is now safe to call from any thread including the Main thread.
      *
      */
-    suspend fun refreshCars() {
+    suspend fun refreshCars(userId: String = "-1") {
         withContext(Dispatchers.IO) {
-            val cars = webService.getCarsProperties()
-            cars.body()?.let {
-                dataSource.insertAll(it.asCarsDatabaseModel())
+            if (userId == "-1") {
+                Log.e("response main", "")
+                val cars = webService.getCarsProperties()
+                cars.body()?.let {
+                    dataSource.insertAll(it.asCarsDatabaseModel())
+                }
+//                 } else {
+//                     val cars = webService.fetchFavouriteCars(userId)
+//                     Log.e("response favourite", "")
+//                     cars.body()?.let {
+//                         dataSource.deleteAll()
+//                         dataSource.insertAll(it.asCarsDatabaseModel())
+//                     }
             }
         }
     }
@@ -93,7 +116,7 @@ class CarRepository(private val webService: IApiService, private val dataSource:
         }
     }
 */
-
+/*
     /**
      * Get a list of all cars in the remote db
      */
@@ -104,7 +127,7 @@ class CarRepository(private val webService: IApiService, private val dataSource:
         }
         return null
     }
-
+*/
     suspend fun getCarSpecificationsById(id: Long): CarSpecifications? {
         val response = webService.getCarSpecifications(id.toInt())
         if (response.isSuccessful) {

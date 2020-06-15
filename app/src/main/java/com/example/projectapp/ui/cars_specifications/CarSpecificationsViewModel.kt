@@ -1,5 +1,6 @@
 package com.example.projectapp.ui.cars_specifications
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,8 +10,10 @@ import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.ui.cars.CarsApiStatus
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class CarSpecificationsViewModel(private val repository: CarRepository) : ViewModel() {
+
     companion object {
         /**
          * Factory for creating [CarSpecificationsViewModel]
@@ -36,20 +39,37 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
     val carDetails: LiveData<CarSpecifications>
         get() = _carDetails
 
+    //to check if the car is added to the favourite list or not .
+    private val _favouriteStatus = MutableLiveData<Boolean>()
+    val favouriteStatus: LiveData<Boolean>
+        get() = _favouriteStatus
+/*
+    private val _ = MutableLiveData<Boolean>()
+    val favouriteStatus: LiveData<Boolean>
+        get() = _favouriteStatus
+*/
+
     fun loadCarSpecificationsById(id: Long) = launchDataLoad {
         repository.getCarSpecificationsById(id)
     }
 
-    fun alterFavouriteCarInDatabase(save: Boolean, carId: Long) {
+    fun addCarToFavouriteList(userId: String, carId: Long) {
         viewModelScope.launch {
-            if (save) {
-                repository.addCarToFavourite(carId)
-            } else {
-                repository.removeCarFromFavourite(carId)
-            }
+            repository.addCarToFavouriteList(userId, carId)
         }
     }
 
+    fun removeCarFromFavouriteList(userId: String, carId: Long) {
+        viewModelScope.launch {
+            repository.removeCarFromFavouriteList(userId, carId)
+        }
+    }
+
+    fun checkFavouriteStatus(userId: String, carId: Long) {
+        viewModelScope.launch {
+            _favouriteStatus.value = repository.getCarFavouriteStatus(userId, carId)
+        }
+    }
 
     /**
      * Helper function to call a data load function with a loading spinner, errors will trigger a
@@ -81,7 +101,7 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
                 _spinner.value = true //progressBar
                 _carDetails.value = block()
                 onDoneDownloading()
-            } catch (error: CarRepository.CarFetchingError) {
+            } catch (error: IOException) {
                 _toast.value = error.message
                 _carDetails.value = null
                 onErrorDownloading()

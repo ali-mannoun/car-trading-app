@@ -12,7 +12,10 @@ interface CarsDatabaseDao {
     //Main Cars operations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(cars: List<CarEntity>)
-
+/*
+    @Query("DELETE FROM cars")
+    suspend fun deleteAll()
+*/
     @Query("SELECT * FROM cars")
     fun getAllCars(): LiveData<List<CarEntity>>
 /*

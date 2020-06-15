@@ -43,9 +43,9 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     val toast: LiveData<String?>
         get() = _toast
 
-//    private val _cars = MutableLiveData<List<Car>>()
-//    val cars: LiveData<List<Car>>
-//        get() = _cars
+    private val _favouriteCars = MutableLiveData<List<Car>>()
+    val favouriteCars: LiveData<List<Car>>
+        get() = _favouriteCars
 
     private val _selectedCar = MutableLiveData<Car>()
     val selectedCar: LiveData<Car>
@@ -65,23 +65,16 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     }
 
     init {
-        //refreshDataFromRepository()
-    }
-
-
-    fun addCarToFavouriteList(car: CarSpecifications) = viewModelScope.launch(Dispatchers.IO) {
-        //todo show load label
-       // carRepository.insertCar(car)
-        //todo hide load label
+        refreshDataFromRepository()
     }
 
     //Load the main list of cars.
-    private fun refreshDataFromRepository() = launchDataLoad {
-        carRepository.refreshCars()
+    private fun refreshDataFromRepository(userId: String = "-1") = launchDataLoad {
+        carRepository.refreshCars(userId)
     }
 
-    fun refreshCars() {
-        refreshDataFromRepository()
+    fun refreshCars(userId: String = "-1") {
+        refreshDataFromRepository(userId)
     }
 
     /**
@@ -91,6 +84,29 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
      */
     fun onCarClicked(id: Long) {
         _navigateToSelectedCarDetails.value = id
+    }
+
+    fun fetchFavouriteCars(userId: String) {
+        viewModelScope.launch {
+            try {
+                onStartDownloading()
+                _favouriteCars.value = carRepository.fetchFavouriteCarsList(userId)
+                onDoneDownloading()
+            } catch (exception: IOException) {
+                onErrorDownloading()
+            } finally {
+                onDoneDownloading()
+            }
+        }
+    }
+
+    fun onFavouriteFabClicked(userId: String, favouriteCarList: Boolean) = launchDataLoad {
+        if (favouriteCarList) {
+            fetchFavouriteCars(userId)
+            //carRepository.refreshCars(userId)
+        } else {
+            carRepository.refreshCars()
+        }
     }
 
     /**
@@ -134,10 +150,9 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
                 if (cars.value.isNullOrEmpty()) {
                     _toast.value = error.message
                     Log.e("CarsViewmodel error", error.message.toString())
-                    Log.e("car vm22",error.message.toString())
                 }
                 _toast.value = error.message
-                Log.e("car vm",error.message.toString())
+                Log.e("car vm", error.message.toString())
                 onErrorDownloading()
             } finally {
                 onDoneDownloading()
