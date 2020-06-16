@@ -47,7 +47,6 @@ class CarRepository(private val webService: IApiService, private val dataSource:
     suspend fun fetchFavouriteCarsList(userId: String): List<Car>? {
         val response = webService.fetchFavouriteCars(userId)
         if (response.isSuccessful) {
-            Log.e("response favourite", response.body()?.size.toString())
             return response.body()?.asCarDomainModel()
         }
         return null
@@ -63,10 +62,11 @@ class CarRepository(private val webService: IApiService, private val dataSource:
         return response.isSuccessful
     }
 
+    /**
+     * When we load a car specification, then we need to check if this car is added to the favourite list by user
+     */
     suspend fun getCarFavouriteStatus(userId: String, carId: Long): Boolean {
-        // val ids = FavouriteProperty(userId, carId.toString())
         val response = webService.checkIfCarInFavouriteList(userId, carId.toString())
-        Log.e("response", response.isSuccessful.toString())
         return response.isSuccessful
     }
 
@@ -86,15 +86,16 @@ class CarRepository(private val webService: IApiService, private val dataSource:
                 cars.body()?.let {
                     dataSource.insertAll(it.asCarsDatabaseModel())
                 }
-//                 } else {
-//                     val cars = webService.fetchFavouriteCars(userId)
-//                     Log.e("response favourite", "")
-//                     cars.body()?.let {
-//                         dataSource.deleteAll()
-//                         dataSource.insertAll(it.asCarsDatabaseModel())
-//                     }
             }
         }
+    }
+
+    suspend fun getCarSpecificationsById(id: Long): CarSpecifications? {
+        val response = webService.getCarSpecifications(id.toInt())
+        if (response.isSuccessful) {
+            return response.body()?.asCarSpecificationsDomainModel()
+        }
+        return null
     }
 
     /**
@@ -128,13 +129,7 @@ class CarRepository(private val webService: IApiService, private val dataSource:
         return null
     }
 */
-    suspend fun getCarSpecificationsById(id: Long): CarSpecifications? {
-        val response = webService.getCarSpecifications(id.toInt())
-        if (response.isSuccessful) {
-            return response.body()?.asCarSpecificationsDomainModel()
-        }
-        return null
-    }
+
 /*
     suspend fun getCarImages(carId: Int): CarImageProperty {
 

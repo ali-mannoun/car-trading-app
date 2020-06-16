@@ -43,57 +43,34 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _spinner = MutableLiveData<Boolean>()
     val spinner: LiveData<Boolean>
         get() = _spinner
-/*
-    //to control bottom nav visibility
-    private val _bottomNavigationViewVisibility = MutableLiveData<Boolean>()
-    val bottomNavigationViewVisibility: LiveData<Boolean>
-        get() = _bottomNavigationViewVisibility
-*/
 
     init {
-        //_bottomNavigationViewVisibility.value = false
-        Log.e("LoginViewModel", "init constructor")
+        Log.e("LoginViewModel", "Constructor called")
         //the user is always unauthenticated when MainActivity is launched [default]
         _authenticationState.value = AuthenticationState.UNAUTHENTICATED
     }
 
-    fun authenticate(email: String, password: String) {
-        viewModelScope.launch {
-            try {
-                _spinner.value = true //start progressBar
-                val responseCode = userRepository.checkCredentials(email, password)
-                if (responseCode == SUCCESS_RESPONSE) {
-                    //process to login.
-                    onLoginBtnClicked(email, password)
-                    _authenticationState.value = AuthenticationState.AUTHENTICATED
-                } else {
-                    _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
-                    _user.value = null
-                }
-            } catch (error: IOException) {
-                _toast.value = error.message
-            } finally {
-                _spinner.value = false //hide progressbar
-            }
-        }
+    fun authenticateAndLogin(email: String, password: String) = launchDataLoad {
+        userRepository.login(email, password)
     }
 
     fun authenticate(authCode: String) {
+        //here we don't need to put onStartLoading() becuase we are running this method in RegisterFragment.
         viewModelScope.launch {
             try {
-                _spinner.value = true //progressBar
+                //Check if verificationToken is valid.
                 val isVerified = userRepository.verifyAccount(authCode)
                 if (isVerified) {
-                    _toast.value = "Authenticated successfully"
+                     _toast.value = "Verified Successfully"
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
                 } else {
-                    _toast.value = "Unauthenticated, please try again !"
-                    _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
+                    _toast.value = "Invalid verification token"
+                    _authenticationState.value = AuthenticationState.UNAUTHENTICATED
                 }
             } catch (error: IOException) {
-                _toast.value = error.message
+                _toast.value = "Unable to connect to the server !"
+                _authenticationState.value = AuthenticationState.UNAUTHENTICATED
             } finally {
-                _spinner.value = false
             }
         }
     }
@@ -148,10 +125,42 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
          */
         viewModelScope.launch {
             try {
+                onStartLoading()
                 _user.value = block()
+                if (_user.value != null) {
+                    _authenticationState.value = AuthenticationState.AUTHENTICATED
+                    _toast.value = "Authenticated Successfully"
+                } else {
+                    _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+                    _toast.value = "Please check your information !"
+                }
+                onFinishLoading()
             } catch (error: IOException) {
-                _toast.value = error.message
+                _toast.value = "Unable to connect to the server !"
+                _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+                onErrorLoading()
             }
         }
+    }
+
+    /**
+     * Show a ProgressBar
+     */
+    private fun onStartLoading() {
+        _spinner.value = true
+    }
+
+    /**
+     * Hide the ProgressBar
+     */
+    private fun onFinishLoading() {
+        _spinner.value = false
+    }
+
+    /**
+     * Hide the ProgressBar
+     */
+    private fun onErrorLoading() {
+        _spinner.value = false
     }
 }

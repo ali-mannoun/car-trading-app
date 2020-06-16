@@ -13,6 +13,15 @@ import java.io.IOException
 
 class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
 
+    companion object {
+        /**
+         * Factory for creating [RegisterViewModel]
+         *
+         * @param arg the repository to pass to [RegisterViewModel]
+         */
+        val FACTORY = singleArgViewModelFactory(::RegisterViewModel)
+    }
+
     enum class RegistrationState {
         //COLLECT_PROFILE_DATA,
         //COLLECT_USER_PASSWORD,
@@ -20,7 +29,22 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         REGISTRATION_COMPLETED
     }
 
-    val registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_USER_CREDENTIALS)
+
+    private val _user = MutableLiveData<User>()
+    val user: LiveData<User>
+        get() = _user
+
+    private val _toast = MutableLiveData<String?>()
+    val toast: LiveData<String?>
+        get() = _toast
+
+    private val _spinner = MutableLiveData<Boolean>()
+    val spinner: LiveData<Boolean>
+        get() = _spinner
+
+    private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_USER_CREDENTIALS)
+    val registrationState: LiveData<RegistrationState>
+        get() = _registrationState
 
     // Simulation of real-world scenario, where an auth token may be provided as
     // an alternate authentication mechanism instead of passing the password
@@ -32,7 +56,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         // ... validate and store data
 
         // Change State to collecting username and password
-        registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
+        _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
     }
 
     /*
@@ -47,34 +71,16 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
 
     fun userCancelledRegistration(): Boolean {
         // Clear existing registration data
-        registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
+        _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
         authToken = ""
         return true
     }
 
-    companion object {
-        /**
-         * Factory for creating [RegisterViewModel]
-         *
-         * @param arg the repository to pass to [RegisterViewModel]
-         */
-        val FACTORY = singleArgViewModelFactory(::RegisterViewModel)
-    }
-
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
-        get() = _user
-
-    private val _toast = MutableLiveData<String?>()
-    val toast: LiveData<String?>
-        get() = _toast
-
-    private val _spinner = MutableLiveData<Boolean>()
-    val spinner: LiveData<Boolean>
-        get() = _spinner
 
     /**
      * Respond to onClick events .
+     *
+     * Create new account and login.
      *
      * The loading spinner will display until a result is returned, and errors will trigger
      * a toast.
@@ -84,11 +90,10 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     }
 
     fun userRegisteredAndLoginSuccessfully() {
-        // ... create account
-        // ... authenticate
+        //Assign the verification token.
         this.authToken = _user.value?.verificationToken
         // Change State to registration completed
-        registrationState.value = RegistrationState.REGISTRATION_COMPLETED
+        //_registrationState.value = RegistrationState.REGISTRATION_COMPLETED
     }
 
     fun onToastShown() {
@@ -121,14 +126,44 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
          */
         viewModelScope.launch {
             try {
-                _spinner.value = true //progressBar
+                onStartLoading()
                 _user.value = block()
+                if (_user.value != null) {
+                    _registrationState.value = RegistrationState.REGISTRATION_COMPLETED
+                    _toast.value = "Registered Successfully"
+                } else {
+                    _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
+                    _toast.value = "Please check your information !"
+                }
+                onFinishLoading()
             } catch (error: IOException) {
-                _toast.value = error.message
-                _user.value = null
+                _toast.value = "Unable to connect to the server !"
+                _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
+                onErrorLoading()
             } finally {
-                _spinner.value = false
+                onFinishLoading()
             }
         }
+    }
+
+    /**
+     * Show a ProgressBar
+     */
+    private fun onStartLoading() {
+        _spinner.value = true
+    }
+
+    /**
+     * Hide the ProgressBar
+     */
+    private fun onFinishLoading() {
+        _spinner.value = false
+    }
+
+    /**
+     * Hide the ProgressBar
+     */
+    private fun onErrorLoading() {
+        _spinner.value = false
     }
 }

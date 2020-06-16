@@ -28,6 +28,19 @@ enum class CarsApiStatus { LOADING, ERROR, DONE }
  */
 class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
 
+    companion object {
+        /**
+         * Factory for creating [CarsViewModel]
+         *
+         * @param arg the repository to pass to [CarsViewModel]
+         */
+        val FACTORY = singleArgViewModelFactory(::CarsViewModel)
+    }
+
+    init {
+        refreshDataFromRepository()
+    }
+
 
     val cars: LiveData<List<Car>> = carRepository.cars
 
@@ -47,6 +60,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     val favouriteCars: LiveData<List<Car>>
         get() = _favouriteCars
 
+    //When we click on a specific car.
     private val _selectedCar = MutableLiveData<Car>()
     val selectedCar: LiveData<Car>
         get() = _selectedCar
@@ -55,19 +69,6 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
     val navigateToSelectedCarDetails: LiveData<Long>
         get() = _navigateToSelectedCarDetails
 
-    companion object {
-        /**
-         * Factory for creating [CarsViewModel]
-         *
-         * @param arg the repository to pass to [CarsViewModel]
-         */
-        val FACTORY = singleArgViewModelFactory(::CarsViewModel)
-    }
-
-    init {
-        refreshDataFromRepository()
-    }
-
     //Load the main list of cars.
     private fun refreshDataFromRepository(userId: String = "-1") = launchDataLoad {
         carRepository.refreshCars(userId)
@@ -75,6 +76,21 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
 
     fun refreshCars(userId: String = "-1") {
         refreshDataFromRepository(userId)
+    }
+
+    fun fetchFavouriteCars(userId: String) {
+        viewModelScope.launch {
+            try {
+                onStartDownloading()
+                _favouriteCars.value = carRepository.fetchFavouriteCarsList(userId)
+                onDoneDownloading()
+            } catch (exception: IOException) {
+                _toast.value = "Unable to connect to the server !"
+                onErrorDownloading()
+            } finally {
+                onDoneDownloading()
+            }
+        }
     }
 
     /**
@@ -86,24 +102,10 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
         _navigateToSelectedCarDetails.value = id
     }
 
-    fun fetchFavouriteCars(userId: String) {
-        viewModelScope.launch {
-            try {
-                onStartDownloading()
-                _favouriteCars.value = carRepository.fetchFavouriteCarsList(userId)
-                onDoneDownloading()
-            } catch (exception: IOException) {
-                onErrorDownloading()
-            } finally {
-                onDoneDownloading()
-            }
-        }
-    }
-
     fun onFavouriteFabClicked(userId: String, favouriteCarList: Boolean) = launchDataLoad {
+        //if we want to load main cars or favourite cars.
         if (favouriteCarList) {
             fetchFavouriteCars(userId)
-            //carRepository.refreshCars(userId)
         } else {
             carRepository.refreshCars()
         }
@@ -144,14 +146,15 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 onStartDownloading()
+                //here we don't need to assing _car = block() because we are observing the cars from repository.
                 block()
                 onDoneDownloading()
             } catch (error: IOException) {
                 if (cars.value.isNullOrEmpty()) {
-                    _toast.value = error.message
-                    Log.e("CarsViewmodel error", error.message.toString())
+                    _toast.value = "Unable to connect to the server !"
+                    Log.e("CarsViewModel error", "cars.value.isNullOrEmpty()" + " ,,,," + error.message.toString())
                 }
-                _toast.value = error.message
+                _toast.value = "Unable to connect to the server !"
                 Log.e("car vm", error.message.toString())
                 onErrorDownloading()
             } finally {
