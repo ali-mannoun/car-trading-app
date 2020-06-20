@@ -29,15 +29,18 @@ import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.account.login.LoginViewModel
-import com.example.projectapp.ui.account.register.USER_ID
-import com.example.projectapp.ui.account.register.USER_NAME
+import com.example.projectapp.ui.account.observeAuthenticationStateInCarsFragment
 import com.example.projectapp.utils.CheckNetworkConnectivity
+import com.example.projectapp.utils.REMEMBER_ME
+import com.example.projectapp.utils.USER_ID
 import com.google.android.material.snackbar.Snackbar
 
 class CarsFragment : Fragment() {
     private lateinit var binding: FragmentCarsBinding
     private lateinit var adapter: CarsAdapter
     private var isMainCarsListShown = true
+
+    //You can share data between the fragments by having a ViewModel scoped to the activity, which implements ViewModelStoreOwner.
     private val loginViewModel: LoginViewModel by activityViewModels(
             factoryProducer = {
                 LoginViewModel.FACTORY(UserRepository(getNetworkService()))
@@ -55,8 +58,9 @@ class CarsFragment : Fragment() {
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        val isRememberMeChecked: Boolean = pref.getBoolean("rememberMeChecked", false)
+        val isRememberMeChecked: Boolean = pref.getBoolean(REMEMBER_ME, false)
         if (isRememberMeChecked) {
+            Log.e("remember me", isRememberMeChecked.toString())
             loginViewModel.rememberUser(true)
         }
 
@@ -81,10 +85,11 @@ class CarsFragment : Fragment() {
             val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
             val userId: String = requireNotNull(pref.getString(USER_ID, "-1"))
             val manager = GridLayoutManager(activity, 1)
+
             binding.carsRecyclerView.layoutManager = manager
             binding.carsRecyclerView.adapter = adapter
 
-//             TODO when rotate the device show two grids . when the device isn't rotated show one grid.
+//             TODO when rotate the device show two grids of cars, when the device isn't rotated show one grid of cars.
 //            val manager = GridLayoutManager(activity, 2)
 //            manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 //
@@ -103,7 +108,7 @@ class CarsFragment : Fragment() {
             binding.swipe.setOnRefreshListener {
                 binding.searchEditText.setText("")
                 if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
-                    Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
                 } else {
                     if (isMainCarsListShown) {
                         carsViewModel.refreshCars()
@@ -116,30 +121,28 @@ class CarsFragment : Fragment() {
 
             binding.favouriteListFab.setOnClickListener {
                 if (isMainCarsListShown) {
+                    carsViewModel.onFavouriteFabClicked(userId, favouriteCarList = true)
                     binding.favouriteListFab.setImageDrawable(context?.getDrawable(R.drawable.ic_favorite_border_black_24dp))
                     //We set the adapter = null because we need to set the header immediately.
                     binding.carsRecyclerView.adapter = null
-                    adapter.setHeaderValue("Favourite Cars List")
+                    adapter.setHeaderValue(getString(R.string.favourite_car_list))
                     binding.carsRecyclerView.adapter = adapter
-                    carsViewModel.onFavouriteFabClicked(userId, favouriteCarList = true)
                     isMainCarsListShown = false
                 } else {
+                    carsViewModel.onFavouriteFabClicked(userId, favouriteCarList = false)
                     binding.favouriteListFab.setImageDrawable(context?.getDrawable(R.drawable.ic_favorite_fill_24))
                     binding.carsRecyclerView.adapter = null
-                    adapter.setHeaderValue("Main Cars List")
+                    adapter.setHeaderValue(getString(R.string.main_cars_list))
                     binding.carsRecyclerView.adapter = adapter
-                    carsViewModel.onFavouriteFabClicked(userId, favouriteCarList = false)
                     isMainCarsListShown = true
                 }
             }
 
             binding.searchEditText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
-                    //
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    //
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -147,6 +150,7 @@ class CarsFragment : Fragment() {
                 }
             })
         }
+
         return binding.root
     }
 
@@ -157,49 +161,55 @@ class CarsFragment : Fragment() {
             requireActivity().finish()
         }
 
-        //If the user reach this fragment and isn't authenticated then we move it to the LoginFragment, else continue.
-        loginViewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
-            when (authenticationState) {
-                LoginViewModel.AuthenticationState.AUTHENTICATED -> showWelcomeMessage()
-                LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME -> showWelcomeMessage()
-                LoginViewModel.AuthenticationState.UNAUTHENTICATED -> findNavController().navigate(R.id.loginFragment)
-            }
-        })
+        loginViewModel.observeAuthenticationStateInCarsFragment(viewLifecycleOwner, loginViewModel.authenticationState, findNavController()) {
+            carsViewModel.refreshCars()
+        }
 
-        carsViewModel.cars.observe(viewLifecycleOwner, Observer {
-            /**
-             * Your code needs to tell the ListAdapter when a changed list is available.
-             * ListAdapter provides a method called submitList() to tell ListAdapter that a new version of the list is available.
-             * When this method is called, the ListAdapter diffs the new list against the old one and detects items that were added,
-             * removed, moved, or changed. Then the ListAdapter updates the items shown by RecyclerView.
-             */
-            it?.let {
+        //If the user is authenticated then process.
+        if (loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME ||
+                loginViewModel.authenticationState.value == LoginViewModel.AuthenticationState.AUTHENTICATED) {
+
+            //Observe main cars
+            carsViewModel.cars.observe(viewLifecycleOwner, Observer {
                 Log.e("CarsFragment", "cars observed")
-                adapter.addHeaderAndSubmitList(it)
-                adapter.setListData(it)
-            }
-        })
 
-        carsViewModel.favouriteCars.observe(viewLifecycleOwner, Observer {
-            it?.let {
+                /**
+                 * Your code needs to tell the ListAdapter when a changed list is available.
+                 * ListAdapter provides a method called submitList() to tell ListAdapter that a new version of the list is available.
+                 * When this method is called, the ListAdapter diffs the new list against the old one and detects items that were added,
+                 * removed, moved, or changed. Then the ListAdapter updates the items shown by RecyclerView.
+                 */
+                it?.let {
+                    adapter.addHeaderAndSubmitList(it)
+                    adapter.setListData(it)
+                }
+            })
+            //Observe favourite cars
+            carsViewModel.favouriteCars.observe(viewLifecycleOwner, Observer {
                 Log.e("CarsFragment", "cars favourite observed")
-                adapter.addHeaderAndSubmitList(it)
-                adapter.setListData(it)
-            }
-        })
 
-        carsViewModel.navigateToSelectedCarDetails.observe(viewLifecycleOwner, Observer {
-            it?.let { id: Long ->
-                //load specifications
-                this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsActivity(id))
-                carsViewModel.onCarDetailsNavigated()
-            }
-        })
+                it?.let {
+                    adapter.addHeaderAndSubmitList(it)
+                    adapter.setListData(it)
+                }
+            })
 
-        carsViewModel.toast.observe(viewLifecycleOwner, Observer {
-            //Snackbar.make(binding.root, "Cann't connect to the server. Please try again later", Snackbar.LENGTH_LONG).show()
-            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG).show()
-        })
+            carsViewModel.navigateToSelectedCarDetails.observe(viewLifecycleOwner, Observer {
+                it?.let { id: Long ->
+                    //load specifications
+                    this.findNavController().navigate(CarsFragmentDirections.actionNavCarsMenuToCarSpecificationsActivity(id))
+                    carsViewModel.onCarDetailsNavigated()
+                }
+            })
+
+            carsViewModel.toast.observe(viewLifecycleOwner, Observer {
+                if (it == null) {
+                    Snackbar.make(binding.root, getString(R.string.loading_cached_cars), Snackbar.LENGTH_LONG).show()
+                } else {
+                    Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG).show()
+                }
+            })
+        }
     }
 
     override fun onResume() {
@@ -209,9 +219,5 @@ class CarsFragment : Fragment() {
         val userId: String = requireNotNull(pref.getString(USER_ID, "-1"))
         if (!isMainCarsListShown)
             carsViewModel.fetchFavouriteCars(userId)
-    }
-
-    private fun showWelcomeMessage() {
-        carsViewModel.refreshCars()
     }
 }

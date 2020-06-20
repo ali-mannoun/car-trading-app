@@ -8,6 +8,7 @@ import com.example.projectapp.domain.Car
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.CarProperty
 import com.example.projectapp.repository.CarRepository
+import com.example.projectapp.utils.SERVER_CONNECTION_ERROR
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,11 +37,6 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
          */
         val FACTORY = singleArgViewModelFactory(::CarsViewModel)
     }
-
-    init {
-        refreshDataFromRepository()
-    }
-
 
     val cars: LiveData<List<Car>> = carRepository.cars
 
@@ -85,7 +81,7 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
                 _favouriteCars.value = carRepository.fetchFavouriteCarsList(userId)
                 onDoneDownloading()
             } catch (exception: IOException) {
-                _toast.value = "Unable to connect to the server !"
+                _toast.value = SERVER_CONNECTION_ERROR
                 onErrorDownloading()
             } finally {
                 onDoneDownloading()
@@ -151,11 +147,12 @@ class CarsViewModel(private val carRepository: CarRepository) : ViewModel() {
                 onDoneDownloading()
             } catch (error: IOException) {
                 if (cars.value.isNullOrEmpty()) {
-                    _toast.value = "Unable to connect to the server !"
+                    _toast.value = SERVER_CONNECTION_ERROR
                     Log.e("CarsViewModel error", "cars.value.isNullOrEmpty()" + " ,,,," + error.message.toString())
+                } else {
+                    _toast.value = null
+                    Log.e("car vm","Car list isn't null,, "+  error.message.toString())
                 }
-                _toast.value = "Unable to connect to the server !"
-                Log.e("car vm", error.message.toString())
                 onErrorDownloading()
             } finally {
                 onDoneDownloading()

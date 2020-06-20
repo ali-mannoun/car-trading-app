@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.projectapp.R
 import com.example.projectapp.domain.Car
 import com.example.projectapp.network.CarProperty
+import com.example.projectapp.network.MAIN_URL
 import com.example.projectapp.ui.cars.CarsApiStatus
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
@@ -26,16 +27,15 @@ In particular, when the app starts, (the LiveData starts as nul), so you need to
 for each of the binding adapters, change the type of the item argument to nullable,
 and wrap the body with item?.let{...}.
  */
-@BindingAdapter("bindingCarNameAndModel")
-fun TextView.setCarNameAndModel(item: Car?) {
+@BindingAdapter("bindingCarModel")
+fun TextView.setCarModel(item: Car?) {
     item?.let {
-        Log.e("Binding", it.mainImageUrl)
         this.text = it.model.smartTruncate(20)
     }
 }
 
-@BindingAdapter("bindinCarCompany")
-fun TextView.setCarCompany(item: Car?) {
+@BindingAdapter("bindingCarBrand")
+fun TextView.setCarBrand(item: Car?) {
     item?.let {
         this.text = it.brand
     }
@@ -47,12 +47,12 @@ fun TextView.setCarCompany(item: Car?) {
 @BindingAdapter("imageUrl")
 fun ImageView.bindImage(imgUrl: String?) {
     val imageName = imgUrl?.drop(24) //to get image name not the full url. we use this to replace the host name website.test with the local host ip
-    val mainImageUrl = "http://192.168.1.102/img/$imageName"
+    val mainImageUrl = MAIN_URL.plus("img/$imageName")
 
     imgUrl?.let {
         val imgUri2 = mainImageUrl.toUri().buildUpon().scheme("http").build()
         Glide.with(this.context)
-                .load(mainImageUrl)
+                .load(imgUri2)
                 .apply(RequestOptions()
                         .placeholder(R.drawable.loading_animation)
                         .error(R.drawable.ic_broken_image_black_24dp))
@@ -90,7 +90,7 @@ fun ImageView.bindStatus(status: CarsApiStatus?) {
 @BindingAdapter("isNetworkError", "playlist")
 fun View.hideIfNetworkError(isNetWorkError: Boolean, playlist: Any?) {
     visibility = if (playlist != null) View.GONE else View.VISIBLE
-//TODO
+    //TODO
     if (isNetWorkError) {
         visibility = View.GONE
     }

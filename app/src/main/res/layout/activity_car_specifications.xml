@@ -23,6 +23,7 @@
                 android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
                 app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed"
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleGravity="bottom"
@@ -32,6 +33,7 @@
                 tools:title="Title">
 
                 <androidx.viewpager2.widget.ViewPager2
+                    android:fitsSystemWindows="true"
                     android:id="@+id/viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

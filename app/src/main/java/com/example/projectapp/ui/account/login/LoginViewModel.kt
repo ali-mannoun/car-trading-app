@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.projectapp.domain.User
 import com.example.projectapp.repository.UserRepository
-import com.example.projectapp.utils.singleArgViewModelFactory
+import com.example.projectapp.utils.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -26,14 +26,12 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         AUTHENTICATED_AND_REMEMBER_ME //remember me
     }
 
-    private val SUCCESS_RESPONSE = 200
-
     private val _authenticationState = MutableLiveData<AuthenticationState>()
     val authenticationState: LiveData<AuthenticationState>
         get() = _authenticationState
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
+    private var _user: User? = null
+    val user: User?
         get() = _user
 
     private val _toast = MutableLiveData<String?>()
@@ -46,7 +44,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     init {
         Log.e("LoginViewModel", "Constructor called")
-        //the user is always unauthenticated when MainActivity is launched [default]
+        //the user is always unauthenticated by default.
         _authenticationState.value = AuthenticationState.UNAUTHENTICATED
     }
 
@@ -60,17 +58,17 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
             try {
                 //Check if verificationToken is valid.
                 val isVerified = userRepository.verifyAccount(authCode)
+                //We assign the toast here because we observe its value in RegisterFragment when creating new account.
                 if (isVerified) {
-                     _toast.value = "Verified Successfully"
+                    _toast.value = VERIFIED_SUCCESSFULLY
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
                 } else {
-                    _toast.value = "Invalid verification token"
-                    _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+                    _toast.value = INVALID_VERIFICATION
+                    _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
                 }
             } catch (error: IOException) {
-                _toast.value = "Unable to connect to the server !"
-                _authenticationState.value = AuthenticationState.UNAUTHENTICATED
-            } finally {
+                _toast.value = SERVER_CONNECTION_ERROR
+                _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
             }
         }
     }
@@ -83,16 +81,6 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         if (rememberMe) {
             _authenticationState.value = AuthenticationState.AUTHENTICATED_AND_REMEMBER_ME
         }
-    }
-
-    /**
-     * Respond to onClick events .
-     *
-     * The loading spinner will display until a result is returned, and errors will trigger
-     * a toast.
-     */
-    private fun onLoginBtnClicked(email: String, password: String) = launchDataLoad {
-        userRepository.login(email, password)
     }
 
     fun onToastShown() {
@@ -126,19 +114,20 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 onStartLoading()
-                _user.value = block()
-                if (_user.value != null) {
+                _user = block()
+                if (_user != null) {
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
-                    _toast.value = "Authenticated Successfully"
+                    _toast.value = AUTHENTICATED_SUCCESSFULLY
                 } else {
-                    _authenticationState.value = AuthenticationState.UNAUTHENTICATED
-                    _toast.value = "Please check your information !"
+                    _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
+                    _toast.value = CHECK_YOUR_INFORMATION
                 }
-                onFinishLoading()
             } catch (error: IOException) {
-                _toast.value = "Unable to connect to the server !"
-                _authenticationState.value = AuthenticationState.UNAUTHENTICATED
+                _toast.value = SERVER_CONNECTION_ERROR
+                _authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
                 onErrorLoading()
+            } finally {
+                onFinishLoading()
             }
         }
     }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.ui.cars.CarsApiStatus
+import com.example.projectapp.utils.SERVER_CONNECTION_ERROR
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -55,19 +56,44 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
 
     fun addCarToFavouriteList(userId: String, carId: Long) {
         viewModelScope.launch {
-            repository.addCarToFavouriteList(userId, carId)
+            try {
+                onStartDownloading()
+                repository.addCarToFavouriteList(userId, carId)
+            } catch (error: IOException) {
+                _toast.value = SERVER_CONNECTION_ERROR
+                onErrorDownloading()
+            } finally {
+                onDoneDownloading()
+            }
         }
     }
 
     fun removeCarFromFavouriteList(userId: String, carId: Long) {
         viewModelScope.launch {
-            repository.removeCarFromFavouriteList(userId, carId)
+            try {
+                onStartDownloading()
+                repository.removeCarFromFavouriteList(userId, carId)
+            } catch (error: IOException) {
+                _toast.value = SERVER_CONNECTION_ERROR
+                onErrorDownloading()
+            } finally {
+                onDoneDownloading()
+            }
         }
     }
 
     fun checkFavouriteStatus(userId: String, carId: Long) {
         viewModelScope.launch {
-            _favouriteStatus.value = repository.getCarFavouriteStatus(userId, carId)
+            try {
+                onStartDownloading()
+                _favouriteStatus.value = repository.getCarFavouriteStatus(userId, carId)
+            } catch (error: IOException) {
+                _toast.value = SERVER_CONNECTION_ERROR
+                onErrorDownloading()
+            } finally {
+                onDoneDownloading()
+            }
+
         }
     }
 
@@ -98,29 +124,31 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
         viewModelScope.launch {
             try {
                 onStartDownloading()
-                _spinner.value = true //progressBar
                 _carDetails.value = block()
                 onDoneDownloading()
             } catch (error: IOException) {
-                _toast.value = error.message
+                _toast.value = SERVER_CONNECTION_ERROR
                 _carDetails.value = null
                 onErrorDownloading()
             } finally {
-                _spinner.value = false
+                onDoneDownloading()
             }
         }
     }
 
     private fun onDoneDownloading() {
         _status.value = CarsApiStatus.DONE
+        _spinner.value = false
     }
 
     private fun onErrorDownloading() {
         _status.value = CarsApiStatus.ERROR
+        _spinner.value = false
     }
 
     private fun onStartDownloading() {
         _status.value = CarsApiStatus.LOADING
+        _spinner.value = true
     }
 
 }

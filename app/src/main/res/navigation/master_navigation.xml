@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/nav_profile_menu"
         android:name="com.example.projectapp.ui.profile.ProfileFragment"
-        android:label="Profile"
+        android:label="My Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/loginFragment"

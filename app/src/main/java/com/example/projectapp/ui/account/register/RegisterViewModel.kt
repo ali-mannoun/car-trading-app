@@ -7,6 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projectapp.domain.User
 import com.example.projectapp.repository.UserRepository
+import com.example.projectapp.ui.account.login.LoginViewModel
+import com.example.projectapp.utils.CHECK_YOUR_INFORMATION
+import com.example.projectapp.utils.REGISTERED_SUCCESSFULLY
+import com.example.projectapp.utils.SERVER_CONNECTION_ERROR
 import com.example.projectapp.utils.singleArgViewModelFactory
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -23,15 +27,13 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     }
 
     enum class RegistrationState {
-        //COLLECT_PROFILE_DATA,
-        //COLLECT_USER_PASSWORD,
+        INITIAL_STATE,
         COLLECT_USER_CREDENTIALS,
         REGISTRATION_COMPLETED
     }
 
-
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
+    private var _user: User? = null
+    val user: User?
         get() = _user
 
     private val _toast = MutableLiveData<String?>()
@@ -42,32 +44,15 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     val spinner: LiveData<Boolean>
         get() = _spinner
 
-    private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.COLLECT_USER_CREDENTIALS)
+    private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.INITIAL_STATE)
     val registrationState: LiveData<RegistrationState>
         get() = _registrationState
 
     // Simulation of real-world scenario, where an auth token may be provided as
     // an alternate authentication mechanism instead of passing the password
     // around. This is set at the end of the registration process.
-    var authToken: String? = ""
+    var authToken: String = ""
         private set
-
-    fun collectProfileData(name: String, email: String, password: String) {
-        // ... validate and store data
-
-        // Change State to collecting username and password
-        _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
-    }
-
-    /*
-//called when register btn clicked
-    fun createAccountAndLogin(email: String, password: String) {
-        // ... create account
-        // ... authenticate
-        this.authToken = "the token"
-        // Change State to registration completed
-        registrationState.value = RegistrationState.REGISTRATION_COMPLETED
-    }*/
 
     fun userCancelledRegistration(): Boolean {
         // Clear existing registration data
@@ -75,7 +60,6 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         authToken = ""
         return true
     }
-
 
     /**
      * Respond to onClick events .
@@ -87,13 +71,6 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
      */
     fun onCreateNewAccountBtnClicked(name: String, email: String, password: String) = launchDataLoad {
         userRepository.createNewAccount(name, email, password)
-    }
-
-    fun userRegisteredAndLoginSuccessfully() {
-        //Assign the verification token.
-        this.authToken = _user.value?.verificationToken
-        // Change State to registration completed
-        //_registrationState.value = RegistrationState.REGISTRATION_COMPLETED
     }
 
     fun onToastShown() {
@@ -127,18 +104,16 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         viewModelScope.launch {
             try {
                 onStartLoading()
-                _user.value = block()
-                if (_user.value != null) {
+                _user = block()
+                if (_user != null) {
+                    authToken = _user!!.verificationToken!!
                     _registrationState.value = RegistrationState.REGISTRATION_COMPLETED
-                    _toast.value = "Registered Successfully"
                 } else {
                     _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
-                    _toast.value = "Please check your information !"
                 }
-                onFinishLoading()
             } catch (error: IOException) {
-                _toast.value = "Unable to connect to the server !"
-                _registrationState.value = RegistrationState.COLLECT_USER_CREDENTIALS
+                _toast.value = SERVER_CONNECTION_ERROR
+                _registrationState.value = RegistrationState.INITIAL_STATE
                 onErrorLoading()
             } finally {
                 onFinishLoading()

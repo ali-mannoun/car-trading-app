@@ -6,10 +6,12 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.projectapp.R
@@ -18,8 +20,9 @@ import com.example.projectapp.databinding.ActivityCarSpecificationsBinding
 import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
-import com.example.projectapp.ui.account.register.USER_ID
-import com.example.projectapp.ui.account.register.USER_NAME
+import com.example.projectapp.ui.LoadingBottomSheetDialog
+import com.example.projectapp.utils.USER_ID
+import com.example.projectapp.utils.USER_NAME
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -61,7 +64,6 @@ class CarSpecificationsActivity : AppCompatActivity() {
         viewModel.checkFavouriteStatus(userId, carId)
 
         viewModel.favouriteStatus.observe(this, Observer { isFavourite ->
-            Log.e("1", "ali")
             isCarInFavouriteList = isFavourite
             toggleFavouriteFab(isFavourite)
         })
@@ -69,17 +71,34 @@ class CarSpecificationsActivity : AppCompatActivity() {
         val carImagesList: MutableList<ImageItem> = ArrayList()
 
         viewModel.carDetails.observe(this, Observer {
-            carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
-            carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
-            carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
+            if (it != null) {
+                carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
+                carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
+                carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
 
-            imagesSlideAdapter = CarImagesViewPagerAdapter(this, carImagesList)
-            viewPager.adapter = imagesSlideAdapter
-            // setup viewpager
-            TabLayoutMediator(tabIndicator, viewPager) { tab, position ->
-            }.attach()
+                imagesSlideAdapter = CarImagesViewPagerAdapter(this, carImagesList)
+                viewPager.adapter = imagesSlideAdapter
+                // setup viewpager
+                TabLayoutMediator(tabIndicator, viewPager) { tab, position ->
+                }.attach()
 
-            bindCarDetailsIntoViews(it)
+                bindCarDetailsIntoViews(it)
+            } else {
+                Toast.makeText(this, null, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.toast.observe(this, Observer {
+            Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+        })
+
+        viewModel.spinner.observe(this, Observer {
+            val bottomSheet = LoadingBottomSheetDialog()
+            if (it) {
+                bottomSheet.show(supportFragmentManager, "CarSpecification")
+            } else {
+                bottomSheet.dismiss()
+            }
         })
 
         mainLayoutBinding.favouriteFab.setOnClickListener {
@@ -99,10 +118,10 @@ class CarSpecificationsActivity : AppCompatActivity() {
 
     private fun toggleFavouriteFab(isFavourite: Boolean) {
         if (isFavourite) {
-            mainLayoutBinding.favouriteFab.text = "UnSave"
+            mainLayoutBinding.favouriteFab.text = getString(R.string.unsave)
             mainLayoutBinding.favouriteFab.icon = applicationContext.getDrawable(R.drawable.ic_favorite_fill_24)
         } else {
-            mainLayoutBinding.favouriteFab.text = "Save"
+            mainLayoutBinding.favouriteFab.text = getString(R.string.save)
             mainLayoutBinding.favouriteFab.icon = applicationContext.getDrawable(R.drawable.ic_favorite_border_black_24dp)
         }
     }

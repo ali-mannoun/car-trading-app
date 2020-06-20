@@ -45,20 +45,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
-<!--            <View-->
-<!--                android:id="@+id/view2"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="70dp"-->
-<!--                android:layout_gravity="bottom"-->
-<!--                android:alpha="0.7"-->
-<!--                android:background="@color/design_default_color_surface"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent" />-->
-
             <TextView
                 android:id="@+id/car_name_model"
-                bindingCarNameAndModel="@{carData}"
+                bindingCarModel="@{carData}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -71,11 +60,11 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/carImage"
-                tools:text="the titel car" />
+                tools:text="the car model" />
 
             <TextView
                 android:id="@+id/car_company"
-                bindinCarCompany="@{carData}"
+                bindingCarBrand="@{carData}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -88,7 +77,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/car_name_model"
-                tools:text="car company" />
+                tools:text="car brand" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

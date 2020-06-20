@@ -23,24 +23,19 @@ import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.LoadingBottomSheetDialog
+import com.example.projectapp.ui.account.*
 import com.example.projectapp.ui.account.login.LoginViewModel
-import com.example.projectapp.utils.CheckNetworkConnectivity
-import com.example.projectapp.utils.SharedViewModel
+import com.example.projectapp.utils.*
 import com.google.android.material.snackbar.Snackbar
 import java.util.regex.Pattern
-import kotlin.math.log
-
-const val USER_ID = "id"
-const val USER_NAME = "name"
-const val USER_EMAIL = "email"
 
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
-    private lateinit var bottomSheet: LoadingBottomSheetDialog
+    private val bottomSheet = LoadingBottomSheetDialog()
     private var allInputFieldsValidated = false
     private val userRepository = UserRepository(getNetworkService())
-    private val registerViewModel: RegisterViewModel by viewModels<RegisterViewModel>(
+    private val registerViewModel: RegisterViewModel by viewModels(
             factoryProducer = {
                 RegisterViewModel.FACTORY(userRepository)
             }
@@ -73,18 +68,13 @@ class RegisterFragment : Fragment() {
             val passwordConfirm = binding.confirmPassword.text.toString()
 
             if (name.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
-                Toast.makeText(context, "Empty not allowed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.empty_fields_not_allowed), Toast.LENGTH_SHORT).show()
             } else if (!CheckNetworkConnectivity.isOnline(requireNotNull(context))) {
-                Toast.makeText(context, "No internet connection !", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
             } else if (allInputFieldsValidated) {
                 if (binding.rememberMeCheckBox.isChecked) {
-                    //if the rememberMe checked ,then don't show RegisterFragment again.
-                    val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sp.edit()
-                    editor.putBoolean("rememberMeChecked", true)
-                    editor.apply()
+                    addRememberMePrefs(requireContext())
                 }
-                bottomSheet = LoadingBottomSheetDialog()
                 registerViewModel.onCreateNewAccountBtnClicked(name, email, password)
             }
         }
@@ -94,68 +84,30 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navController = findNavController()
 
-        // If the user presses back, cancel the user registration and pop back
-        // to the login fragment. Since this ViewModel is shared at the activity
-        // scope, its state must be reset so that it will be in the initial
-        // state if the user comes back to register later.
+        /**
+         * If the user presses back, cancel the user registration and pop back to the login fragment.
+         * Since this ViewModel is shared at the activity scope, its state must be reset so that it will be in the initial state
+         * if the user comes back to register later.
+         */
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             registerViewModel.userCancelledRegistration()
             navController.popBackStack(R.id.loginFragment, false)
         }
 
-        // RegistrationViewModel updates the registrationState to
-        // REGISTRATION_COMPLETED when ready, and for this example, the username
-        // is accessed as a read-only property from RegistrationViewModel and is
-        // used to directly authenticate with loginViewModel.
-        registerViewModel.registrationState.observe(viewLifecycleOwner, Observer { state ->
-            if (state == RegisterViewModel.RegistrationState.REGISTRATION_COMPLETED) {
-                // Here we authenticate with the token provided by the ViewModel
-                // then pop back to the profie_fragment, where the user authentication
-                // status will be tested and should be authenticated.
-                Snackbar.make(binding.root, "Verifying your account... please wait !", Snackbar.LENGTH_LONG).show()
-                val authToken = registerViewModel.authToken
-                loginViewModel.authenticate(authToken!!)
-            }
-        })
+        //registerViewModel.registrationState
+        registerViewModel.observeRegistrationState(viewLifecycleOwner, registerViewModel.registrationState,
+                binding.root, requireContext(), loginViewModel, binding.emailInputLayout)
 
-        loginViewModel.toast.observe(viewLifecycleOwner, Observer {
-            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG).show()
-            findNavController().popBackStack(R.id.nav_cars_menu, false)
-        })
+        //loginViewModel.toast
+        loginViewModel.observerToastVerificationStatus(viewLifecycleOwner, findNavController(), binding.root, loginViewModel.toast)
 
-        //Detect user authentication status.
-        registerViewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer { user ->
-            if (user != null) {
-                //user registered successfully (user not found in database and then we can create new account)
-                registerViewModel.userRegisteredAndLoginSuccessfully()
-                //store user in prefs
-                val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sp.edit()
-                editor.putString(USER_ID, user.id)
-                editor.putString(USER_NAME, user.name)
-                editor.putString(USER_EMAIL, user.email)
-                editor.apply()
-            } else {
-                //remove the rememberMe value from prefs.
-                val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sp.edit()
-                editor.remove("rememberMeChecked")
-                editor.apply()
-                //the user is already exists.
-                binding.emailInputLayout.error = "Email address already exists !"
-            }
-        })
+        //registerViewModel.toast
+        registerViewModel.observeToastMessage(viewLifecycleOwner, registerViewModel.toast, binding.root, REGISTER_TAG)
 
-        //control Progressbar visibility.
-        registerViewModel.spinner.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                binding.createNewAccountBtn.isEnabled = false
-                bottomSheet.show(parentFragmentManager, "RegisterFragment...")
-            } else {
-                binding.createNewAccountBtn.isEnabled = true
-                bottomSheet.dismiss()
-            }
-        })
+        //registerViewModel.spinner
+        registerViewModel.observeLoadingStatus(viewLifecycleOwner, binding.createNewAccountBtn, registerViewModel.spinner,
+                bottomSheet,
+                parentFragmentManager, REGISTER_TAG)
     }
 
     private fun validateFields() {
@@ -167,7 +119,7 @@ class RegisterFragment : Fragment() {
         binding.username.doOnTextChanged { text, _, _, _ ->
             if (text!!.length < 3) {
                 allInputFieldsValidated = false
-                binding.userNameInputLayout.error = "At least 3 characters !"
+                binding.userNameInputLayout.error = getString(R.string.at_least_three_characters)
             } else {
                 allInputFieldsValidated = true
                 binding.userNameInputLayout.error = null
@@ -179,7 +131,7 @@ class RegisterFragment : Fragment() {
             val isValid = emailPattern.matcher(text.toString()).matches()
             if (!isValid) {
                 allInputFieldsValidated = false
-                binding.emailInputLayout.error = "Invalid Email !"
+                binding.emailInputLayout.error = getString(R.string.invalid_email)
             } else {
                 allInputFieldsValidated = true
                 binding.emailInputLayout.error = null
@@ -189,7 +141,7 @@ class RegisterFragment : Fragment() {
         binding.password.doOnTextChanged { text, _, _, _ ->
             if (text!!.length < 8) {
                 allInputFieldsValidated = false
-                binding.passwordInputLayout.error = "Must at least 8 characters!"
+                binding.passwordInputLayout.error = getString(R.string.must_at_least_eight_characters)
             } else {
                 allInputFieldsValidated = true
                 binding.passwordInputLayout.error = null
@@ -199,7 +151,7 @@ class RegisterFragment : Fragment() {
         binding.confirmPassword.doOnTextChanged { text, _, _, _ ->
             if (binding.password.text.toString() != text.toString()) {
                 allInputFieldsValidated = false
-                binding.confirmPasswordInputLayout.error = "Password doesn't match!"
+                binding.confirmPasswordInputLayout.error = getString(R.string.password_doesnot_match)
             } else {
                 allInputFieldsValidated = true
                 binding.confirmPasswordInputLayout.error = null

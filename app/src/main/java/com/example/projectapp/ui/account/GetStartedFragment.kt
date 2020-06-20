@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.projectapp.R
 import com.example.projectapp.databinding.FragmentGetStartedBinding
 import com.example.projectapp.sharedViewModel
+import com.example.projectapp.utils.IS_INTRO_SCREEN_OPENED_BEFORE
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -33,9 +34,9 @@ class GetStartedFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_get_started, container, false)
         //To hide the toolbar in the [MasterActivity] when we show this fragment.
         sharedViewModel.setActiveIntroStarted(true)
-        //To show this fragment only once when the app is installed .
+        //To show this fragment only once when the user open the app for the first time .
         val pref: SharedPreferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE)
-        val isIntroOpenedBefore: Boolean = pref.getBoolean("isIntroOpened", false)
+        val isIntroOpenedBefore: Boolean = pref.getBoolean(IS_INTRO_SCREEN_OPENED_BEFORE, false)
         if (isIntroOpenedBefore) {
             //if opened, then set the first fragment is CarFragment.
             findNavController().graph.startDestination = R.id.nav_cars_menu
@@ -66,7 +67,7 @@ class GetStartedFragment : Fragment() {
             //store this information to not show this fragment again.
             val sp: SharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sp.edit()
-            editor.putBoolean("isIntroOpened", true)
+            editor.putBoolean(IS_INTRO_SCREEN_OPENED_BEFORE, true)
             editor.apply()
 
             findNavController().navigate(GetStartedFragmentDirections.actionGetStartedFragmentToNavCarsMenu())
@@ -75,6 +76,7 @@ class GetStartedFragment : Fragment() {
     }
 }
 
+//items to show in the ViewPager.
 class ScreenItem(val title: String, val description: String, val screenImg: Int)
 
 //Change the superclass to RecyclerView.Adapter for paging through views, or FragmentStateAdapter for paging through fragments.

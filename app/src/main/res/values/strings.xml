@@ -29,4 +29,19 @@
     <string name="admin_account">Admin account</string>
     <string name="employee_account">Employee account</string>
     <string name="user_account">User account</string>
+    <string name="login_to_continue">Please login to continue</string>
+    <string name="incorrect_email_or_password">Incorrect Email or Password</string>
+    <string name="empty_fields_not_allowed">Empty fields not allowed</string>
+    <string name="no_internet_connection">No internet connection !</string>
+    <string name="verifying_your_account">Verifying your account... please wait !</string>
+    <string name="email_address_already_exist">Email address already exists !</string>
+    <string name="at_least_three_characters">At least 3 characters !</string>
+    <string name="invalid_email">Invalid Email !</string>
+    <string name="must_at_least_eight_characters">Must at least 8 characters!</string>
+    <string name="password_doesnot_match">Password doesn\'t match!</string>
+    <string name="favourite_car_list">Favourite Cars List</string>
+    <string name="main_cars_list">Main Cars List</string>
+    <string name="loading_cached_cars">Loading Cached cars</string>
+    <string name="unsave">UnSave</string>
+    <string name="save">Save</string>
 </resources>
