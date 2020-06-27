@@ -50,8 +50,12 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
         get() = _favouriteStatus
 */
 
-    fun loadCarSpecificationsById(id: Long) = launchDataLoad {
-        repository.getCarSpecificationsById(id)
+    fun onToastShown() {
+        _toast.value = null
+    }
+
+    fun loadCarSpecificationsById(userId: String, carId: Long) = launchDataLoad(userId, carId) {
+        repository.getCarSpecificationsById(carId)
     }
 
     fun addCarToFavouriteList(userId: String, carId: Long) {
@@ -82,21 +86,6 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
         }
     }
 
-    fun checkFavouriteStatus(userId: String, carId: Long) {
-        viewModelScope.launch {
-            try {
-                onStartDownloading()
-                _favouriteStatus.value = repository.getCarFavouriteStatus(userId, carId)
-            } catch (error: IOException) {
-                _toast.value = SERVER_CONNECTION_ERROR
-                onErrorDownloading()
-            } finally {
-                onDoneDownloading()
-            }
-
-        }
-    }
-
     /**
      * Helper function to call a data load function with a loading spinner, errors will trigger a
      * toast.
@@ -116,7 +105,7 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
      *              lambda the loading spinner will display, after completion or error the loading
      *              spinner will stop
      */
-    private fun launchDataLoad(block: suspend () -> CarSpecifications?) {
+    private fun launchDataLoad(userId: String, carId: Long, block: suspend () -> CarSpecifications?) {
         /*
         The library adds a viewModelScope as an extension function of the ViewModel class.
         This scope is bound to Dispatchers.Main and will automatically be cancelled when the ViewModel is cleared.
@@ -125,7 +114,8 @@ class CarSpecificationsViewModel(private val repository: CarRepository) : ViewMo
             try {
                 onStartDownloading()
                 _carDetails.value = block()
-                onDoneDownloading()
+                _favouriteStatus.value = repository.getCarFavouriteStatus(userId, carId)
+
             } catch (error: IOException) {
                 _toast.value = SERVER_CONNECTION_ERROR
                 _carDetails.value = null

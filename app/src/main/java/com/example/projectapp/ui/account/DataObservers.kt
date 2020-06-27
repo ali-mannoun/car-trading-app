@@ -149,3 +149,10 @@ fun ViewModel.observeAuthenticationStateInCarsFragment(viewLifecycleOwner: Lifec
         }
     })
 }
+
+
+
+
+
+
+

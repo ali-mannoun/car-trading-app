@@ -21,9 +21,11 @@ import com.example.projectapp.domain.CarSpecifications
 import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.CarRepository
 import com.example.projectapp.ui.LoadingBottomSheetDialog
+import com.example.projectapp.utils.SERVER_CONNECTION_ERROR
 import com.example.projectapp.utils.USER_ID
 import com.example.projectapp.utils.USER_NAME
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -36,6 +38,7 @@ class CarSpecificationsActivity : AppCompatActivity() {
     private lateinit var tabIndicator: TabLayout
     private var carId: Long = -1L //initial value
     private var isCarInFavouriteList = false //initial value
+    private val bottomSheet = LoadingBottomSheetDialog()
 
     private val safeArgs: CarSpecificationsActivityArgs by navArgs()
     private val viewModel: CarSpecificationsViewModel by viewModels(
@@ -60,8 +63,7 @@ class CarSpecificationsActivity : AppCompatActivity() {
         val userId: String = requireNotNull(pref.getString(USER_ID, "-1"))
         val userName: String = requireNotNull(pref.getString(USER_NAME, "-1"))
 
-        viewModel.loadCarSpecificationsById(carId)
-        viewModel.checkFavouriteStatus(userId, carId)
+        viewModel.loadCarSpecificationsById(userId, carId)
 
         viewModel.favouriteStatus.observe(this, Observer { isFavourite ->
             isCarInFavouriteList = isFavourite
@@ -71,6 +73,7 @@ class CarSpecificationsActivity : AppCompatActivity() {
         val carImagesList: MutableList<ImageItem> = ArrayList()
 
         viewModel.carDetails.observe(this, Observer {
+            Log.e("CarSpecification", "carDetails oberved")
             if (it != null) {
                 carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
                 carImagesList.add(ImageItem(it.generalInformation.mainImageUrl))
@@ -83,29 +86,33 @@ class CarSpecificationsActivity : AppCompatActivity() {
                 }.attach()
 
                 bindCarDetailsIntoViews(it)
-            } else {
-                Toast.makeText(this, null, Toast.LENGTH_SHORT).show()
             }
         })
 
         viewModel.toast.observe(this, Observer {
-            Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+            Log.e("CarSpecification", "toast observed { ${it.toString()} }")
+            if (it == SERVER_CONNECTION_ERROR) {
+                Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+                finish()
+            }
         })
 
+/*
         viewModel.spinner.observe(this, Observer {
-            val bottomSheet = LoadingBottomSheetDialog()
             if (it) {
                 bottomSheet.show(supportFragmentManager, "CarSpecification")
             } else {
                 bottomSheet.dismiss()
             }
         })
+*/
 
         mainLayoutBinding.favouriteFab.setOnClickListener {
             if (isCarInFavouriteList) {
                 isCarInFavouriteList = false
-                //remove car from favourite list.
                 viewModel.removeCarFromFavouriteList(userId, carId)
+                //remove car from favourite list.
                 toggleFavouriteFab(false)
             } else {
                 isCarInFavouriteList = true

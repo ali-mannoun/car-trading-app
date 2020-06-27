@@ -22,6 +22,7 @@ import com.example.projectapp.network.getNetworkService
 import com.example.projectapp.repository.UserRepository
 import com.example.projectapp.sharedViewModel
 import com.example.projectapp.ui.account.login.LoginViewModel
+import com.example.projectapp.utils.REMEMBER_ME
 import com.example.projectapp.utils.USER_EMAIL
 import com.example.projectapp.utils.USER_ID
 import com.example.projectapp.utils.USER_NAME
@@ -77,7 +78,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.logOutBtn.setOnClickListener {
-            editor.remove("rememberMeChecked")
+            editor.remove(REMEMBER_ME)
             editor.remove(USER_ID)
             editor.remove(USER_NAME)
             editor.remove(USER_EMAIL)
